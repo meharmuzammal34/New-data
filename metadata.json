@@ -1,0 +1,8 @@
+{
+  "name": "VacCompare",
+  "description": "Compare vacuum cleaners side by side with filtering, search, and specification matrix.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

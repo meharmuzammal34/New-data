@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="pBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc" />
+      <stop offset="100%" stop-color="#f1f5f9" />
+    </linearGradient>
+    <linearGradient id="pBodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+    <linearGradient id="pAccentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Subtle card container background -->
+  <rect width="400" height="400" rx="20" fill="url(#pBgGrad)"/>
+  <circle cx="200" cy="200" r="135" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+
+  <!-- Sleek Cordless Stick Vacuum Illustration -->
+  <g transform="translate(110, 50)" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Top Handle & Motor Unit -->
+    <!-- Handle Loop -->
+    <path d="M 50 45 C 30 45 25 65 35 85 C 40 95 55 95 65 90" fill="none" stroke="#64748b" stroke-width="8"/>
+    <!-- Battery / Main Motor Housing -->
+    <rect x="52" y="48" width="56" height="70" rx="14" fill="url(#pBodyGrad)"/>
+    <!-- Clear Dustbin cylinder -->
+    <rect x="58" y="70" width="44" height="42" rx="8" fill="#e0f2fe" stroke="#38bdf8" stroke-width="3"/>
+    <!-- Cyclone inner cone -->
+    <path d="M 70 76 L 90 76 L 85 96 L 75 96 Z" fill="#0284c7" opacity="0.6"/>
+    <!-- Trigger Accent -->
+    <rect x="44" y="66" width="10" height="12" rx="3" fill="#f59e0b"/>
+
+    <!-- Extension Wand (Long Rod) -->
+    <line x1="80" y1="120" x2="80" y2="245" stroke="#0ea5e9" stroke-width="10"/>
+    <!-- Wand joint collar -->
+    <rect x="74" y="118" width="12" height="14" rx="3" fill="#334155"/>
+    <rect x="74" y="240" width="12" height="14" rx="3" fill="#334155"/>
+
+    <!-- Articulating Neck -->
+    <path d="M 80 254 L 80 268" stroke="#475569" stroke-width="8"/>
+    <circle cx="80" cy="268" r="6" fill="#334155"/>
+
+    <!-- Cleaning Motor Head -->
+    <!-- Head Base Body -->
+    <path d="M 30 286 L 130 286 C 135 286 138 282 136 277 L 132 270 C 130 267 126 265 122 265 L 38 265 C 34 265 30 267 28 270 L 24 277 C 22 282 25 286 30 286 Z" fill="url(#pBodyGrad)"/>
+    <!-- Brush Roll Window -->
+    <rect x="42" y="271" width="76" height="10" rx="4" fill="#38bdf8" opacity="0.75"/>
+    <!-- Wheels -->
+    <circle cx="34" cy="286" r="6" fill="#1e293b"/>
+    <circle cx="126" cy="286" r="6" fill="#1e293b"/>
+    <!-- LED Headlight Bar -->
+    <line x1="55" y1="284" x2="105" y2="284" stroke="#ffffff" stroke-width="2.5"/>
+  </g>
+</svg>

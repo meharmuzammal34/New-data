@@ -97,6 +97,32 @@ function formatAmazonLink(url, tag = 'wat344r5-20') {
   }
 }
 
+function extractAsin(link, row) {
+  if (link && typeof link === 'string') {
+    const m = link.match(/\/dp\/([A-Z0-9]{10})/i) || 
+              link.match(/\/gp\/product\/([A-Z0-9]{10})/i) || 
+              link.match(/\/d\/([A-Z0-9]{10})/i) ||
+              link.match(/\b([B0-9][A-Z0-9]{9})\b/);
+    if (m) return m[1].toUpperCase();
+  }
+  if (Array.isArray(row)) {
+    for (let c = 0; c < row.length; c++) {
+      const cell = String(row[c] || '');
+      const m = cell.match(/\/dp\/([A-Z0-9]{10})/i) || 
+                cell.match(/\/gp\/product\/([A-Z0-9]{10})/i) || 
+                cell.match(/\/d\/([A-Z0-9]{10})/i) ||
+                cell.match(/\b(B[A-Z0-9]{9})\b/i);
+      if (m) return m[1].toUpperCase();
+    }
+  }
+  return null;
+}
+
+function getProductImageUrl(asin) {
+  if (!asin) return '/assets/vacuum_placeholder.svg';
+  return `https://m.media-amazon.com/images/P/${asin}.01._SL500_.jpg`;
+}
+
 function mapRowToProduct(row, index) {
   const get = (i) => cleanCell(row[i]);
 
@@ -105,11 +131,15 @@ function mapRowToProduct(row, index) {
   if (!model) return null; // divider / section-header row, not a real product
 
   const type = get(3) || 'Other';
+  const asin = extractAsin(get(2), row);
+  const imageUrl = getProductImageUrl(asin);
 
   const product = {
     id: `p-${index}-${slugify(brand + '-' + model)}`,
     brand,
     model,
+    asin,
+    imageUrl,
     amazonLink: formatAmazonLink(get(2)),
     type,
     suctionKpa: parseFirstNumber(get(5)),

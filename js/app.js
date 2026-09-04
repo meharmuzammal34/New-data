@@ -4,7 +4,15 @@
 
 const PAGE_SIZE = 24;
 const MAX_COMPARE = 4;
-const CANONICAL_ORIGIN = 'https://vacompare.ai.studio';
+const CANONICAL_ORIGIN = 'https://vacuumcleanerlab.com';
+
+// SEO Safe Migration client fallback for old domain
+if (typeof window !== 'undefined' && window.location) {
+  const host = window.location.hostname.toLowerCase();
+  if (host === 'vacompare.ai.studio' || host.endsWith('.vacompare.ai.studio')) {
+    window.location.replace(`https://vacuumcleanerlab.com${window.location.pathname}${window.location.search}${window.location.hash}`);
+  }
+}
 
 function formatAmazonLink(url, tag = 'wat344r5-20') {
   if (!url || typeof url !== 'string') return '';
@@ -482,9 +490,9 @@ function showArticleView() {
 }
 
 function updateCanonicalTag(path) {
-  const origin = 'https://vacompare.ai.studio';
-  const cleanPath = (!path || path === '/' || path === '/index.html') ? '' : path.replace(/\/$/, '');
-  const canonicalUrl = `${origin}${cleanPath}`;
+  const origin = 'https://vacuumcleanerlab.com';
+  const cleanPath = (!path || path === '/' || path === '/index.html') ? '/' : path.replace(/\/$/, '');
+  const canonicalUrl = cleanPath === '/' ? `${origin}/` : (cleanPath === '/compare' ? `${origin}/compare/` : `${origin}${cleanPath}`);
   
   let link = document.querySelector('link[rel="canonical"]');
   if (!link) {
@@ -493,6 +501,9 @@ function updateCanonicalTag(path) {
     document.head.appendChild(link);
   }
   link.setAttribute('href', canonicalUrl);
+
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  if (ogUrl) ogUrl.setAttribute('content', canonicalUrl);
 }
 
 function updateMetaDescription(desc) {
@@ -670,9 +681,9 @@ function handleRouteFromUrl() {
     els.dedicatedArticleView.children.length > 0 &&
     els.dedicatedArticleView.innerHTML.trim().length > 100;
 
-  // Product Review Page: /vacuum/:slug
-  if (path.startsWith('/vacuum/')) {
-    const slug = path.replace('/vacuum/', '').replace(/\/$/, '');
+  // Product Review Page: /vacuum/:slug or /product/:slug
+  if (path.startsWith('/vacuum/') || path.startsWith('/product/')) {
+    const slug = path.replace(/^\/(vacuum|product)\//, '').replace(/\/$/, '');
     const product = findProductBySlug(slug);
     showArticleView();
     if (hasSsrContent) {

@@ -14,4 +14,4 @@ Allow: /contact
 Allow: /html-sitemap
 Disallow: /api/private/
 
-Sitemap: https://vacompare.ai.studio/sitemap.xml
+Sitemap: https://vacuumcleanerlab.com/sitemap.xml

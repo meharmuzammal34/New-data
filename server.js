@@ -8,7 +8,49 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const CANONICAL_ORIGIN = 'https://vacompare.ai.studio';
+const PRIMARY_ORIGIN = 'https://vacuumcleanerlab.com';
+
+function formatDomain(domain) {
+  if (!domain) return '';
+  const trimmed = String(domain).trim();
+  if (!trimmed) return '';
+  return (trimmed.startsWith('http://') || trimmed.startsWith('https://')
+    ? trimmed
+    : `https://${trimmed}`).replace(/\/+$/, '');
+}
+
+function getCanonicalOrigin(req) {
+  const custom = process.env.CUSTOM_DOMAIN || process.env.CANONICAL_ORIGIN || process.env.BASE_URL;
+  if (custom) {
+    return formatDomain(custom);
+  }
+  return PRIMARY_ORIGIN;
+}
+
+const CANONICAL_ORIGIN = PRIMARY_ORIGIN;
+
+// ---------------------------------------------------------------- //
+// 301 Permanent SEO Migration Redirect Middleware                   //
+// ---------------------------------------------------------------- //
+app.use((req, res, next) => {
+  const rawHost = (req.headers['x-forwarded-host'] || req.headers.host || '').toLowerCase();
+  const host = rawHost.split(':')[0];
+
+  const isOldDomain = host === 'vacompare.ai.studio' || 
+                      host === 'www.vacompare.ai.studio' || 
+                      host.endsWith('.vacompare.ai.studio');
+  const isWwwNewDomain = host === 'www.vacuumcleanerlab.com';
+  const isHttpOnNewDomain = (host === 'vacuumcleanerlab.com' || host === 'www.vacuumcleanerlab.com') && 
+                            req.headers['x-forwarded-proto'] === 'http';
+
+  if (isOldDomain || isWwwNewDomain || isHttpOnNewDomain) {
+    const targetUrl = `${PRIMARY_ORIGIN}${req.originalUrl}`;
+    res.setHeader('Cache-Control', 'public, max-age=31536000'); // 1 year cache for 301 redirect
+    return res.redirect(301, targetUrl);
+  }
+
+  next();
+});
 
 /* ---------------------------------------------------------------- */
 /* Minimal CSV Parser & Product Memory Engine                        */
@@ -679,6 +721,7 @@ const POPULAR_CATEGORIES = [
 /* ---------------------------------------------------------------- */
 
 app.get('/robots.txt', (req, res) => {
+  const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('text/plain');
   res.send(`User-agent: *
 Allow: /
@@ -700,6 +743,7 @@ Sitemap: ${CANONICAL_ORIGIN}/sitemap.xml`);
 });
 
 app.get('/sitemap.xml', (req, res) => {
+  const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   res.send(`<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -715,6 +759,7 @@ app.get('/sitemap.xml', (req, res) => {
 });
 
 app.get('/pages-sitemap.xml', (req, res) => {
+  const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const pages = [
     '/',
@@ -729,7 +774,7 @@ app.get('/pages-sitemap.xml', (req, res) => {
   const today = new Date().toISOString().split('T')[0];
   const urls = pages.map(p => `
   <url>
-    <loc>${CANONICAL_ORIGIN}${p === '/' ? '' : p}</loc>
+    <loc>${CANONICAL_ORIGIN}${p === '/' ? '/' : p}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>${p === '/' ? 'daily' : 'monthly'}</changefreq>
     <priority>${p === '/' ? '1.0' : '0.6'}</priority>
@@ -741,6 +786,7 @@ app.get('/pages-sitemap.xml', (req, res) => {
 });
 
 app.get('/categories-sitemap.xml', (req, res) => {
+  const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const today = new Date().toISOString().split('T')[0];
   const urls = POPULAR_CATEGORIES.map(c => `
@@ -757,6 +803,7 @@ app.get('/categories-sitemap.xml', (req, res) => {
 });
 
 app.get('/brands-sitemap.xml', (req, res) => {
+  const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const today = new Date().toISOString().split('T')[0];
   const urls = POPULAR_BRANDS.map(b => `
@@ -773,6 +820,7 @@ app.get('/brands-sitemap.xml', (req, res) => {
 });
 
 app.get('/products-sitemap.xml', (req, res) => {
+  const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const today = new Date().toISOString().split('T')[0];
   const urls = cachedProducts.map(p => `
@@ -789,6 +837,7 @@ app.get('/products-sitemap.xml', (req, res) => {
 });
 
 app.get('/reviews-sitemap.xml', (req, res) => {
+  const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const today = new Date().toISOString().split('T')[0];
   const top30 = cachedProducts.slice(0, 30).map(p => `
@@ -805,6 +854,7 @@ app.get('/reviews-sitemap.xml', (req, res) => {
 });
 
 app.get('/comparison-sitemap.xml', (req, res) => {
+  const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const comparisonsSet = new Set([
     '/compare/dyson-v15-vs-shark-stratos',
@@ -849,6 +899,7 @@ app.get('/comparison-sitemap.xml', (req, res) => {
 });
 
 app.get('/guides-sitemap.xml', (req, res) => {
+  const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const today = new Date().toISOString().split('T')[0];
   const urls = BUYING_GUIDES.map(g => `
@@ -865,11 +916,12 @@ app.get('/guides-sitemap.xml', (req, res) => {
 });
 
 app.get('/images-sitemap.xml', (req, res) => {
+  const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   res.send(`<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>${CANONICAL_ORIGIN}</loc>
+    <loc>${CANONICAL_ORIGIN}/</loc>
     <image:image>
       <image:loc>${CANONICAL_ORIGIN}/assets/logo.svg</image:loc>
       <image:title>VacCompare Official Vector Logo</image:title>
@@ -879,6 +931,7 @@ app.get('/images-sitemap.xml', (req, res) => {
 });
 
 app.get('/feed.xml', (req, res) => {
+  const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const items = cachedProducts.slice(0, 15).map(p => `
     <item>
@@ -893,7 +946,7 @@ app.get('/feed.xml', (req, res) => {
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>VacCompare – Vacuum Cleaner Reviews &amp; News</title>
-    <link>${CANONICAL_ORIGIN}</link>
+    <link>${CANONICAL_ORIGIN}/</link>
     <description>Latest vacuum cleaner reviews, comparisons, and buying guides.</description>
     <language>en-us</language>
     <atom:link href="${CANONICAL_ORIGIN}/feed.xml" rel="self" type="application/rss+xml"/>
@@ -2599,7 +2652,7 @@ app.use(express.static(__dirname, { index: false }));
 /* 301 Redirects                                                    */
 /* ---------------------------------------------------------------- */
 
-app.get(['/vacuum', '/vacuum/'], (req, res) => {
+app.get(['/vacuum', '/vacuum/', '/product', '/product/'], (req, res) => {
   return res.redirect(301, '/');
 });
 
@@ -2615,15 +2668,22 @@ app.get('*', (req, res) => {
     return res.status(404).send('Asset Not Found');
   }
 
-  if (reqPath === '/vacuum' || reqPath === '/vacuum/') {
+  if (reqPath === '/vacuum' || reqPath === '/vacuum/' || reqPath === '/product' || reqPath === '/product/') {
     return res.redirect(301, '/');
   }
 
   const indexPath = path.join(__dirname, 'index.html');
 
-  fs.readFile(indexPath, 'utf8', (err, html) => {
+  fs.readFile(indexPath, 'utf8', (err, rawHtml) => {
     if (err) {
       return res.status(500).send('Error loading page.');
+    }
+
+    const CANONICAL_ORIGIN = getCanonicalOrigin(req);
+    let html = rawHtml;
+    html = html.split('https://vacompare.ai.studio').join(CANONICAL_ORIGIN);
+    if (CANONICAL_ORIGIN !== PRIMARY_ORIGIN) {
+      html = html.split(PRIMARY_ORIGIN).join(CANONICAL_ORIGIN);
     }
 
     let title = 'VacCompare – Vacuum Cleaner Reviews, Comparisons & Buying Guides';
@@ -2633,7 +2693,7 @@ app.get('*', (req, res) => {
 
     // Homepage
     if (reqPath === '/' || reqPath === '/index.html') {
-      canonical = CANONICAL_ORIGIN;
+      canonical = `${CANONICAL_ORIGIN}/`;
       title = 'VacCompare – Vacuum Cleaner Reviews, Comparisons & Buying Guides';
       description = 'Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.';
 
@@ -2661,12 +2721,13 @@ app.get('*', (req, res) => {
         }
       });
     }
-    // Individual Product Review Page: /vacuum/:slug
-    else if (reqPath.startsWith('/vacuum/')) {
-      const slug = reqPath.replace('/vacuum/', '').replace(/\/$/, '');
+    // Individual Product Review Page: /vacuum/:slug or /product/:slug
+    else if (reqPath.startsWith('/vacuum/') || reqPath.startsWith('/product/')) {
+      const slug = reqPath.replace(/^\/(vacuum|product)\//, '').replace(/\/$/, '');
       const matched = findProductBySlugServer(slug, cachedProducts, productSlugMap);
 
       if (matched) {
+        canonical = `${CANONICAL_ORIGIN}${matched.reviewUrl}`;
         const prodName = `${matched.brand} ${matched.model}`;
         title = formatProductMetaTitle(prodName);
         description = formatProductMetaDescription(prodName);
@@ -2936,8 +2997,8 @@ app.get('*', (req, res) => {
       showMainContent = true;
       breadcrumbCurrent = 'All Vacuum Cleaners';
       productGridHtml = cachedProducts.slice(0, 24).map(p => renderServerCard(p)).join('');
-    } else if (reqPath.startsWith('/vacuum/')) {
-      const slug = reqPath.replace('/vacuum/', '').replace(/\/$/, '');
+    } else if (reqPath.startsWith('/vacuum/') || reqPath.startsWith('/product/')) {
+      const slug = reqPath.replace(/^\/(vacuum|product)\//, '').replace(/\/$/, '');
       const matched = findProductBySlugServer(slug, cachedProducts, productSlugMap);
       if (matched) {
         showArticle = true;

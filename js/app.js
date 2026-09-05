@@ -166,7 +166,7 @@ function cacheEls() {
   els.homeHeroSection = document.getElementById('home-hero-section');
   els.homeBrandsSection = document.getElementById('home-brands-section');
   els.homeCategoriesSection = document.getElementById('home-categories-section');
-  els.homeFeaturedSection = document.getElementById('home-featured-section');
+  els.homeFeaturedSection = document.getElementById('home-featured-section') || document.getElementById('featured-reviews-section');
   els.mainContent = document.getElementById('main-content');
   els.dedicatedBanner = document.getElementById('dedicated-banner');
   els.dedicatedArticleView = document.getElementById('dedicated-article-view');
@@ -381,8 +381,32 @@ function bindStaticEvents() {
     els.pageModal.addEventListener('click', (e) => { if (e.target === els.pageModal) toggleModal(els.pageModal, false); });
   }
 
-  // Traditional Multi-Page Navigation: Allow native browser navigation for all <a> links
-  // (Link interception disabled so browser navigates to server-rendered pages)
+  // SPA Client-Side Link Interception for seamless internal navigation
+  document.addEventListener('click', (e) => {
+    if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    const link = e.target.closest('a');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href) return;
+
+    if (link.target === '_blank' || link.hasAttribute('download') ||
+        href.startsWith('http://') || href.startsWith('https://') ||
+        href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) {
+      return;
+    }
+
+    if (href.startsWith('#')) return;
+
+    if (href.startsWith('/#')) {
+      const currentPath = window.location.pathname;
+      if (currentPath === '/' || currentPath === '/index.html' || currentPath === '') {
+        return;
+      }
+    }
+
+    e.preventDefault();
+    navigateTo(href);
+  });
 
   // Newsletter Form
   if (els.newsletterForm) {
@@ -411,7 +435,22 @@ function bindStaticEvents() {
 /* ---------------------------------------------------------------- */
 
 function navigateTo(path, pushState = true) {
-  window.location.href = path;
+  if (!path) return;
+  const [pathname, hash] = path.split('#');
+  if (pushState) {
+    window.history.pushState(null, '', path);
+  } else {
+    window.history.replaceState(null, '', path);
+  }
+  handleRouteFromUrl();
+  if (hash) {
+    setTimeout(() => {
+      const target = document.getElementById(hash);
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 }
 
 function setHeroHeadingTag(isH1) {
@@ -695,10 +734,12 @@ function handleRouteFromUrl() {
         updateBreadcrumbs('Product Review', prodName);
         document.title = formatProductMetaTitle(prodName);
         updateMetaDescription(formatProductMetaDescription(prodName));
-      } else if (els.dedicatedArticleView.children.length === 0) {
+      } else {
         render404Page(path);
+        bindArticleViewEvents(null);
         updateBreadcrumbs('Error', '404 Page Not Found');
         document.title = '404 Page Not Found | VacCompare';
+        updateMetaDescription('The requested vacuum review could not be found.');
       }
     }
   }
@@ -810,14 +851,29 @@ function handleRouteFromUrl() {
   // Buying Guides: /guides/:slug
   else if (path.startsWith('/guides/')) {
     const guideSlug = path.replace('/guides/', '').replace(/\/$/, '');
-    showArticleView();
-    if (hasSsrContent) {
-      bindArticleViewEvents(null);
+    const knownGuides = [
+      'best-vacuum-for-pet-hair',
+      'best-robot-vacuums-2026',
+      'best-hardwood-floor-vacuums',
+      'best-budget-cordless-vacuums',
+      'bagged-vs-bagless-vacuums-guide'
+    ];
+    if (knownGuides.includes(guideSlug)) {
+      showArticleView();
+      if (hasSsrContent) {
+        bindArticleViewEvents(null);
+      } else {
+        renderBuyingGuidePage(guideSlug);
+        const guideTitle = getGuideTitle(guideSlug);
+        updateBreadcrumbs('Buying Guide', guideTitle);
+        document.title = `${guideTitle} | VacCompare`;
+      }
     } else {
-      renderBuyingGuidePage(guideSlug);
-      const guideTitle = getGuideTitle(guideSlug);
-      updateBreadcrumbs('Buying Guide', guideTitle);
-      document.title = `${guideTitle} | VacCompare`;
+      showArticleView();
+      render404Page(path);
+      bindArticleViewEvents(null);
+      updateBreadcrumbs('Error', '404 Page Not Found');
+      document.title = '404 Page Not Found | VacCompare';
     }
   }
   // EEAT Pages
@@ -833,13 +889,22 @@ function handleRouteFromUrl() {
     }
   }
   // Homepage
-  else {
+  else if (path === '/' || path === '/index.html' || path === '') {
     resetFilters(false);
     showHomeViews();
     render();
     updateBreadcrumbs('', 'All Vacuum Cleaners');
     document.title = 'VacCompare – Vacuum Cleaner Reviews, Comparisons & Buying Guides';
     updateMetaDescription('Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.');
+  }
+  // 404 Not Found Catch-All
+  else {
+    showArticleView();
+    render404Page(path);
+    bindArticleViewEvents(null);
+    updateBreadcrumbs('Error', '404 Page Not Found');
+    document.title = '404 Page Not Found | VacCompare';
+    updateMetaDescription('The page you requested could not be found. Explore our vacuum cleaner comparisons and reviews database.');
   }
 
   isInitialLoad = false;
@@ -1054,8 +1119,10 @@ function findProductBySlug(slug) {
   const sub = state.allProducts.find(p => {
     const s1 = slugifyId(`${p.brand}-${p.model}`);
     const s2 = slugifyId(p.model);
-    return (s2 && cleanSlug.includes(s2)) || (s1 && cleanSlug.includes(s1)) ||
-           (s2 && noReviewSlug.includes(s2)) || (s1 && noReviewSlug.includes(s1));
+    return (s2 && s2.length >= 4 && cleanSlug.includes(s2)) || 
+           (s1 && s1.length >= 4 && cleanSlug.includes(s1)) ||
+           (s2 && s2.length >= 4 && noReviewSlug.includes(s2)) || 
+           (s1 && s1.length >= 4 && noReviewSlug.includes(s1));
   });
   if (sub) return sub;
 
@@ -1078,7 +1145,7 @@ function findProductBySlug(slug) {
     for (const t of slugTokens) {
       if (bTokens.includes(t) || bSlug === t) {
         if (!matchedBrand) {
-          score += 10;
+          score += 15;
           matchedBrand = true;
         }
       } else {
@@ -1086,9 +1153,11 @@ function findProductBySlug(slug) {
           score += 40;
           matchedModel = true;
         } else if (mSlug.startsWith(t) || t.startsWith(mSlug) || mSlug.includes(t)) {
-          score += 25;
-          matchedModel = true;
-        } else if (mTokens.some(mt => mt.startsWith(t) || t.startsWith(mt))) {
+          if (t.length >= 3) {
+            score += 25;
+            matchedModel = true;
+          }
+        } else if (mTokens.some(mt => mt.length >= 3 && (mt.startsWith(t) || t.startsWith(mt)))) {
           score += 15;
           matchedModel = true;
         }
@@ -1101,7 +1170,7 @@ function findProductBySlug(slug) {
       bestProd = p;
     }
   }
-  return bestScore >= 20 ? bestProd : null;
+  return bestScore >= 45 ? bestProd : null;
 }
 
 function getProductReviewSlug(p) {
@@ -2202,7 +2271,7 @@ function renderProductReviewPage(p) {
     const extra = ranked.filter(x => x.product.id !== p.id && !altProds.some(ap => ap.id === x.product.id)).slice(0, 3 - altProds.length).map(x => x.product);
     altProds = [...altProds, ...extra];
   }
-  altProds.forEach(x => usedHrefs.add(`/vacuum/${getProductReviewSlug(x.product)}`));
+  altProds.forEach(x => usedHrefs.add(`/vacuum/${getProductReviewSlug(x)}`));
 
   // 4. Related Reviews
   let relatedProds = ranked
@@ -2213,6 +2282,7 @@ function renderProductReviewPage(p) {
     const extra = ranked.filter(x => x.product.id !== p.id && !relatedProds.some(rp => rp.id === x.product.id)).slice(0, 3 - relatedProds.length).map(x => x.product);
     relatedProds = [...relatedProds, ...extra];
   }
+  relatedProds.forEach(x => usedHrefs.add(`/vacuum/${getProductReviewSlug(x)}`));
 
   // 5. Relevant Guides
   let guideSlugs = ['best-vacuum-for-pet-hair', 'best-budget-cordless-vacuums'];

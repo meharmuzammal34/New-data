@@ -2702,25 +2702,53 @@ app.get('*', (req, res) => {
       schemaJson.push({
         "@context": "https://schema.org",
         "@type": "Organization",
-        "name": "VacCompare",
+        "name": "Vacuum Cleaner Lab",
         "url": CANONICAL_ORIGIN,
         "logo": `${CANONICAL_ORIGIN}/assets/logo.svg`,
-        "sameAs": [
-          "https://twitter.com/vaccompare",
-          "https://facebook.com/vaccompare"
-        ]
+        "description": "Independent testing, specification analysis, and side-by-side comparison directory for vacuum cleaners."
       });
 
       schemaJson.push({
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "VacCompare",
+        "name": "Vacuum Cleaner Lab",
         "url": CANONICAL_ORIGIN,
         "potentialAction": {
           "@type": "SearchAction",
           "target": `${CANONICAL_ORIGIN}/?search={search_term_string}`,
           "query-input": "required name=search_term_string"
         }
+      });
+
+      schemaJson.push({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How does Vacuum Cleaner Lab evaluate vacuum cleaners?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Vacuum Cleaner Lab evaluates vacuum cleaners using standardized suction pressure (kPa), airflow wattage, noise level (dB), HEPA filtration efficiency, and battery runtime benchmarks alongside verified owner feedback."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the best type of vacuum cleaner for pet hair?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Vacuums with tangle-free rubber brush rolls, minimum 20 kPa suction power, and sealed HEPA filtration perform best at removing embedded pet hair without clogging."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are cordless stick vacuums powerful enough to replace upright vacuums?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Modern high-end cordless stick vacuums (such as Dyson V15 and Shark Stratos) deliver over 20-25 kPa suction power, making them fully capable of serving as primary vacuums for small to medium homes."
+            }
+          }
+        ]
       });
     }
     // Individual Product Review Page: /vacuum/:slug or /product/:slug
@@ -2776,9 +2804,9 @@ app.get('*', (req, res) => {
           "@type": "Review",
           "itemReviewed": { "@type": "Product", "name": `${matched.brand} ${matched.model}` },
           "reviewRating": { "@type": "Rating", "ratingValue": matched.starRating || 4.5, "bestRating": "5" },
-          "name": `VacCompare Verified Review: ${matched.brand} ${matched.model}`,
-          "author": { "@type": "Organization", "name": "VacCompare Review Team" },
-          "publisher": { "@type": "Organization", "name": "VacCompare" }
+          "name": `Vacuum Cleaner Lab Verified Review: ${matched.brand} ${matched.model}`,
+          "author": { "@type": "Organization", "name": "Vacuum Cleaner Lab Review Team" },
+          "publisher": { "@type": "Organization", "name": "Vacuum Cleaner Lab" }
         });
       }
     }
@@ -2850,8 +2878,8 @@ app.get('*', (req, res) => {
           "@type": "Article",
           "headline": matchedGuide.title,
           "description": matchedGuide.description,
-          "author": { "@type": "Organization", "name": "VacCompare Editorial Team" },
-          "publisher": { "@type": "Organization", "name": "VacCompare", "logo": { "@type": "ImageObject", "url": `${CANONICAL_ORIGIN}/assets/logo.svg` } },
+          "author": { "@type": "Organization", "name": "Vacuum Cleaner Lab Editorial Team" },
+          "publisher": { "@type": "Organization", "name": "Vacuum Cleaner Lab", "logo": { "@type": "ImageObject", "url": `${CANONICAL_ORIGIN}/assets/logo.svg` } },
           "datePublished": "2026-01-15T00:00:00Z",
           "dateModified": "2026-07-29T00:00:00Z"
         });
@@ -2964,7 +2992,7 @@ app.get('*', (req, res) => {
 
     // Open Graph & Twitter Cards
     const ogTags = `
-<meta property="og:site_name" content="VacCompare">
+<meta property="og:site_name" content="Vacuum Cleaner Lab">
 <meta property="og:type" content="website">
 <meta property="og:url" content="${canonical}">
 <meta property="og:title" content="${escapeXml(title)}">
@@ -2976,6 +3004,9 @@ app.get('*', (req, res) => {
 <meta name="twitter:image" content="${CANONICAL_ORIGIN}/assets/logo.svg">
 `;
     html = html.replace('</head>', `${ogTags}\n</head>`);
+
+    // Strip any static ld+json template from rawHtml so there are no duplicate or conflicting schemas
+    html = html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/gi, '');
 
     // Schema Scripts Injection
     if (schemaJson.length > 0) {

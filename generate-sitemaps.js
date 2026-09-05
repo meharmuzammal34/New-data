@@ -301,7 +301,7 @@ const imagesSitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
     <loc>${CANONICAL_ORIGIN}/</loc>
     <image:image>
       <image:loc>${CANONICAL_ORIGIN}/assets/logo.svg</image:loc>
-      <image:title>VacCompare Official Vector Logo</image:title>
+      <image:title>Vacuum Cleaner Lab Official Logo</image:title>
     </image:image>
   </url>
 </urlset>`;
@@ -346,7 +346,7 @@ const feedItems = products.slice(0, 15).map(p => `    <item>
 const feedXml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>VacCompare – Vacuum Cleaner Reviews &amp; News</title>
+    <title>Vacuum Cleaner Lab – Vacuum Cleaner Reviews &amp; News</title>
     <link>${CANONICAL_ORIGIN}/</link>
     <description>Latest vacuum cleaner reviews, comparisons, and buying guides.</description>
     <language>en-us</language>

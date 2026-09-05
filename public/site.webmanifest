@@ -1,6 +1,6 @@
 {
-  "name": "VacCompare – Vacuum Cleaner Reviews & Comparisons",
-  "short_name": "VacCompare",
+  "name": "Vacuum Cleaner Lab – Vacuum Cleaner Reviews & Comparisons",
+  "short_name": "Vacuum Cleaner Lab",
   "description": "Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.",
   "start_url": "/",
   "display": "standalone",

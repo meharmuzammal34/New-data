@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /vacuum/
+Allow: /brand/
+Allow: /category/
+Allow: /compare/
+Allow: /guides/
+Allow: /about
+Allow: /editorial-policy
+Allow: /affiliate-disclosure
+Allow: /privacy-policy
+Allow: /terms
+Allow: /contact
+Allow: /html-sitemap
+Disallow: /api/private/
+
+Sitemap: https://vacuumcleanerlab.com/sitemap.xml

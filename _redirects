@@ -1,1 +1,11 @@
+# Force 301 redirect any requests hitting the temporary Netlify subdomain to the primary production domain
+https://animated-speculoos-5d5706.netlify.app/* https://vacuumcleanerlab.com/:splat 301!
+http://animated-speculoos-5d5706.netlify.app/* https://vacuumcleanerlab.com/:splat 301!
+
+# Redirect www to apex domain
+https://www.vacuumcleanerlab.com/* https://vacuumcleanerlab.com/:splat 301!
+http://www.vacuumcleanerlab.com/* https://vacuumcleanerlab.com/:splat 301!
+http://vacuumcleanerlab.com/* https://vacuumcleanerlab.com/:splat 301!
+
+# SPA catch-all (static files, sitemaps, and robots.txt are served directly)
 /* /index.html 200

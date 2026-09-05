@@ -6,10 +6,15 @@ const PAGE_SIZE = 24;
 const MAX_COMPARE = 4;
 const CANONICAL_ORIGIN = 'https://vacuumcleanerlab.com';
 
-// SEO Safe Migration client fallback for old domain
+// SEO Safe Migration client fallback for old domain or temporary Netlify subdomain
 if (typeof window !== 'undefined' && window.location) {
   const host = window.location.hostname.toLowerCase();
-  if (host === 'vacompare.ai.studio' || host.endsWith('.vacompare.ai.studio')) {
+  if (
+    host === 'animated-speculoos-5d5706.netlify.app' ||
+    host.endsWith('.netlify.app') ||
+    host === 'vacompare.ai.studio' ||
+    host.endsWith('.vacompare.ai.studio')
+  ) {
     window.location.replace(`https://vacuumcleanerlab.com${window.location.pathname}${window.location.search}${window.location.hash}`);
   }
 }

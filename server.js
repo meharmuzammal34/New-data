@@ -38,7 +38,9 @@ app.use((req, res, next) => {
 
   const isOldDomain = host === 'vacompare.ai.studio' || 
                       host === 'www.vacompare.ai.studio' || 
-                      host.endsWith('.vacompare.ai.studio');
+                      host.endsWith('.vacompare.ai.studio') ||
+                      host === 'animated-speculoos-5d5706.netlify.app' ||
+                      host.endsWith('.netlify.app');
   const isWwwNewDomain = host === 'www.vacuumcleanerlab.com';
   const isHttpOnNewDomain = (host === 'vacuumcleanerlab.com' || host === 'www.vacuumcleanerlab.com') && 
                             req.headers['x-forwarded-proto'] === 'http';

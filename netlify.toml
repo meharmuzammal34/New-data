@@ -1,0 +1,37 @@
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "https://animated-speculoos-5d5706.netlify.app/*"
+  to = "https://vacuumcleanerlab.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://animated-speculoos-5d5706.netlify.app/*"
+  to = "https://vacuumcleanerlab.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://www.vacuumcleanerlab.com/*"
+  to = "https://vacuumcleanerlab.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.vacuumcleanerlab.com/*"
+  to = "https://vacuumcleanerlab.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://vacuumcleanerlab.com/*"
+  to = "https://vacuumcleanerlab.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

@@ -68,6 +68,45 @@
 </script>
 <link rel="stylesheet" href="/css/style.css">
 
+<!-- Direct-Route Initial Anti-Flash Script & Critical Styles -->
+<script>
+  (function() {
+    try {
+      var p = window.location.pathname || '';
+      if (p === '/vacuum' || p === '/vacuum/') {
+        p = '/';
+      }
+      var isHome = (p === '/' || p === '/index.html' || p === '');
+      if (!isHome) {
+        document.documentElement.classList.add('is-deep-route');
+        if (p.startsWith('/vacuum/') || p.startsWith('/product/') || p.startsWith('/compare') || p.startsWith('/guides/') || ['/about', '/editorial-policy', '/affiliate-disclosure', '/privacy-policy', '/terms', '/contact', '/html-sitemap'].indexOf(p) !== -1) {
+          document.documentElement.classList.add('route-article');
+        } else if (p.startsWith('/category') || p.startsWith('/brand')) {
+          document.documentElement.classList.add('route-grid');
+        } else {
+          document.documentElement.classList.add('route-not-found');
+        }
+      }
+    } catch (e) {}
+  })();
+</script>
+<style>
+  html.is-deep-route #home-hero-section,
+  html.is-deep-route #home-brands-section,
+  html.is-deep-route #home-categories-section,
+  html.is-deep-route #home-featured-section {
+    display: none !important;
+  }
+  html.route-article #main-content,
+  html.route-not-found #main-content {
+    display: none !important;
+  }
+  html.route-article #dedicated-article-view,
+  html.route-not-found #dedicated-article-view {
+    display: block !important;
+  }
+</style>
+
 <!-- Structured Data (JSON-LD) for Homepage -->
 <script type="application/ld+json">
 {
@@ -476,6 +515,47 @@
 
 <!-- ============ DEDICATED ARTICLE / REVIEW / PAGE CONTAINER ============ -->
 <div id="dedicated-article-view" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"></div>
+<script>
+  (function() {
+    try {
+      var p = window.location.pathname || '';
+      if (p.startsWith('/vacuum/') || p.startsWith('/product/') || p.startsWith('/compare')) {
+        var el = document.getElementById('dedicated-article-view');
+        if (el && !el.children.length) {
+          var slug = p.replace(/^\/(vacuum|product|compare)\//, '').replace(/\/$/, '');
+          var cleanName = slug ? slug.replace(/-review$/, '').replace(/[-_]+/g, ' ') : 'Product Review';
+          var title = cleanName.split(' ').map(function(w) {
+            if (/^[0-9]+[a-z]*$/i.test(w) || w.length <= 3) return w.toUpperCase();
+            return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+          }).join(' ');
+          el.innerHTML = '<article class="space-y-8 text-slate-800 animate-pulse" data-skeleton="true">' +
+            '<div class="flex items-center justify-between gap-4"><div class="h-9 w-36 bg-slate-200 rounded-xl"></div><div class="h-8 w-28 bg-slate-200 rounded-lg"></div></div>' +
+            '<header class="relative overflow-hidden bg-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl">' +
+              '<div class="relative z-10 flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8">' +
+                '<div class="flex-1 space-y-4 w-full">' +
+                  '<div class="flex items-center gap-3"><div class="h-6 w-36 bg-slate-700 rounded-full"></div><div class="h-6 w-24 bg-slate-700 rounded-full"></div></div>' +
+                  '<h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">' + title + ' Review &amp; Specs</h1>' +
+                  '<div class="space-y-2 max-w-2xl pt-2"><div class="h-4 bg-slate-700 rounded w-full"></div><div class="h-4 bg-slate-700 rounded w-5/6"></div></div>' +
+                  '<div class="pt-4 flex items-center gap-4"><div class="h-12 w-48 bg-slate-700 rounded-xl"></div></div>' +
+                '</div>' +
+                '<div class="w-full sm:w-72 lg:w-80 shrink-0 bg-white/10 rounded-2xl p-5 h-64 flex items-center justify-center">' +
+                  '<div class="w-32 h-32 bg-white/20 rounded-xl flex items-center justify-center text-white/40"><i class="fa-solid fa-spinner fa-spin text-3xl"></i></div>' +
+                '</div>' +
+              '</div>' +
+            '</header>' +
+            '<section class="space-y-4">' +
+              '<div class="h-6 w-64 bg-slate-200 rounded"></div>' +
+              '<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">' +
+                '<div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div><div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div>' +
+                '<div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div><div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div>' +
+              '</div>' +
+            '</section>' +
+          '</article>';
+        }
+      }
+    } catch (e) {}
+  })();
+</script>
 
 <!-- ============ FEATURED REVIEWS & TOP COMPARISONS SECTION ============ -->
 <section id="home-featured-section" class="bg-white py-12 border-t border-slate-200">

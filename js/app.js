@@ -79,7 +79,11 @@ const els = {}; // Cached DOM references
 /* Init                                                             */
 /* ---------------------------------------------------------------- */
 
-document.addEventListener('DOMContentLoaded', init);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 
 async function init() {
   cacheEls();
@@ -88,17 +92,23 @@ async function init() {
   const currentYearEl = document.getElementById('footer-year');
   if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
 
+  // Initial Route Handling: resolve route immediately before data loading
+  handleRouteFromUrl();
+  window.addEventListener('popstate', handleRouteFromUrl);
+
+  // Background product loading:
+  startProductsLoading();
+}
+
+async function startProductsLoading() {
   try {
     const products = await loadProducts();
     state.allProducts = products;
     buildFilterOptions(products);
     updateHeroStats(products);
 
-    // Initial Route Handling
-    handleRouteFromUrl();
-    window.addEventListener('popstate', handleRouteFromUrl);
-
-    render();
+    // Resolve active route with fully loaded product data
+    onProductsLoaded();
   } catch (err) {
     console.error('Data initialization error:', err);
     if (els.productGrid) {
@@ -473,6 +483,7 @@ function setHeroHeadingTag(isH1) {
 }
 
 function showHomeViews() {
+  document.documentElement.classList.remove('is-deep-route', 'route-article', 'route-grid', 'route-not-found');
   setHeroHeadingTag(true);
   if (els.homeHeroSection) els.homeHeroSection.classList.remove('hidden');
   if (els.homeBrandsSection) els.homeBrandsSection.classList.remove('hidden');
@@ -484,6 +495,7 @@ function showHomeViews() {
 }
 
 function showFilterGridView(bannerTitle, bannerBadge, bannerDesc) {
+  document.documentElement.classList.remove('is-deep-route', 'route-article', 'route-grid', 'route-not-found');
   setHeroHeadingTag(false);
   if (els.homeHeroSection) els.homeHeroSection.classList.add('hidden');
   if (els.homeBrandsSection) els.homeBrandsSection.classList.add('hidden');
@@ -522,6 +534,7 @@ function showFilterGridView(bannerTitle, bannerBadge, bannerDesc) {
 }
 
 function showArticleView() {
+  document.documentElement.classList.remove('is-deep-route', 'route-article', 'route-grid', 'route-not-found');
   setHeroHeadingTag(false);
   if (els.homeHeroSection) els.homeHeroSection.classList.add('hidden');
   if (els.homeBrandsSection) els.homeBrandsSection.classList.add('hidden');
@@ -621,6 +634,208 @@ function formatProductMetaDescription(prodName) {
 }
 
 let isInitialLoad = true;
+
+function formatSlugToTitle(slug) {
+  if (!slug) return 'Vacuum Cleaner';
+  const clean = String(slug).replace(/-review$/, '').replace(/[-_]+/g, ' ').trim();
+  return clean.split(' ').map(w => {
+    if (/^[0-9]+[a-z]*$/i.test(w) || w.length <= 3) return w.toUpperCase();
+    return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+  }).join(' ');
+}
+
+function renderProductReviewSkeleton(slug) {
+  if (!els.dedicatedArticleView) return;
+  const approxName = formatSlugToTitle(slug);
+  els.dedicatedArticleView.innerHTML = `
+    <article class="space-y-8 text-slate-800 animate-pulse" data-skeleton="true" aria-busy="true" aria-label="Loading product review">
+      <div class="flex items-center justify-between gap-4">
+        <a href="/" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs">
+          <i class="fa-solid fa-arrow-left"></i> Back to Database
+        </a>
+        <div class="h-8 w-28 bg-slate-200 rounded-lg"></div>
+      </div>
+
+      <header class="relative overflow-hidden bg-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl">
+        <div class="relative z-10 flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8">
+          <div class="flex-1 space-y-4 w-full">
+            <div class="flex items-center gap-3">
+              <div class="h-6 w-36 bg-slate-700 rounded-full"></div>
+              <div class="h-6 w-24 bg-slate-700 rounded-full"></div>
+            </div>
+            <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+              ${escapeHtml(approxName)} Review &amp; Specs
+            </h1>
+            <div class="space-y-2 max-w-2xl pt-2">
+              <div class="h-4 bg-slate-700 rounded w-full"></div>
+              <div class="h-4 bg-slate-700 rounded w-5/6"></div>
+              <div class="h-4 bg-slate-700 rounded w-4/6"></div>
+            </div>
+            <div class="pt-4 flex items-center gap-4">
+              <div class="h-12 w-48 bg-slate-700 rounded-xl"></div>
+              <div class="h-12 w-40 bg-slate-700 rounded-xl"></div>
+            </div>
+          </div>
+          <div class="w-full sm:w-72 lg:w-80 shrink-0 bg-white/10 rounded-2xl p-5 h-64 flex items-center justify-center">
+            <div class="w-32 h-32 bg-white/20 rounded-xl flex items-center justify-center text-white/40">
+              <i class="fa-solid fa-spinner fa-spin text-3xl"></i>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section class="space-y-4">
+        <div class="h-6 w-64 bg-slate-200 rounded"></div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div>
+          <div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div>
+          <div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div>
+          <div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div>
+          <div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div>
+          <div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div>
+          <div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div>
+          <div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div>
+        </div>
+      </section>
+
+      <section class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-4">
+        <div class="h-6 w-48 bg-slate-200 rounded"></div>
+        <div class="h-4 bg-slate-100 rounded w-full"></div>
+        <div class="h-4 bg-slate-100 rounded w-11/12"></div>
+        <div class="h-4 bg-slate-100 rounded w-4/5"></div>
+      </section>
+    </article>
+  `;
+}
+
+function renderComparisonSkeleton(compareSlug) {
+  if (!els.dedicatedArticleView) return;
+  const approxName = compareSlug ? compareSlug.replace(/-/g, ' ').toUpperCase() : 'Vacuum Comparison';
+  els.dedicatedArticleView.innerHTML = `
+    <article class="space-y-8 text-slate-800 animate-pulse" data-skeleton="true" aria-busy="true" aria-label="Loading comparison">
+      <div class="flex items-center justify-between gap-4">
+        <a href="/" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs">
+          <i class="fa-solid fa-arrow-left"></i> Back to Database
+        </a>
+      </div>
+      <header class="relative overflow-hidden bg-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl space-y-4">
+        <div class="h-6 w-32 bg-slate-700 rounded-full"></div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white">
+          ${escapeHtml(approxName)}
+        </h1>
+        <div class="h-4 bg-slate-700 rounded w-2/3"></div>
+      </header>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="p-6 rounded-2xl bg-white border border-slate-200 space-y-4">
+          <div class="h-48 bg-slate-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-spinner fa-spin text-2xl text-slate-400"></i></div>
+          <div class="h-6 bg-slate-200 rounded w-3/4"></div>
+          <div class="h-4 bg-slate-100 rounded w-1/2"></div>
+        </div>
+        <div class="p-6 rounded-2xl bg-white border border-slate-200 space-y-4">
+          <div class="h-48 bg-slate-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-spinner fa-spin text-2xl text-slate-400"></i></div>
+          <div class="h-6 bg-slate-200 rounded w-3/4"></div>
+          <div class="h-4 bg-slate-100 rounded w-1/2"></div>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderCompareHubSkeleton() {
+  if (!els.dedicatedArticleView) return;
+  els.dedicatedArticleView.innerHTML = `
+    <div class="space-y-8 text-slate-800 animate-pulse" data-skeleton="true" aria-busy="true">
+      <div class="p-8 bg-slate-900 rounded-3xl text-white space-y-3">
+        <div class="h-7 w-64 bg-slate-700 rounded"></div>
+        <div class="h-4 w-96 bg-slate-700 rounded"></div>
+      </div>
+      <div class="h-64 bg-white rounded-2xl border border-slate-200 p-6 flex items-center justify-center">
+        <i class="fa-solid fa-spinner fa-spin text-3xl text-brand-600"></i>
+      </div>
+    </div>
+  `;
+}
+
+function onProductsLoaded() {
+  const path = window.location.pathname;
+
+  if (path.startsWith('/vacuum/') || path.startsWith('/product/')) {
+    const slug = path.replace(/^\/(vacuum|product)\//, '').replace(/\/$/, '');
+    const product = findProductBySlug(slug);
+    const hasSsr = els.dedicatedArticleView &&
+      !els.dedicatedArticleView.querySelector('[data-skeleton]') &&
+      els.dedicatedArticleView.children.length > 0 &&
+      els.dedicatedArticleView.innerHTML.trim().length > 200;
+
+    if (hasSsr) {
+      if (product) bindArticleViewEvents(product);
+    } else {
+      if (product) {
+        renderProductReviewPage(product);
+        bindArticleViewEvents(product);
+        const prodName = `${product.brand} ${product.model}`;
+        updateBreadcrumbs('Product Review', prodName);
+        document.title = formatProductMetaTitle(prodName);
+        updateMetaDescription(formatProductMetaDescription(prodName));
+      } else {
+        render404Page(path);
+        bindArticleViewEvents(null);
+        updateBreadcrumbs('Error', '404 Page Not Found');
+        document.title = '404 Page Not Found | VacCompare';
+        updateMetaDescription('The requested vacuum review could not be found.');
+      }
+    }
+  } else if (path.startsWith('/compare/') && path !== '/compare/') {
+    const compareSlug = path.replace('/compare/', '').replace(/\/$/, '');
+    const hasSsr = els.dedicatedArticleView &&
+      !els.dedicatedArticleView.querySelector('[data-skeleton]') &&
+      els.dedicatedArticleView.children.length > 0 &&
+      els.dedicatedArticleView.innerHTML.trim().length > 200;
+
+    if (hasSsr) {
+      bindArticleViewEvents(null);
+    } else {
+      renderComparisonPage(compareSlug);
+      const label = compareSlug.replace(/-/g, ' ').toUpperCase();
+      updateBreadcrumbs('Comparison', label);
+    }
+    document.title = formatComparisonMetaTitle(compareSlug, state.allProducts, null);
+  } else if (path === '/compare' || path === '/compare/') {
+    const hasSsr = els.dedicatedArticleView &&
+      !els.dedicatedArticleView.querySelector('[data-skeleton]') &&
+      els.dedicatedArticleView.children.length > 0 &&
+      els.dedicatedArticleView.innerHTML.trim().length > 200;
+
+    if (hasSsr) {
+      bindArticleViewEvents(null);
+      initCompareHubInteractions();
+    } else {
+      renderCompareHubPage();
+      updateBreadcrumbs('Tool', 'Compare Vacuums');
+    }
+  } else if (path.startsWith('/brand/')) {
+    const brandSlug = path.replace('/brand/', '').replace(/\/$/, '');
+    const matchedBrand = matchBrandClient(brandSlug);
+    resetFilters(false);
+    state.brands.add(matchedBrand);
+    state.page = 1;
+    render();
+    syncCheckboxesFromState();
+  } else if (path.startsWith('/category/')) {
+    const catSlug = path.replace('/category/', '').replace(/\/$/, '');
+    const matchedType = matchCategoryClient(catSlug);
+    resetFilters(false);
+    state.types.add(matchedType);
+    state.page = 1;
+    render();
+    syncCheckboxesFromState();
+  } else if (path === '/categories' || path === '/categories/' || path === '/category' || path === '/category/' || path === '/brands' || path === '/brands/' || path === '/brand' || path === '/brand/') {
+    render();
+    syncCheckboxesFromState();
+  } else if (path === '/' || path === '/index.html' || path === '') {
+    render();
+  }
+}
 
 function calculateRelevanceScore(source, target) {
   if (!source || !target || source.id === target.id) return 0;
@@ -722,29 +937,39 @@ function handleRouteFromUrl() {
 
   const hasSsrContent = isInitialLoad &&
     els.dedicatedArticleView &&
+    !els.dedicatedArticleView.querySelector('[data-skeleton]') &&
     els.dedicatedArticleView.children.length > 0 &&
-    els.dedicatedArticleView.innerHTML.trim().length > 100;
+    els.dedicatedArticleView.innerHTML.trim().length > 200;
 
   // Product Review Page: /vacuum/:slug or /product/:slug
   if (path.startsWith('/vacuum/') || path.startsWith('/product/')) {
     const slug = path.replace(/^\/(vacuum|product)\//, '').replace(/\/$/, '');
-    const product = findProductBySlug(slug);
     showArticleView();
     if (hasSsrContent) {
-      bindArticleViewEvents(product);
+      const product = findProductBySlug(slug);
+      if (product) bindArticleViewEvents(product);
     } else {
-      if (product) {
-        renderProductReviewPage(product);
-        const prodName = `${product.brand} ${product.model}`;
-        updateBreadcrumbs('Product Review', prodName);
-        document.title = formatProductMetaTitle(prodName);
-        updateMetaDescription(formatProductMetaDescription(prodName));
+      if (state.allProducts && state.allProducts.length > 0) {
+        const product = findProductBySlug(slug);
+        if (product) {
+          renderProductReviewPage(product);
+          bindArticleViewEvents(product);
+          const prodName = `${product.brand} ${product.model}`;
+          updateBreadcrumbs('Product Review', prodName);
+          document.title = formatProductMetaTitle(prodName);
+          updateMetaDescription(formatProductMetaDescription(prodName));
+        } else {
+          render404Page(path);
+          bindArticleViewEvents(null);
+          updateBreadcrumbs('Error', '404 Page Not Found');
+          document.title = '404 Page Not Found | VacCompare';
+          updateMetaDescription('The requested vacuum review could not be found.');
+        }
       } else {
-        render404Page(path);
-        bindArticleViewEvents(null);
-        updateBreadcrumbs('Error', '404 Page Not Found');
-        document.title = '404 Page Not Found | VacCompare';
-        updateMetaDescription('The requested vacuum review could not be found.');
+        renderProductReviewSkeleton(slug);
+        const approxName = formatSlugToTitle(slug);
+        updateBreadcrumbs('Product Review', approxName);
+        document.title = `${approxName} Review & Specs | VacCompare`;
       }
     }
   }
@@ -757,8 +982,10 @@ function handleRouteFromUrl() {
       'All Categories',
       'Explore tailored vacuum designs for every floor type and cleaning need: Robot, Cordless Stick, Upright, Canister, Handheld, Wet & Dry, and Backpack models.'
     );
-    render();
-    syncCheckboxesFromState();
+    if (state.allProducts && state.allProducts.length > 0) {
+      render();
+      syncCheckboxesFromState();
+    }
     updateBreadcrumbs('Navigation', 'All Categories');
     document.title = 'Vacuum Cleaner Categories Directory & Comparison | VacCompare';
     updateMetaDescription('Explore all vacuum cleaner categories: Robot vacuums, Cordless stick, Upright, Canister, Handheld, Wet & Dry, Backpack, and Commercial.');
@@ -772,8 +999,10 @@ function handleRouteFromUrl() {
       'All Brands',
       'Compare tested vacuum models across top manufacturers including Dyson, Shark, Bissell, iRobot, Roborock, Miele, Tineco, Hoover, Eureka, Eufy, and more.'
     );
-    render();
-    syncCheckboxesFromState();
+    if (state.allProducts && state.allProducts.length > 0) {
+      render();
+      syncCheckboxesFromState();
+    }
     updateBreadcrumbs('Navigation', 'Popular Brands');
     document.title = 'Popular Vacuum Cleaner Brands Directory | VacCompare';
     updateMetaDescription('Compare top vacuum cleaner brands: Dyson, Shark, Bissell, iRobot Roomba, Roborock, Miele, Tineco, Hoover, Eureka, Eufy, Black & Decker, and more.');
@@ -787,16 +1016,18 @@ function handleRouteFromUrl() {
     state.brands.add(matchedBrand);
     state.page = 1;
 
-    const brandProducts = state.allProducts.filter(p => p.brand.toLowerCase() === matchedBrand.toLowerCase() || p.brandSlug === brandSlug);
-    const count = brandProducts.length || state.allProducts.filter(p => slugifyId(p.brand) === brandSlug).length;
+    const brandProducts = state.allProducts ? state.allProducts.filter(p => p.brand.toLowerCase() === matchedBrand.toLowerCase() || p.brandSlug === brandSlug) : [];
+    const count = brandProducts.length || (state.allProducts ? state.allProducts.filter(p => slugifyId(p.brand) === brandSlug).length : 0);
 
     showFilterGridView(
       `${matchedBrand} Vacuum Cleaners`,
       'Brand Directory',
       `Explore ${count || 'all'} tested ${matchedBrand} vacuum models with verified suction pressure benchmarks, HEPA filtration specs, decibel noise levels, and star ratings.`
     );
-    render();
-    syncCheckboxesFromState();
+    if (state.allProducts && state.allProducts.length > 0) {
+      render();
+      syncCheckboxesFromState();
+    }
 
     updateBreadcrumbs('Brand Collection', matchedBrand);
     document.title = `Best ${matchedBrand} Vacuum Cleaners (Reviews & Specs) | VacCompare`;
@@ -812,16 +1043,18 @@ function handleRouteFromUrl() {
     state.types.add(matchedType);
     state.page = 1;
 
-    const catProducts = state.allProducts.filter(p => p.type.toLowerCase() === matchedType.toLowerCase() || slugifyId(p.type) === catSlug);
-    const count = catProducts.length || state.allProducts.filter(p => slugifyId(p.type) === catSlug).length;
+    const catProducts = state.allProducts ? state.allProducts.filter(p => p.type.toLowerCase() === matchedType.toLowerCase() || slugifyId(p.type) === catSlug) : [];
+    const count = catProducts.length || (state.allProducts ? state.allProducts.filter(p => slugifyId(p.type) === catSlug).length : 0);
 
     showFilterGridView(
       `${displayType} Vacuum Cleaners`,
       'Category Index',
       `Compare ${count || 'all'} top-rated ${displayType.toLowerCase()} vacuums side by side. Filter by price, suction power (kPa), battery runtime, weight, and HEPA filter status.`
     );
-    render();
-    syncCheckboxesFromState();
+    if (state.allProducts && state.allProducts.length > 0) {
+      render();
+      syncCheckboxesFromState();
+    }
 
     updateBreadcrumbs('Category', displayType);
     document.title = `${displayType} Vacuum Cleaners – Reviews & Specs | VacCompare`;
@@ -834,7 +1067,11 @@ function handleRouteFromUrl() {
       bindArticleViewEvents(null);
       initCompareHubInteractions();
     } else {
-      renderCompareHubPage();
+      if (state.allProducts && state.allProducts.length > 0) {
+        renderCompareHubPage();
+      } else {
+        renderCompareHubSkeleton();
+      }
       updateBreadcrumbs('Tool', 'Compare Vacuums');
     }
     document.title = 'Compare Vacuum Cleaners Side-by-Side | Specs, Suction & Reviews – VacCompare';
@@ -847,7 +1084,11 @@ function handleRouteFromUrl() {
     if (hasSsrContent) {
       bindArticleViewEvents(null);
     } else {
-      renderComparisonPage(compareSlug);
+      if (state.allProducts && state.allProducts.length > 0) {
+        renderComparisonPage(compareSlug);
+      } else {
+        renderComparisonSkeleton(compareSlug);
+      }
       const label = compareSlug.replace(/-/g, ' ').toUpperCase();
       updateBreadcrumbs('Comparison', label);
     }
@@ -897,7 +1138,9 @@ function handleRouteFromUrl() {
   else if (path === '/' || path === '/index.html' || path === '') {
     resetFilters(false);
     showHomeViews();
-    render();
+    if (state.allProducts && state.allProducts.length > 0) {
+      render();
+    }
     updateBreadcrumbs('', 'All Vacuum Cleaners');
     document.title = 'VacCompare – Vacuum Cleaner Reviews, Comparisons & Buying Guides';
     updateMetaDescription('Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.');
@@ -1404,6 +1647,9 @@ function sortProducts(list) {
 /* ---------------------------------------------------------------- */
 
 function render() {
+  if (!state.allProducts || state.allProducts.length === 0) {
+    return;
+  }
   const filtered = getFilteredProducts();
   const sorted = sortProducts(filtered);
 

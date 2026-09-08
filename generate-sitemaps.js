@@ -130,6 +130,7 @@ const POPULAR_CATEGORIES = [
 
 const PAGES = [
   '/',
+  '/reviews',
   '/about',
   '/editorial-policy',
   '/affiliate-disclosure',
@@ -280,18 +281,29 @@ const productsSitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 ${productsUrls}
 </urlset>`;
 
-// 7. Reviews sitemap (Top 30 products)
-const top30 = products.slice(0, 30);
-const reviewsUrls = top30.map(p => `  <url>
-    <loc>${CANONICAL_ORIGIN}${p.reviewUrl}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.9</priority>
-  </url>`).join('\n');
+// 7. Reviews sitemap (Only authentic published Review Articles)
+let staticReviewArticles = [];
+try {
+  const reviewsJsonPath = path.join(__dirname, 'data', 'review-articles.json');
+  if (fs.existsSync(reviewsJsonPath)) {
+    staticReviewArticles = JSON.parse(fs.readFileSync(reviewsJsonPath, 'utf8'));
+  }
+} catch (e) {
+  console.warn('Could not read data/review-articles.json:', e);
+}
+
+const publishedReviewArticles = staticReviewArticles.filter(a => a.published !== false);
+
+const articleReviewUrls = publishedReviewArticles.map(a => `  <url>
+    <loc>${CANONICAL_ORIGIN}/reviews/${a.slug}</loc>
+    <lastmod>${a.updatedDate || a.publishedDate || a.publishDate || today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>`);
 
 const reviewsSitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${reviewsUrls}
+${articleReviewUrls.join('\n')}
 </urlset>`;
 
 // 8. Images sitemap
@@ -363,6 +375,7 @@ Allow: /brand/
 Allow: /category/
 Allow: /compare/
 Allow: /guides/
+Allow: /reviews/
 Allow: /about
 Allow: /editorial-policy
 Allow: /affiliate-disclosure

@@ -7,7 +7,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true }));
+const PORT = 3000;
 const PRIMARY_ORIGIN = 'https://vacuumcleanerlab.com';
 
 function formatDomain(domain) {
@@ -367,9 +369,137 @@ function loadProductsServer() {
     }
     cachedProducts = products;
     console.log(`Loaded ${products.length} products for server-side SEO generation.`);
+    loadReviewArticles();
   } catch (err) {
     console.error('Server CSV load error:', err);
   }
+}
+
+let cachedReviewArticles = [];
+function loadReviewArticles() {
+  try {
+    const pth = path.join(__dirname, 'data', 'review-articles.json');
+    if (fs.existsSync(pth)) {
+      cachedReviewArticles = JSON.parse(fs.readFileSync(pth, 'utf8'));
+      console.log(`Loaded ${cachedReviewArticles.length} review articles.`);
+    }
+  } catch (e) {
+    console.error('Error loading review-articles.json:', e);
+  }
+}
+
+function getAllReviewArticles() {
+  if (!cachedReviewArticles || cachedReviewArticles.length === 0) {
+    loadReviewArticles();
+  }
+  return cachedReviewArticles;
+}
+
+function getPublishedReviewArticles() {
+  const all = getAllReviewArticles();
+  return all.filter(a => a.published === true);
+}
+
+function getReviewArticles(onlyPublished = true) {
+  return onlyPublished ? getPublishedReviewArticles() : getAllReviewArticles();
+}
+
+function saveReviewArticles(articles) {
+  try {
+    const pth = path.join(__dirname, 'data', 'review-articles.json');
+    fs.writeFileSync(pth, JSON.stringify(articles, null, 2), 'utf8');
+    cachedReviewArticles = articles;
+    return true;
+  } catch (err) {
+    console.error('Error saving review-articles.json:', err);
+    return false;
+  }
+}
+
+function renderArticleContentHtml(content) {
+  if (!content) return '';
+  const trimmed = String(content).trim();
+  if (trimmed.startsWith('<p>') || trimmed.startsWith('<div') || trimmed.startsWith('<article')) {
+    return trimmed;
+  }
+
+  const lines = trimmed.split('\n');
+  const out = [];
+  let inList = false;
+  let inOrderedList = false;
+  let inBlockquote = false;
+
+  function closeBlocks() {
+    if (inList) {
+      out.push('</ul>');
+      inList = false;
+    }
+    if (inOrderedList) {
+      out.push('</ol>');
+      inOrderedList = false;
+    }
+    if (inBlockquote) {
+      out.push('</blockquote>');
+      inBlockquote = false;
+    }
+  }
+
+  function formatInline(str) {
+    return str
+      .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-slate-900">$1</strong>')
+      .replace(/\*(.+?)\*/g, '<em class="italic">$1</em>')
+      .replace(/`(.+?)`/g, '<code class="px-1.5 py-0.5 rounded bg-slate-100 text-slate-800 text-xs font-mono">$1</code>')
+      .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" class="text-brand-600 hover:text-brand-700 underline font-semibold transition">$1</a>');
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const rawLine = lines[i];
+    const line = rawLine.trim();
+
+    if (!line) {
+      closeBlocks();
+      continue;
+    }
+
+    if (line.startsWith('### ')) {
+      closeBlocks();
+      out.push(`<h3 class="text-lg sm:text-xl font-extrabold text-slate-900 mt-6 mb-2 tracking-tight">${formatInline(line.slice(4))}</h3>`);
+    } else if (line.startsWith('## ')) {
+      closeBlocks();
+      out.push(`<h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-8 mb-3 tracking-tight">${formatInline(line.slice(3))}</h2>`);
+    } else if (line.startsWith('# ')) {
+      closeBlocks();
+      out.push(`<h2 class="text-2xl sm:text-3xl font-black text-slate-900 mt-8 mb-4 tracking-tight">${formatInline(line.slice(2))}</h2>`);
+    } else if (line.startsWith('> ')) {
+      if (!inBlockquote) {
+        closeBlocks();
+        out.push('<blockquote class="p-4 my-4 bg-slate-50 border-l-4 border-brand-500 rounded-r-xl text-slate-700 italic text-sm sm:text-base leading-relaxed">');
+        inBlockquote = true;
+      }
+      out.push(`<p>${formatInline(line.slice(2))}</p>`);
+    } else if (line.startsWith('- ') || line.startsWith('* ')) {
+      if (!inList) {
+        closeBlocks();
+        out.push('<ul class="my-4 space-y-2 list-disc list-inside text-slate-700 text-sm sm:text-base leading-relaxed">');
+        inList = true;
+      }
+      out.push(`<li>${formatInline(line.slice(2))}</li>`);
+    } else if (/^\d+\.\s/.test(line)) {
+      if (!inOrderedList) {
+        closeBlocks();
+        out.push('<ol class="my-4 space-y-2 list-decimal list-inside text-slate-700 text-sm sm:text-base leading-relaxed">');
+        inOrderedList = true;
+      }
+      const itemText = line.replace(/^\d+\.\s/, '');
+      out.push(`<li>${formatInline(itemText)}</li>`);
+    } else {
+      closeBlocks();
+      out.push(`<p class="text-slate-700 text-sm sm:text-base leading-relaxed mb-4">${formatInline(line)}</p>`);
+    }
+  }
+
+  closeBlocks();
+  return out.join('\n');
 }
 
 function findProductBySlugServer(slug, allProducts, slugMap) {
@@ -760,11 +890,198 @@ app.get('/sitemap.xml', (req, res) => {
 </sitemapindex>`);
 });
 
+app.get('/api/review-articles', (req, res) => {
+  const includeDrafts = req.query.all === 'true' || req.query.includeDrafts === 'true';
+  const articles = includeDrafts ? getAllReviewArticles() : getPublishedReviewArticles();
+  res.json(articles);
+});
+
+app.get('/api/review-articles/:slug', (req, res) => {
+  const slug = req.params.slug;
+  const includeDrafts = req.query.all === 'true' || req.query.includeDrafts === 'true';
+  const all = getAllReviewArticles();
+  const found = all.find(a => a.slug === slug || a.id === slug);
+  if (!found) {
+    return res.status(404).json({ error: 'Review article not found' });
+  }
+  if (!found.published && !includeDrafts) {
+    return res.status(404).json({ error: 'Review article is unpublished draft' });
+  }
+  res.json(found);
+});
+
+app.post('/api/review-articles', (req, res) => {
+  try {
+    const {
+      title,
+      slug,
+      excerpt,
+      content,
+      featuredImage,
+      coverImage,
+      author,
+      authorRole,
+      publishedDate,
+      publishDate,
+      category,
+      categorySlug,
+      tags,
+      brand,
+      productModel,
+      productName,
+      productId,
+      rating,
+      featured,
+      published,
+      verdict,
+      pros,
+      cons,
+      reviewType
+    } = req.body;
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({ error: 'Article title is required' });
+    }
+
+    const generatedSlug = slugify(slug || title);
+    if (!generatedSlug) {
+      return res.status(400).json({ error: 'A valid slug could not be generated' });
+    }
+
+    const allArticles = getAllReviewArticles();
+    if (allArticles.some(a => a.slug === generatedSlug)) {
+      return res.status(409).json({ error: `An article with slug "${generatedSlug}" already exists.` });
+    }
+
+    const pubDate = publishedDate || publishDate || new Date().toISOString().split('T')[0];
+    const img = featuredImage || coverImage || 'https://images.unsplash.com/photo-1558317374-067fb5f30001?auto=format&fit=crop&w=800&q=80';
+    const cat = category || 'Vacuum Review';
+    const catSlug = categorySlug || slugify(cat);
+
+    const isPublished = published === true || published === 'true';
+    const isFeatured = featured === true || featured === 'true';
+
+    const parsedRating = rating !== undefined && rating !== '' && !isNaN(parseFloat(rating))
+      ? parseFloat(rating)
+      : undefined;
+
+    const newArticle = {
+      id: `review-${generatedSlug}`,
+      slug: generatedSlug,
+      title: title.trim(),
+      excerpt: (excerpt || '').trim() || (content || '').slice(0, 200).trim() + '...',
+      content: (content || '').trim(),
+      featuredImage: img,
+      coverImage: img,
+      author: (author || 'Marcus Vance').trim(),
+      authorRole: (authorRole || 'Editorial Reviewer').trim(),
+      publishedDate: pubDate,
+      publishDate: pubDate,
+      category: cat,
+      categorySlug: catSlug,
+      tags: Array.isArray(tags) ? tags : (typeof tags === 'string' ? tags.split(',').map(t => t.trim()).filter(Boolean) : [cat, brand].filter(Boolean)),
+      brand: brand ? brand.trim() : undefined,
+      productModel: productModel ? productModel.trim() : undefined,
+      productName: productName ? productName.trim() : productModel ? productModel.trim() : undefined,
+      productId: productId ? String(productId).trim() : undefined,
+      rating: parsedRating,
+      featured: isFeatured,
+      published: isPublished,
+      reviewType: reviewType || 'Hands-On Review',
+      verdict: verdict ? verdict.trim() : undefined,
+      pros: Array.isArray(pros) ? pros : (typeof pros === 'string' ? pros.split('\n').map(p => p.trim()).filter(Boolean) : []),
+      cons: Array.isArray(cons) ? cons : (typeof cons === 'string' ? cons.split('\n').map(c => c.trim()).filter(Boolean) : []),
+      canonicalUrl: `https://vacuumcleanerlab.com/reviews/${generatedSlug}`
+    };
+
+    allArticles.unshift(newArticle);
+    saveReviewArticles(allArticles);
+    console.log(`Successfully created new review article: "${newArticle.title}" (published: ${newArticle.published})`);
+    res.status(201).json(newArticle);
+  } catch (err) {
+    console.error('Error creating review article:', err);
+    res.status(500).json({ error: 'Failed to create review article', details: err.message });
+  }
+});
+
+app.put('/api/review-articles/:id', (req, res) => {
+  try {
+    const targetId = req.params.id;
+    const allArticles = getAllReviewArticles();
+    const index = allArticles.findIndex(a => a.id === targetId || a.slug === targetId);
+
+    if (index === -1) {
+      return res.status(404).json({ error: 'Review article not found' });
+    }
+
+    const existing = allArticles[index];
+    const b = req.body;
+
+    const updatedSlug = b.slug ? slugify(b.slug) : existing.slug;
+    const img = b.featuredImage || b.coverImage || existing.featuredImage;
+    const isPublished = b.published !== undefined ? (b.published === true || b.published === 'true') : existing.published;
+    const isFeatured = b.featured !== undefined ? (b.featured === true || b.featured === 'true') : existing.featured;
+
+    const updatedArticle = {
+      ...existing,
+      ...b,
+      slug: updatedSlug,
+      featuredImage: img,
+      coverImage: img,
+      published: isPublished,
+      featured: isFeatured,
+      updatedDate: new Date().toISOString().split('T')[0],
+      canonicalUrl: `https://vacuumcleanerlab.com/reviews/${updatedSlug}`
+    };
+
+    if (b.rating !== undefined) {
+      updatedArticle.rating = b.rating !== '' && !isNaN(parseFloat(b.rating)) ? parseFloat(b.rating) : undefined;
+    }
+    if (b.pros) {
+      updatedArticle.pros = Array.isArray(b.pros) ? b.pros : (typeof b.pros === 'string' ? b.pros.split('\n').map(p => p.trim()).filter(Boolean) : []);
+    }
+    if (b.cons) {
+      updatedArticle.cons = Array.isArray(b.cons) ? b.cons : (typeof b.cons === 'string' ? b.cons.split('\n').map(c => c.trim()).filter(Boolean) : []);
+    }
+    if (b.tags) {
+      updatedArticle.tags = Array.isArray(b.tags) ? b.tags : (typeof b.tags === 'string' ? b.tags.split(',').map(t => t.trim()).filter(Boolean) : existing.tags);
+    }
+
+    allArticles[index] = updatedArticle;
+    saveReviewArticles(allArticles);
+    console.log(`Successfully updated review article: "${updatedArticle.title}" (published: ${updatedArticle.published})`);
+    res.json(updatedArticle);
+  } catch (err) {
+    console.error('Error updating review article:', err);
+    res.status(500).json({ error: 'Failed to update review article', details: err.message });
+  }
+});
+
+app.delete('/api/review-articles/:id', (req, res) => {
+  try {
+    const targetId = req.params.id;
+    const allArticles = getAllReviewArticles();
+    const filtered = allArticles.filter(a => a.id !== targetId && a.slug !== targetId);
+
+    if (filtered.length === allArticles.length) {
+      return res.status(404).json({ error: 'Review article not found' });
+    }
+
+    saveReviewArticles(filtered);
+    console.log(`Successfully deleted review article: "${targetId}"`);
+    res.json({ success: true, message: 'Article deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting review article:', err);
+    res.status(500).json({ error: 'Failed to delete review article', details: err.message });
+  }
+});
+
 app.get('/pages-sitemap.xml', (req, res) => {
   const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const pages = [
     '/',
+    '/reviews',
     '/about',
     '/editorial-policy',
     '/affiliate-disclosure',
@@ -778,8 +1095,8 @@ app.get('/pages-sitemap.xml', (req, res) => {
   <url>
     <loc>${CANONICAL_ORIGIN}${p === '/' ? '/' : p}</loc>
     <lastmod>${today}</lastmod>
-    <changefreq>${p === '/' ? 'daily' : 'monthly'}</changefreq>
-    <priority>${p === '/' ? '1.0' : '0.6'}</priority>
+    <changefreq>${p === '/' || p === '/reviews' ? 'daily' : 'monthly'}</changefreq>
+    <priority>${p === '/' ? '1.0' : (p === '/reviews' ? '0.9' : '0.6')}</priority>
   </url>`).join('');
 
   res.send(`<?xml version="1.0" encoding="UTF-8"?>
@@ -842,16 +1159,23 @@ app.get('/reviews-sitemap.xml', (req, res) => {
   const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const today = new Date().toISOString().split('T')[0];
-  const top30 = cachedProducts.slice(0, 30).map(p => `
+  const articles = getReviewArticles();
+  const articleUrls = articles.map(a => `
   <url>
-    <loc>${CANONICAL_ORIGIN}${p.reviewUrl}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>daily</changefreq>
+    <loc>${CANONICAL_ORIGIN}/reviews/${a.slug}</loc>
+    <lastmod>${a.updatedDate || a.publishDate || today}</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>`).join('');
 
   res.send(`<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${top30}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${CANONICAL_ORIGIN}/reviews</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>${articleUrls}
 </urlset>`);
 });
 
@@ -2583,6 +2907,19 @@ function renderServerEeatPage(reqPath, allProducts) {
             <a href="/compare/dyson-v15-vs-shark-stratos" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Dyson V15 vs Shark Stratos Comparison</a>
           </div>
         </div>
+
+        <div>
+          <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Lab Review Articles</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <a href="/reviews" class="p-3 bg-brand-50 hover:bg-brand-100 rounded-xl border border-brand-200 font-bold text-brand-800 transition sm:col-span-2">→ Browse All Hands-On Vacuum Lab Reviews</a>
+            <a href="/reviews/dyson-v15-detect-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Dyson V15 Detect Hands-On Review</a>
+            <a href="/reviews/shark-stratos-cordless-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Shark Stratos Cordless Review</a>
+            <a href="/reviews/roborock-s8-pro-ultra-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Roborock S8 Pro Ultra Review</a>
+            <a href="/reviews/miele-complete-c3-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Miele Complete C3 Marin Review</a>
+            <a href="/reviews/tineco-floor-one-s5-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Tineco Floor One S5 Wet &amp; Dry Review</a>
+            <a href="/reviews/shark-navigator-lift-away-nv352-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Shark Navigator Lift-Away NV352 Review</a>
+          </div>
+        </div>
       </div>
     `;
   }
@@ -2594,6 +2931,536 @@ function renderServerEeatPage(reqPath, allProducts) {
         <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">${escapeHtml(title)}</h1>
       </header>
       ${bodyHtml}
+    </article>
+  `;
+}
+
+function renderServerReviewCard(a) {
+  const authorName = a.author || 'Editorial Team';
+  const pubDate = a.publishedDate || a.publishDate || 'Recent';
+  const catName = a.category || 'Vacuum Review';
+  const catSlug = a.categorySlug || slugify(catName);
+  const imgUrl = a.featuredImage || a.coverImage || 'https://images.unsplash.com/photo-1558317374-067fb5f30001?auto=format&fit=crop&w=800&q=80';
+
+  return `
+    <article class="review-article-card bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xs hover:shadow-md transition duration-200 flex flex-col md:flex-row group" data-category="${escapeHtml(catSlug)}" data-title="${escapeHtml(a.title.toLowerCase())}" data-author="${escapeHtml(authorName.toLowerCase())}" data-brand="${escapeHtml((a.brand || '').toLowerCase())}" data-model="${escapeHtml((a.productModel || '').toLowerCase())}" data-date="${pubDate}">
+      <!-- Thumbnail with Category & Optional Rating Badge -->
+      <div class="relative md:w-72 lg:w-80 shrink-0 overflow-hidden bg-slate-100 aspect-video md:aspect-auto">
+        <a href="/reviews/${a.slug}" class="block h-full w-full">
+          <img src="${imgUrl}" alt="${escapeHtml(a.title)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy" />
+        </a>
+        <div class="absolute top-3 left-3">
+          <span class="px-2.5 py-1 rounded-lg bg-slate-900/85 backdrop-blur-xs text-white text-[11px] font-bold uppercase tracking-wider shadow-xs">
+            ${escapeHtml(catName)}
+          </span>
+        </div>
+        ${a.rating ? `
+          <div class="absolute top-3 right-3">
+            <span class="px-2.5 py-1 rounded-lg bg-amber-500 text-white text-[11px] font-extrabold shadow-xs flex items-center gap-1">
+              <i class="fa-solid fa-star text-[10px]"></i> ${Number(a.rating).toFixed(1)}
+            </span>
+          </div>
+        ` : ''}
+      </div>
+
+      <!-- Card Body -->
+      <div class="p-5 sm:p-7 flex-1 flex flex-col justify-between space-y-4">
+        <div class="space-y-2.5">
+          <!-- Byline: Author • Published Date -->
+          <div class="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
+            <span class="text-slate-800 font-bold flex items-center gap-1">
+              <i class="fa-solid fa-user-pen text-brand-600 text-[11px]"></i> ${escapeHtml(authorName)}
+            </span>
+            <span>•</span>
+            <time datetime="${pubDate}">${pubDate}</time>
+            ${a.reviewType ? `<span>•</span><span class="text-brand-700 bg-brand-50 px-2 py-0.5 rounded text-[11px] font-bold">${escapeHtml(a.reviewType)}</span>` : ''}
+            ${a.brand ? `<span>•</span><span class="text-slate-600 bg-slate-100 px-2 py-0.5 rounded text-[11px] font-semibold">${escapeHtml(a.brand)}</span>` : ''}
+          </div>
+
+          <!-- Article Title -->
+          <h2 class="text-xl sm:text-2xl font-black text-slate-900 group-hover:text-brand-600 transition leading-snug tracking-tight">
+            <a href="/reviews/${a.slug}">${escapeHtml(a.title)}</a>
+          </h2>
+
+          <!-- Article Excerpt -->
+          <p class="text-slate-600 text-xs sm:text-sm leading-relaxed line-clamp-3">
+            ${escapeHtml(a.excerpt || '')}
+          </p>
+        </div>
+
+        <!-- Footer: Read Full Review Link & Author Controls -->
+        <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-4">
+          <a href="/reviews/${a.slug}" class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-extrabold text-brand-600 hover:text-brand-700 transition">
+            Read Full Review <i class="fa-solid fa-arrow-right text-[11px]"></i>
+          </a>
+
+          <div class="flex items-center gap-2">
+            <button type="button" data-edit-review="${escapeHtml(a.id || a.slug)}" class="edit-review-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-100 text-slate-600 font-bold text-xs transition cursor-pointer" title="Edit this review article">
+              <i class="fa-solid fa-pencil text-[10px]"></i> Edit
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderServerReviewsArchivePage(articles) {
+  const publishedArticles = (articles || []).filter(a => a.published === true);
+  const totalCount = publishedArticles.length;
+
+  // Derive dynamic categories from actual published articles
+  const categoryMap = new Map();
+  publishedArticles.forEach(a => {
+    const name = a.category || 'General';
+    const slug = a.categorySlug || slugify(name);
+    if (!categoryMap.has(slug)) {
+      categoryMap.set(slug, { name, slug, count: 1 });
+    } else {
+      categoryMap.get(slug).count += 1;
+    }
+  });
+  const dynamicCategories = Array.from(categoryMap.values());
+
+  // Check for featured review
+  const featuredArticle = publishedArticles.find(a => a.featured === true) || null;
+  const standardArticles = featuredArticle ? publishedArticles.filter(a => a.slug !== featuredArticle.slug) : publishedArticles;
+
+  const cardsHtml = standardArticles.map(a => renderServerReviewCard(a)).join('\n');
+  const recentArticles = publishedArticles.slice(0, 4);
+
+  // Derive unique brands from actual published articles
+  const brands = Array.from(new Set(publishedArticles.map(a => a.brand).filter(Boolean)));
+
+  // If no published reviews exist, render clean editorial empty state
+  if (totalCount === 0) {
+    return `
+      <div id="reviews-archive-container" class="space-y-8 animate-fade-in max-w-5xl mx-auto">
+        <!-- Header -->
+        <header class="text-center py-10 space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-50 text-brand-700 border border-brand-200 text-xs font-extrabold uppercase tracking-wider">
+            <i class="fa-solid fa-feather-pointed"></i> Editorial Archive
+          </div>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight">
+            Vacuum Cleaner Reviews
+          </h1>
+          <p class="text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
+            Read our in-depth vacuum cleaner reviews, hands-on testing, performance analysis and expert buying insights.
+          </p>
+        </header>
+
+        <!-- Empty State -->
+        <div class="text-center py-20 bg-white rounded-3xl border border-slate-200 p-8 space-y-5 shadow-2xs">
+          <div class="w-16 h-16 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mx-auto text-2xl">
+            <i class="fa-solid fa-newspaper"></i>
+          </div>
+          <div class="space-y-2">
+            <h2 class="text-2xl font-black text-slate-900">No reviews have been published yet.</h2>
+            <p class="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+              Check back soon for upcoming hands-on reviews, or publish your first article using the editorial workspace.
+            </p>
+          </div>
+          <button type="button" id="btn-open-review-editor-empty" class="btn-open-review-editor inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-extrabold text-xs shadow-md transition cursor-pointer">
+            <i class="fa-solid fa-plus"></i> Write First Review Article
+          </button>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div id="reviews-archive-container" class="space-y-8 animate-fade-in">
+      <!-- Reviews Hub Header / Hero -->
+      <section class="relative overflow-hidden bg-slate-900 text-white py-12 px-6 sm:px-10 rounded-3xl shadow-xl">
+        <div class="absolute inset-0 z-0 flex justify-end pointer-events-none">
+          <div class="relative w-full md:w-3/4 lg:w-2/3 h-full">
+            <img src="/assets/vacuum_hero_banner.jpg" alt="Vacuum Review Testing Archives" class="w-full h-full object-cover object-right opacity-40 brightness-110" />
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+          </div>
+        </div>
+        <div class="relative z-10 max-w-4xl space-y-4">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-extrabold uppercase tracking-wider">
+              <i class="fa-solid fa-feather-pointed"></i> Editorial Review Archive
+            </div>
+            <button type="button" class="btn-open-review-editor inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-xs font-black shadow-sm transition cursor-pointer">
+              <i class="fa-solid fa-pen-nib"></i> + Write Review Article
+            </button>
+          </div>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white leading-tight">
+            Vacuum Cleaner Reviews
+          </h1>
+          <p class="text-base sm:text-lg text-slate-300 max-w-2xl leading-relaxed">
+            Read our in-depth vacuum cleaner reviews, hands-on testing, performance analysis and expert buying insights.
+          </p>
+
+          <!-- Interactive Review Search and Filter Bar -->
+          <div class="mt-8 flex flex-col sm:flex-row gap-3 pt-2">
+            <div class="relative flex-1">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm pointer-events-none"></i>
+              <input type="text" id="review-search-input" placeholder="Search published review articles by title, excerpt, brand, or model..." class="w-full pl-9 pr-4 py-3 rounded-xl bg-slate-800/90 border border-slate-700 text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition" />
+            </div>
+            <select id="review-sort-select" class="px-4 py-3 rounded-xl bg-slate-800/90 border border-slate-700 text-white text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition cursor-pointer">
+              <option value="newest">Sort: Newest First</option>
+              <option value="oldest">Sort: Oldest First</option>
+              <option value="alpha">Sort: Title (A-Z)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- Category Filter Pills (Derived dynamically from published articles) -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin" id="review-category-pills" role="tablist">
+        <button type="button" data-category="all" class="review-cat-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold transition bg-brand-600 text-white shadow-xs cursor-pointer">
+          All Reviews (${totalCount})
+        </button>
+        ${dynamicCategories.map(c => `
+          <button type="button" data-category="${c.slug}" class="review-cat-btn whitespace-nowrap px-4 py-2 rounded-xl text-xs font-bold transition bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer">
+            ${escapeHtml(c.name)} (${c.count})
+          </button>
+        `).join('')}
+      </div>
+
+      <!-- Featured Review Section (Only if manually marked as featured) -->
+      ${featuredArticle ? `
+        <section id="featured-review-container" class="bg-gradient-to-br from-slate-900 via-slate-900 to-brand-950 text-white rounded-3xl overflow-hidden shadow-xl border border-slate-800">
+          <div class="grid grid-cols-1 lg:grid-cols-12">
+            <div class="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-between space-y-6">
+              <div class="space-y-3">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-extrabold uppercase tracking-wider">
+                  <i class="fa-solid fa-star text-amber-400"></i> Featured Review Article
+                </div>
+                <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-white leading-tight tracking-tight">
+                  <a href="/reviews/${featuredArticle.slug}" class="hover:text-brand-300 transition">${escapeHtml(featuredArticle.title)}</a>
+                </h2>
+                <div class="flex flex-wrap items-center gap-2 text-xs text-slate-400 font-semibold">
+                  <span class="text-white font-bold">${escapeHtml(featuredArticle.author || 'Editorial Team')}</span>
+                  <span>•</span>
+                  <time>${featuredArticle.publishedDate || featuredArticle.publishDate}</time>
+                  <span class="px-2 py-0.5 rounded bg-slate-800 text-slate-300 text-[11px] font-bold">${escapeHtml(featuredArticle.category)}</span>
+                  ${featuredArticle.rating ? `
+                    <span>•</span>
+                    <span class="text-amber-400 font-extrabold flex items-center gap-1">
+                      <i class="fa-solid fa-star text-[10px]"></i> ${Number(featuredArticle.rating).toFixed(1)} / 5.0
+                    </span>
+                  ` : ''}
+                </div>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed line-clamp-3 pt-1">
+                  ${escapeHtml(featuredArticle.excerpt || '')}
+                </p>
+              </div>
+
+              <div class="pt-2 flex flex-wrap items-center gap-3">
+                <a href="/reviews/${featuredArticle.slug}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-black text-xs shadow-md transition">
+                  Read Full Review <i class="fa-solid fa-arrow-right text-[11px]"></i>
+                </a>
+                <button type="button" data-edit-review="${escapeHtml(featuredArticle.id || featuredArticle.slug)}" class="edit-review-btn inline-flex items-center gap-1.5 px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition cursor-pointer">
+                  <i class="fa-solid fa-pencil text-[10px]"></i> Edit Article
+                </button>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5 relative min-h-64 lg:min-h-full overflow-hidden bg-slate-800">
+              <a href="/reviews/${featuredArticle.slug}" class="block w-full h-full">
+                <img src="${featuredArticle.featuredImage || featuredArticle.coverImage}" alt="${escapeHtml(featuredArticle.title)}" class="w-full h-full object-cover hover:scale-105 transition duration-500" />
+              </a>
+            </div>
+          </div>
+        </section>
+      ` : ''}
+
+      <!-- Main Layout: Articles Feed (Left) & Sidebar (Right) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- Left: Published Articles Feed -->
+        <main class="lg:col-span-8 space-y-6" id="review-articles-feed" aria-label="Review Articles List">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-500" id="review-count-indicator">
+              Showing ${totalCount} Published Review${totalCount === 1 ? '' : 's'}
+            </span>
+            <span class="text-xs text-slate-400 flex items-center gap-1">
+              <i class="fa-solid fa-shield-check text-emerald-500"></i> Editorial &amp; Hands-On
+            </span>
+          </div>
+
+          <div class="space-y-6" id="review-cards-list">
+            ${cardsHtml}
+          </div>
+
+          <div id="review-no-results" class="hidden text-center py-16 bg-white rounded-2xl border border-slate-200 space-y-3">
+            <i class="fa-solid fa-magnifying-glass text-3xl text-slate-300"></i>
+            <h3 class="text-lg font-bold text-slate-800">No Review Articles Found</h3>
+            <p class="text-xs text-slate-500 max-w-sm mx-auto">No published reviews matched your search criteria. Try adjusting keywords or category filters.</p>
+            <button type="button" id="review-reset-filter-btn" class="px-4 py-2 rounded-xl bg-brand-600 text-white text-xs font-bold hover:bg-brand-700 transition cursor-pointer">Reset All Filters</button>
+          </div>
+        </main>
+
+        <!-- Right: Editorial Sidebar -->
+        <aside class="lg:col-span-4 space-y-6">
+          
+          <!-- Recent Reviews Widget (From actual published articles) -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-clock-rotate-left text-brand-600"></i> Recent Reviews
+            </h3>
+            <div class="space-y-3">
+              ${recentArticles.map(a => `
+                <a href="/reviews/${a.slug}" class="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition group">
+                  <img src="${a.featuredImage || a.coverImage}" alt="${escapeHtml(a.title)}" class="w-14 h-14 rounded-lg object-cover shrink-0 border border-slate-200" />
+                  <div class="min-w-0 flex-1">
+                    <span class="text-[10px] font-semibold text-slate-400">${a.publishedDate || a.publishDate}</span>
+                    <h4 class="text-xs font-bold text-slate-800 group-hover:text-brand-600 transition line-clamp-2 mt-0.5">${escapeHtml(a.title)}</h4>
+                  </div>
+                </a>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Review Categories Breakdown (From actual published articles) -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-layer-group text-slate-500"></i> Review Categories
+            </h3>
+            <div class="space-y-1.5 text-xs font-semibold">
+              ${dynamicCategories.map(c => `
+                <button type="button" data-filter-cat="${c.slug}" class="review-sidebar-cat-btn w-full flex items-center justify-between p-2 rounded-lg hover:bg-slate-50 text-slate-700 transition cursor-pointer">
+                  <span>${escapeHtml(c.name)}</span>
+                  <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-bold text-[10px]">${c.count}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Popular Brands (Only brands that exist in published articles) -->
+          ${brands.length > 0 ? `
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-tag text-slate-500"></i> Brands in Reviews
+              </h3>
+              <div class="flex flex-wrap gap-1.5">
+                ${brands.map(b => `
+                  <button type="button" data-filter-brand="${escapeHtml(b.toLowerCase())}" class="review-sidebar-brand-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-brand-50 hover:text-brand-700 text-slate-700 text-xs font-semibold transition cursor-pointer">
+                    ${escapeHtml(b)}
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <!-- Editorial Methodology -->
+          <div class="bg-gradient-to-br from-brand-900 to-slate-900 text-white p-6 rounded-2xl shadow-sm border border-brand-800 space-y-3">
+            <div class="w-10 h-10 rounded-xl bg-brand-500/20 border border-brand-500/30 flex items-center justify-center text-brand-300 text-lg">
+              <i class="fa-solid fa-shield-check"></i>
+            </div>
+            <h3 class="text-base font-extrabold">Editorial Independence</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Every review article is authored independently based on hands-on observations and genuine user testing. We never accept payment for positive reviews or allow manufacturer previews.
+            </p>
+            <a href="/editorial-policy" class="inline-flex items-center gap-1.5 text-xs font-bold text-brand-300 hover:text-white transition">
+              Read Editorial Policy <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </a>
+          </div>
+
+          <!-- Buying Guides Cross-Promo -->
+          <div class="p-5 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-2.5">
+            <div class="text-xs font-bold uppercase tracking-wider text-amber-800 flex items-center gap-1.5">
+              <i class="fa-solid fa-compass text-amber-600"></i> Looking for Buying Advice?
+            </div>
+            <p class="text-xs text-amber-900 leading-relaxed">
+              Explore our curated buying guides comparing the best vacuums for pet owners, hardwood flooring, and budget shoppers.
+            </p>
+            <div class="pt-1 space-y-1">
+              <a href="/guides/best-vacuum-for-pet-hair" class="block text-xs font-bold text-brand-700 hover:underline">→ Best Vacuums for Pet Hair</a>
+              <a href="/guides/best-budget-cordless-vacuums" class="block text-xs font-bold text-brand-700 hover:underline">→ Best Budget Cordless Vacuums</a>
+              <a href="/guides/best-robot-vacuums-2026" class="block text-xs font-bold text-brand-700 hover:underline">→ Top 8 Best Robot Vacuums</a>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+  `;
+}
+
+function renderServerReviewDetailPage(a, allArticles) {
+  const otherReviews = (allArticles || []).filter(o => o.slug !== a.slug && o.published === true).slice(0, 3);
+  const pubDate = a.publishedDate || a.publishDate || 'Recent';
+  const imgUrl = a.featuredImage || a.coverImage || 'https://images.unsplash.com/photo-1558317374-067fb5f30001?auto=format&fit=crop&w=800&q=80';
+
+  // Render authentic article content verbatim without rewriting or modifying paragraphs
+  const rawContent = a.content || (a.sections ? a.sections.map(s => `## ${s.heading}\n\n${s.body}`).join('\n\n') : a.excerpt);
+  const articleContentHtml = renderArticleContentHtml(rawContent);
+
+  return `
+    <article id="review-article-detail" class="max-w-4xl mx-auto space-y-10 animate-fade-in">
+      <!-- Article Header -->
+      <header class="space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-2">
+            <a href="/reviews" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition">
+              <i class="fa-solid fa-arrow-left text-[10px]"></i> All Reviews
+            </a>
+            <span class="px-3 py-1 rounded-xl bg-brand-50 text-brand-700 border border-brand-200 text-xs font-bold">
+              ${escapeHtml(a.category || 'Vacuum Review')}
+            </span>
+            ${a.reviewType ? `<span class="px-3 py-1 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold">${escapeHtml(a.reviewType)}</span>` : ''}
+          </div>
+
+          <button type="button" data-edit-review="${escapeHtml(a.id || a.slug)}" class="edit-review-btn inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold text-xs transition cursor-pointer">
+            <i class="fa-solid fa-pencil text-[11px]"></i> Edit Article
+          </button>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+          ${escapeHtml(a.title)}
+        </h1>
+
+        <!-- Author Byline -->
+        <div class="flex flex-wrap items-center justify-between gap-4 py-4 border-y border-slate-200 text-xs sm:text-sm text-slate-600">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-brand-600 text-white flex items-center justify-center font-bold text-base shadow-xs">
+              ${escapeHtml((a.author || 'V').charAt(0))}
+            </div>
+            <div>
+              <div class="font-extrabold text-slate-900">${escapeHtml(a.author || 'Editorial Team')}</div>
+              <div class="text-xs text-slate-500">${escapeHtml(a.authorRole || 'Testing Specialist')}</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 text-xs text-slate-500">
+            <span>Published: <strong>${pubDate}</strong></span>
+            ${a.updatedDate ? `<span>• Updated: <strong>${a.updatedDate}</strong></span>` : ''}
+          </div>
+        </div>
+      </header>
+
+      <!-- Featured Image -->
+      <section class="space-y-4">
+        <div class="rounded-3xl overflow-hidden border border-slate-200 shadow-md">
+          <img src="${imgUrl}" alt="${escapeHtml(a.title)}" class="w-full h-80 sm:h-96 md:h-[450px] object-cover" />
+        </div>
+        ${a.productModel ? `
+          <div class="text-xs text-slate-500 italic text-center">
+            Testing subject: ${escapeHtml(a.productModel)} ${a.brand ? `(${escapeHtml(a.brand)})` : ''}
+          </div>
+        ` : ''}
+      </section>
+
+      <!-- Editorial Verdict Callout (Only if manually provided) -->
+      ${a.verdict ? `
+        <section class="bg-emerald-50/80 border-l-4 border-emerald-500 p-6 rounded-r-2xl space-y-2">
+          <div class="flex items-center gap-2 text-emerald-900 font-black text-xs uppercase tracking-wider">
+            <i class="fa-solid fa-circle-check text-emerald-600"></i> The Lab Verdict
+          </div>
+          <p class="text-slate-800 text-sm sm:text-base leading-relaxed font-medium">
+            "${escapeHtml(a.verdict)}"
+          </p>
+        </section>
+      ` : ''}
+
+      <!-- Manual Rating Pill (Only if manually provided) -->
+      ${a.rating ? `
+        <div class="p-4 rounded-2xl bg-amber-50/80 border border-amber-200 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-extrabold uppercase tracking-wider text-amber-900">Overall Rating</span>
+            <div class="flex items-center text-amber-400 text-sm">
+              ${renderServerStars(a.rating)}
+            </div>
+          </div>
+          <span class="text-lg font-black text-amber-900">${Number(a.rating).toFixed(1)} / 5.0</span>
+        </div>
+      ` : ''}
+
+      <!-- Pros and Cons (Only if manually provided) -->
+      ${(a.pros && a.pros.length > 0) || (a.cons && a.cons.length > 0) ? `
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          ${a.pros && a.pros.length > 0 ? `
+            <div class="bg-white p-6 rounded-3xl border border-emerald-200 shadow-2xs space-y-3">
+              <h3 class="text-base font-extrabold text-emerald-900 flex items-center gap-2">
+                <i class="fa-solid fa-thumbs-up text-emerald-600"></i> What We Like
+              </h3>
+              <ul class="space-y-2 text-xs sm:text-sm text-slate-700">
+                ${a.pros.map(p => `
+                  <li class="flex items-start gap-2">
+                    <i class="fa-solid fa-check text-emerald-600 mt-0.5 shrink-0"></i>
+                    <span>${escapeHtml(p)}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          ` : ''}
+
+          ${a.cons && a.cons.length > 0 ? `
+            <div class="bg-white p-6 rounded-3xl border border-rose-200 shadow-2xs space-y-3">
+              <h3 class="text-base font-extrabold text-rose-900 flex items-center gap-2">
+                <i class="fa-solid fa-thumbs-down text-rose-500"></i> What Could Be Better
+              </h3>
+              <ul class="space-y-2 text-xs sm:text-sm text-slate-700">
+                ${a.cons.map(c => `
+                  <li class="flex items-start gap-2">
+                    <i class="fa-solid fa-xmark text-rose-500 mt-0.5 shrink-0"></i>
+                    <span>${escapeHtml(c)}</span>
+                  </li>
+                `).join('')}
+              </ul>
+            </div>
+          ` : ''}
+        </section>
+      ` : ''}
+
+      <!-- Complete Authentic Article Content (Rendered Verbatim) -->
+      <section class="article-prose bg-white p-6 sm:p-10 rounded-3xl border border-slate-200 shadow-2xs space-y-6 text-slate-800">
+        ${articleContentHtml}
+      </section>
+
+      <!-- Optional Related Product Specifications Link (Only if linked) -->
+      ${a.productSlug ? `
+        <section class="p-6 rounded-2xl bg-brand-50/60 border border-brand-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="space-y-1 text-center sm:text-left">
+            <div class="text-xs font-bold uppercase tracking-wider text-brand-800">Technical Product Database</div>
+            <div class="text-sm font-extrabold text-slate-900">Looking for full laboratory specifications for ${escapeHtml(a.productModel || 'this vacuum')}?</div>
+          </div>
+          <a href="/vacuum/${a.productSlug}" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-xs transition shrink-0">
+            View Technical Specs →
+          </a>
+        </section>
+      ` : ''}
+
+      <!-- Editorial Disclosure -->
+      <section class="p-6 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-500 space-y-2">
+        <div class="font-bold text-slate-700 flex items-center gap-1.5">
+          <i class="fa-solid fa-scale-balanced text-brand-600"></i> Editorial Independence &amp; Integrity
+        </div>
+        <p>
+          Vacuum Cleaner Lab publishes authentic hands-on review articles authored by our testing team. We do not accept sponsored reviews or allow vacuum manufacturers to modify our findings.
+        </p>
+      </section>
+
+      <!-- Related Review Articles (From actual published reviews only) -->
+      ${otherReviews.length > 0 ? `
+        <section class="space-y-4 pt-4 border-t border-slate-200">
+          <h3 class="text-xl font-extrabold text-slate-900">More Published Reviews</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            ${otherReviews.map(r => `
+              <a href="/reviews/${r.slug}" class="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-md transition p-3 space-y-2 group block">
+                <img src="${r.featuredImage || r.coverImage}" alt="${escapeHtml(r.title)}" class="w-full h-32 object-cover rounded-xl" />
+                <div class="text-[10px] font-bold text-brand-600 uppercase">${escapeHtml(r.category)}</div>
+                <h4 class="text-xs font-bold text-slate-800 group-hover:text-brand-600 transition line-clamp-2">${escapeHtml(r.title)}</h4>
+                <div class="text-[11px] text-slate-400 font-semibold">${r.publishedDate || r.publishDate}</div>
+              </a>
+            `).join('')}
+          </div>
+        </section>
+      ` : ''}
+
+      <!-- Bottom Navigation -->
+      <div class="pt-6 border-t border-slate-200 flex items-center justify-between">
+        <a href="/reviews" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-brand-600 transition">
+          <i class="fa-solid fa-arrow-left"></i> Back to All Reviews
+        </a>
+        <a href="/compare/" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-50 transition">
+          <i class="fa-solid fa-scale-balanced"></i> Compare Vacuum Cleaners
+        </a>
+      </div>
     </article>
   `;
 }
@@ -2640,6 +3507,7 @@ function renderServerBanner(bannerTitle, bannerBadge, bannerDesc) {
     </section>
   `;
 }
+
 
 /* ---------------------------------------------------------------- */
 /* Static File Middleware                                            */
@@ -2885,6 +3753,87 @@ app.get('*', (req, res) => {
         });
       }
     }
+    // Reviews Section Hub: /reviews or /reviews/
+    else if (reqPath === '/reviews' || reqPath === '/reviews/') {
+      title = 'Vacuum Cleaner Reviews | VacCompare';
+      description = 'Read in-depth vacuum cleaner reviews, hands-on testing insights, performance analysis and expert recommendations from VacCompare.';
+      canonical = `${CANONICAL_ORIGIN}/reviews`;
+
+      schemaJson.push({
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "Vacuum Cleaner Reviews",
+        "description": description,
+        "url": canonical
+      });
+
+      schemaJson.push({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": `${CANONICAL_ORIGIN}/` },
+          { "@type": "ListItem", "position": 2, "name": "Reviews", "item": `${CANONICAL_ORIGIN}/reviews` }
+        ]
+      });
+    }
+    // Individual Review Article: /reviews/:slug
+    else if (reqPath.startsWith('/reviews/')) {
+      const rSlug = reqPath.replace('/reviews/', '').replace(/\/$/, '');
+      const articles = getPublishedReviewArticles();
+      const matchedArticle = articles.find(a => a.slug === rSlug);
+      if (matchedArticle) {
+        title = `${matchedArticle.title} | VacCompare`;
+        description = matchedArticle.excerpt || 'In-depth hands-on vacuum cleaner review article and performance analysis.';
+        canonical = matchedArticle.canonicalUrl || `${CANONICAL_ORIGIN}/reviews/${matchedArticle.slug}`;
+
+        const reviewSchema = {
+          "@context": "https://schema.org",
+          "@type": "Review",
+          "name": matchedArticle.title,
+          "headline": matchedArticle.title,
+          "reviewBody": matchedArticle.excerpt || matchedArticle.title,
+          "author": {
+            "@type": "Person",
+            "name": matchedArticle.author || 'Editorial Team'
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Vacuum Cleaner Lab",
+            "logo": { "@type": "ImageObject", "url": `${CANONICAL_ORIGIN}/assets/logo.svg` }
+          },
+          "datePublished": matchedArticle.publishedDate || matchedArticle.publishDate || "2026-01-01T00:00:00Z",
+          "dateModified": matchedArticle.updatedDate || matchedArticle.publishedDate || matchedArticle.publishDate || "2026-01-01T00:00:00Z"
+        };
+
+        if (matchedArticle.rating) {
+          reviewSchema.reviewRating = {
+            "@type": "Rating",
+            "ratingValue": matchedArticle.rating,
+            "bestRating": "5"
+          };
+        }
+
+        if (matchedArticle.productModel || matchedArticle.brand) {
+          reviewSchema.itemReviewed = {
+            "@type": "Product",
+            "name": matchedArticle.productModel || matchedArticle.title,
+            "brand": { "@type": "Brand", "name": matchedArticle.brand || 'Vacuum' }
+          };
+        }
+
+        schemaJson.push(reviewSchema);
+
+        schemaJson.push({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": `${CANONICAL_ORIGIN}/` },
+            { "@type": "ListItem", "position": 2, "name": "Reviews", "item": `${CANONICAL_ORIGIN}/reviews` },
+            { "@type": "ListItem", "position": 3, "name": matchedArticle.title, "item": canonical }
+          ]
+        });
+      }
+    }
     // Comparison Hub / Tool Page: /compare or /compare/
     else if (reqPath === '/compare' || reqPath === '/compare/') {
       title = 'Compare Vacuum Cleaners Side-by-Side | Specs, Suction & Reviews – VacCompare';
@@ -3122,6 +4071,38 @@ app.get('*', (req, res) => {
       breadcrumbCategory = 'Buying Guide';
       breadcrumbCurrent = guideTitle;
       articleHtml = renderServerBuyingGuidePage(gSlug, cachedProducts);
+    } else if (reqPath === '/reviews' || reqPath === '/reviews/') {
+      const articles = getPublishedReviewArticles();
+      showArticle = true;
+      showMainContent = false;
+      breadcrumbCategory = 'Reviews';
+      breadcrumbCurrent = 'Vacuum Cleaner Reviews';
+      articleHtml = renderServerReviewsArchivePage(articles);
+    } else if (reqPath.startsWith('/reviews/')) {
+      const rSlug = reqPath.replace('/reviews/', '').replace(/\/$/, '');
+      const allArticles = getAllReviewArticles();
+      const matchedArticle = allArticles.find(a => a.slug === rSlug);
+      if (matchedArticle && (matchedArticle.published || req.query.preview === 'true')) {
+        showArticle = true;
+        showMainContent = false;
+        breadcrumbCategory = 'Reviews';
+        breadcrumbCurrent = matchedArticle.title;
+        articleHtml = renderServerReviewDetailPage(matchedArticle, getPublishedReviewArticles());
+      } else {
+        res.status(404);
+        showArticle = true;
+        showMainContent = false;
+        breadcrumbCategory = 'Error';
+        breadcrumbCurrent = '404 - Review Not Found';
+        articleHtml = `
+          <div class="text-center py-16 bg-white rounded-2xl border border-slate-200 space-y-4">
+            <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500"></i>
+            <h1 class="text-2xl font-extrabold text-slate-900">Review Article Not Found</h1>
+            <p class="text-sm text-slate-600 max-w-md mx-auto">The requested review article could not be located in our reviews archive.</p>
+            <a href="/reviews" class="inline-block px-5 py-2.5 rounded-xl bg-brand-600 text-white font-bold text-xs hover:bg-brand-700 transition">Browse All Reviews</a>
+          </div>
+        `;
+      }
     } else if (reqPath === '/compare' || reqPath === '/compare/') {
       showArticle = true;
       showMainContent = false;

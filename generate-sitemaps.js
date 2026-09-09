@@ -130,6 +130,8 @@ const POPULAR_CATEGORIES = [
 
 const PAGES = [
   '/',
+  '/reviews',
+  '/reviews/shark-professional-navigator-upright-vacuum-cleaner-review',
   '/about',
   '/editorial-policy',
   '/affiliate-disclosure',

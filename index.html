@@ -79,7 +79,7 @@
       var isHome = (p === '/' || p === '/index.html' || p === '');
       if (!isHome) {
         document.documentElement.classList.add('is-deep-route');
-        if (p.startsWith('/vacuum/') || p.startsWith('/product/') || p.startsWith('/compare') || p.startsWith('/guides/') || ['/about', '/editorial-policy', '/affiliate-disclosure', '/privacy-policy', '/terms', '/contact', '/html-sitemap'].indexOf(p) !== -1) {
+        if (p.startsWith('/vacuum/') || p.startsWith('/product/') || p.startsWith('/compare') || p.startsWith('/guides/') || p.startsWith('/reviews') || ['/about', '/editorial-policy', '/affiliate-disclosure', '/privacy-policy', '/terms', '/contact', '/html-sitemap'].indexOf(p) !== -1) {
           document.documentElement.classList.add('route-article');
         } else if (p.startsWith('/category') || p.startsWith('/brand')) {
           document.documentElement.classList.add('route-grid');
@@ -185,6 +185,7 @@
       <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-700" aria-label="Main Navigation">
         <a href="/categories" class="hover:text-brand-600 transition nav-link">Categories</a>
         <a href="/brands" class="hover:text-brand-600 transition nav-link">Brands</a>
+        <a href="/reviews" class="hover:text-brand-600 transition nav-link">Reviews</a>
         <a href="/guides/best-vacuum-for-pet-hair" class="hover:text-brand-600 transition nav-link">Buying Guides</a>
         <a href="/compare/" class="hover:text-brand-600 transition nav-link">Comparisons</a>
       </nav>
@@ -220,6 +221,7 @@
   <div id="mobile-nav-drawer" class="hidden lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 text-sm font-semibold text-slate-700 shadow-lg">
     <div class="text-xs uppercase text-slate-400 tracking-wider font-bold pt-1">Main Navigation</div>
     <a href="/" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-house text-brand-600 mr-2.5"></i>Home</a>
+    <a href="/reviews" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-star-half-stroke text-brand-600 mr-2.5"></i>Reviews</a>
     <a href="/categories" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-layer-group text-brand-600 mr-2.5"></i>All Categories</a>
     <a href="/brands" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-tags text-brand-600 mr-2.5"></i>Popular Brands</a>
     <a href="/guides/best-vacuum-for-pet-hair" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-book-open text-brand-600 mr-2.5"></i>Buying Guides</a>
@@ -518,7 +520,7 @@
   (function() {
     try {
       var p = window.location.pathname || '';
-      if (p.startsWith('/vacuum/') || p.startsWith('/product/') || p.startsWith('/compare')) {
+      if (p.startsWith('/vacuum/') || p.startsWith('/product/') || p.startsWith('/compare') || p.startsWith('/reviews')) {
         var el = document.getElementById('dedicated-article-view');
         if (el && !el.children.length) {
           var slug = p.replace(/^\/(vacuum|product|compare)\//, '').replace(/\/$/, '');

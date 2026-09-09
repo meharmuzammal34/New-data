@@ -5,7 +5,6 @@ Allow: /brand/
 Allow: /category/
 Allow: /compare/
 Allow: /guides/
-Allow: /reviews/
 Allow: /about
 Allow: /editorial-policy
 Allow: /affiliate-disclosure

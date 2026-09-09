@@ -130,7 +130,6 @@ const POPULAR_CATEGORIES = [
 
 const PAGES = [
   '/',
-  '/reviews',
   '/about',
   '/editorial-policy',
   '/affiliate-disclosure',
@@ -281,31 +280,6 @@ const productsSitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 ${productsUrls}
 </urlset>`;
 
-// 7. Reviews sitemap (Only authentic published Review Articles)
-let staticReviewArticles = [];
-try {
-  const reviewsJsonPath = path.join(__dirname, 'data', 'review-articles.json');
-  if (fs.existsSync(reviewsJsonPath)) {
-    staticReviewArticles = JSON.parse(fs.readFileSync(reviewsJsonPath, 'utf8'));
-  }
-} catch (e) {
-  console.warn('Could not read data/review-articles.json:', e);
-}
-
-const publishedReviewArticles = staticReviewArticles.filter(a => a.published !== false);
-
-const articleReviewUrls = publishedReviewArticles.map(a => `  <url>
-    <loc>${CANONICAL_ORIGIN}/reviews/${a.slug}</loc>
-    <lastmod>${a.updatedDate || a.publishedDate || a.publishDate || today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.95</priority>
-  </url>`);
-
-const reviewsSitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${articleReviewUrls.join('\n')}
-</urlset>`;
-
 // 8. Images sitemap
 const imagesSitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
@@ -327,7 +301,6 @@ const sitemapIndexXml = `<?xml version="1.0" encoding="UTF-8"?>
   <sitemap><loc>${CANONICAL_ORIGIN}/guides-sitemap.xml</loc></sitemap>
   <sitemap><loc>${CANONICAL_ORIGIN}/comparison-sitemap.xml</loc></sitemap>
   <sitemap><loc>${CANONICAL_ORIGIN}/products-sitemap.xml</loc></sitemap>
-  <sitemap><loc>${CANONICAL_ORIGIN}/reviews-sitemap.xml</loc></sitemap>
   <sitemap><loc>${CANONICAL_ORIGIN}/images-sitemap.xml</loc></sitemap>
 </sitemapindex>`;
 
@@ -375,7 +348,6 @@ Allow: /brand/
 Allow: /category/
 Allow: /compare/
 Allow: /guides/
-Allow: /reviews/
 Allow: /about
 Allow: /editorial-policy
 Allow: /affiliate-disclosure
@@ -409,7 +381,6 @@ dirs.forEach(d => {
   fs.writeFileSync(path.join(d, 'guides-sitemap.xml'), guidesSitemapXml, 'utf8');
   fs.writeFileSync(path.join(d, 'comparison-sitemap.xml'), comparisonSitemapXml, 'utf8');
   fs.writeFileSync(path.join(d, 'products-sitemap.xml'), productsSitemapXml, 'utf8');
-  fs.writeFileSync(path.join(d, 'reviews-sitemap.xml'), reviewsSitemapXml, 'utf8');
   fs.writeFileSync(path.join(d, 'images-sitemap.xml'), imagesSitemapXml, 'utf8');
   fs.writeFileSync(path.join(d, 'feed.xml'), feedXml, 'utf8');
   fs.writeFileSync(path.join(d, 'robots.txt'), robotsTxt, 'utf8');

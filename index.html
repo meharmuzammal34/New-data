@@ -15,8 +15,8 @@
 <meta name="google-site-verification" content="i3AwNvDMn11VWv2re2Mv5x2vGqXZbCWcWGIg1yPUzoQ" />
 <meta name="google-site-verification" content="pu4nqQQcFjq_fkS36nLSEQA1FiFs8QIjK-O9YpG6Eno" />
 <meta name="msvalidate.01" content="4D99D1FC1EDDD7ADF3A2230E3C0ABE2D" />
-<title>VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides</title>
-<meta name="description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<title>VacCompare – Vacuum Cleaner Comparisons &amp; Buying Guides</title>
+<meta name="description" content="Compare vacuum cleaners, explore specifications, and find the best vacuum for your home with head-to-head comparisons and expert buying guides.">
 <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
 <meta name="theme-color" content="#0f172a">
 
@@ -34,14 +34,14 @@
 <meta property="og:site_name" content="Vacuum Cleaner Lab">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://vacuumcleanerlab.com/">
-<meta property="og:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
-<meta property="og:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta property="og:title" content="VacCompare – Vacuum Cleaner Comparisons &amp; Buying Guides">
+<meta property="og:description" content="Compare vacuum cleaners, explore specifications, and find the best vacuum for your home with head-to-head comparisons and expert buying guides.">
 <meta property="og:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
-<meta name="twitter:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta name="twitter:title" content="VacCompare – Vacuum Cleaner Comparisons &amp; Buying Guides">
+<meta name="twitter:description" content="Compare vacuum cleaners, explore specifications, and find the best vacuum for your home with head-to-head comparisons and expert buying guides.">
 <meta name="twitter:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
 
 <!-- Fonts & FontAwesome -->
@@ -79,7 +79,7 @@
       var isHome = (p === '/' || p === '/index.html' || p === '');
       if (!isHome) {
         document.documentElement.classList.add('is-deep-route');
-        if (p.startsWith('/vacuum/') || p.startsWith('/product/') || p.startsWith('/compare') || p.startsWith('/guides/') || p.startsWith('/reviews') || ['/about', '/editorial-policy', '/affiliate-disclosure', '/privacy-policy', '/terms', '/contact', '/html-sitemap'].indexOf(p) !== -1) {
+        if (p.startsWith('/vacuum/') || p.startsWith('/product/') || p.startsWith('/compare') || p.startsWith('/guides/') || ['/about', '/editorial-policy', '/affiliate-disclosure', '/privacy-policy', '/terms', '/contact', '/html-sitemap'].indexOf(p) !== -1) {
           document.documentElement.classList.add('route-article');
         } else if (p.startsWith('/category') || p.startsWith('/brand')) {
           document.documentElement.classList.add('route-grid');
@@ -183,7 +183,6 @@
 
       <!-- Navigation Links (Desktop) -->
       <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-700" aria-label="Main Navigation">
-        <a href="/reviews" class="hover:text-brand-600 transition nav-link" id="nav-reviews-link">Reviews</a>
         <a href="/categories" class="hover:text-brand-600 transition nav-link">Categories</a>
         <a href="/brands" class="hover:text-brand-600 transition nav-link">Brands</a>
         <a href="/guides/best-vacuum-for-pet-hair" class="hover:text-brand-600 transition nav-link">Buying Guides</a>
@@ -221,7 +220,6 @@
   <div id="mobile-nav-drawer" class="hidden lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 text-sm font-semibold text-slate-700 shadow-lg">
     <div class="text-xs uppercase text-slate-400 tracking-wider font-bold pt-1">Main Navigation</div>
     <a href="/" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-house text-brand-600 mr-2.5"></i>Home</a>
-    <a href="/reviews" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-star-half-stroke text-brand-600 mr-2.5"></i>Reviews</a>
     <a href="/categories" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-layer-group text-brand-600 mr-2.5"></i>All Categories</a>
     <a href="/brands" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-tags text-brand-600 mr-2.5"></i>Popular Brands</a>
     <a href="/guides/best-vacuum-for-pet-hair" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-book-open text-brand-600 mr-2.5"></i>Buying Guides</a>
@@ -514,44 +512,13 @@
   </div>
 </main>
 
-<!-- ============ DEDICATED ARTICLE / REVIEW / PAGE CONTAINER ============ -->
+<!-- ============ DEDICATED ARTICLE / PRODUCT / PAGE CONTAINER ============ -->
 <div id="dedicated-article-view" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"></div>
 <script>
   (function() {
     try {
       var p = window.location.pathname || '';
-      if (p.startsWith('/reviews')) {
-        var el = document.getElementById('dedicated-article-view');
-        if (el && !el.children.length) {
-          el.innerHTML = '<div class="space-y-8 animate-pulse" data-skeleton="true">' +
-            '<div class="h-6 w-48 bg-slate-200 rounded"></div>' +
-            '<div class="space-y-3 pb-6 border-b border-slate-200">' +
-              '<div class="h-9 w-72 bg-slate-300 rounded-xl"></div>' +
-              '<div class="h-4 w-full max-w-2xl bg-slate-200 rounded"></div>' +
-            '</div>' +
-            '<div class="space-y-4">' +
-              '<div class="h-6 w-44 bg-slate-200 rounded"></div>' +
-              '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">' +
-                '<div class="h-64 bg-slate-100 border border-slate-200 rounded-2xl"></div>' +
-                '<div class="h-64 bg-slate-100 border border-slate-200 rounded-2xl"></div>' +
-                '<div class="h-64 bg-slate-100 border border-slate-200 rounded-2xl"></div>' +
-                '<div class="h-64 bg-slate-100 border border-slate-200 rounded-2xl"></div>' +
-              '</div>' +
-            '</div>' +
-            '<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-4">' +
-              '<div class="lg:col-span-8 space-y-4">' +
-                '<div class="h-44 bg-slate-100 border border-slate-200 rounded-2xl"></div>' +
-                '<div class="h-44 bg-slate-100 border border-slate-200 rounded-2xl"></div>' +
-                '<div class="h-44 bg-slate-100 border border-slate-200 rounded-2xl"></div>' +
-              '</div>' +
-              '<div class="lg:col-span-4 space-y-6">' +
-                '<div class="h-64 bg-slate-100 border border-slate-200 rounded-2xl"></div>' +
-                '<div class="h-64 bg-slate-100 border border-slate-200 rounded-2xl"></div>' +
-              '</div>' +
-            '</div>' +
-          '</div>';
-        }
-      } else if (p.startsWith('/vacuum/') || p.startsWith('/product/') || p.startsWith('/compare')) {
+      if (p.startsWith('/vacuum/') || p.startsWith('/product/') || p.startsWith('/compare')) {
         var el = document.getElementById('dedicated-article-view');
         if (el && !el.children.length) {
           var slug = p.replace(/^\/(vacuum|product|compare)\//, '').replace(/\/$/, '');
@@ -589,9 +556,8 @@
   })();
 </script>
 
-<!-- ============ FEATURED REVIEWS & TOP COMPARISONS SECTION ============ -->
+<!-- ============ TOP COMPARISONS & GUIDES SECTION ============ -->
 <section id="home-featured-section" class="bg-white py-12 border-t border-slate-200">
-  <div id="featured-reviews-section"></div>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
     
     <!-- Popular Comparisons -->

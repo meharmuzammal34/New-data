@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "express": "^4.19.2",
-    "firebase": "^12.18.0",
     "jsdom": "^30.0.1"
   }
 }

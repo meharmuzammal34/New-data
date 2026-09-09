@@ -1,6 +1,13 @@
 [build]
   publish = "."
 
+[build.environment]
+  # node_modules is inside the publish directory, so Netlify's secrets scanner
+  # reads third-party package files too. Some dependencies ship placeholder API
+  # keys in their type definitions and docs, which trip smart detection. Our own
+  # files are still scanned.
+  SECRETS_SCAN_OMIT_PATHS = "node_modules/**"
+
 [[redirects]]
   from = "https://animated-speculoos-5d5706.netlify.app/*"
   to = "https://vacuumcleanerlab.com/:splat"

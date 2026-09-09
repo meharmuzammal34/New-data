@@ -265,6 +265,30 @@ function calculateRelevanceScore(source, target) {
 let cachedProducts = [];
 let productSlugMap = new Map();
 
+function getCanonicalCategorySlug(type) {
+  if (!type) return 'cordless-stick';
+  const norm = String(type).toLowerCase().trim();
+  if (norm.includes('robot')) return 'robot-vacuums';
+  if (norm.includes('stick') || norm.includes('cordless')) return 'cordless-stick';
+  if (norm.includes('upright')) return 'upright-vacuums';
+  if (norm.includes('canister')) return 'canister-vacuums';
+  if (norm.includes('handheld')) return 'handheld-vacuums';
+  if (norm.includes('wet') || norm.includes('dry')) return 'wet-dry-vacuums';
+  return slugify(type);
+}
+
+function getCanonicalCategoryName(type) {
+  if (!type) return 'Cordless Stick Vacuums';
+  const norm = String(type).toLowerCase().trim();
+  if (norm.includes('robot')) return 'Robot Vacuums';
+  if (norm.includes('stick') || norm.includes('cordless')) return 'Cordless Stick Vacuums';
+  if (norm.includes('upright')) return 'Upright Vacuums';
+  if (norm.includes('canister')) return 'Canister Vacuums';
+  if (norm.includes('handheld')) return 'Handheld Vacuums';
+  if (norm.includes('wet') || norm.includes('dry')) return 'Wet & Dry Vacuums';
+  return `${type} Vacuums`;
+}
+
 function matchCategoryServer(cSlug) {
   if (!cSlug) return 'Robot';
   const norm = String(cSlug).toLowerCase().trim();
@@ -1221,9 +1245,14 @@ function renderServerProductReviewPage(p, allProducts) {
           <!-- Left Content -->
           <div class="flex-1 space-y-4">
             <div class="flex flex-wrap items-center justify-between gap-3">
-              <a href="/brand/${p.brandSlug}" class="px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-extrabold uppercase tracking-wider hover:underline">
-                ${escapeHtml(p.brand)} Vacuum Cleaners
-              </a>
+              <div class="flex flex-wrap items-center gap-2">
+                <a href="/brand/${p.brandSlug}" class="px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-extrabold uppercase tracking-wider hover:underline">
+                  ${escapeHtml(p.brand)} Vacuum Cleaners
+                </a>
+                <a href="/category/${getCanonicalCategorySlug(p.type)}" class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-xs font-semibold hover:text-white hover:border-slate-500 transition">
+                  <i class="fa-solid fa-layer-group text-slate-400 mr-1"></i> ${escapeHtml(getCanonicalCategoryName(p.type))}
+                </a>
+              </div>
               ${p.starRating != null ? `
                 <span class="text-amber-400 font-extrabold text-sm flex items-center gap-1">
                   <i class="fa-solid fa-star"></i> ${p.starRating.toFixed(1)} / 5.0 ${p.numReviews != null ? `(${(p.numReviews).toLocaleString()} reviews)` : ''}
@@ -1240,12 +1269,15 @@ function renderServerProductReviewPage(p, allProducts) {
             </h1>
 
             <p class="text-slate-300 text-sm leading-relaxed max-w-2xl">
-              Comprehensive test analysis for the <strong>${escapeHtml(p.brand)} ${escapeHtml(p.model)}</strong> <strong>${escapeHtml(p.type)} Vacuum</strong>. Includes verified suction metrics (${escapeHtml(suctionText)}), sound level tests (${escapeHtml(noiseText)}), filtration standards, and user ratings.
+              Comprehensive test analysis for the <strong>${escapeHtml(p.brand)} ${escapeHtml(p.model)}</strong> <a href="/category/${getCanonicalCategorySlug(p.type)}" class="text-brand-300 hover:underline font-semibold">${escapeHtml(getCanonicalCategoryName(p.type))}</a>. Includes verified suction metrics (${escapeHtml(suctionText)}), sound level tests (${escapeHtml(noiseText)}), filtration standards, and user ratings.
             </p>
 
             <div class="pt-4 border-t border-slate-700/80 flex flex-wrap items-center gap-4">
               <a href="${escapeAttr(getAmazonLink(p))}" target="_blank" rel="nofollow sponsored" class="inline-flex items-center gap-2.5 bg-amber-400 hover:bg-amber-500 text-slate-950 font-extrabold text-sm px-6 py-3 rounded-xl shadow-lg transition">
                 <i class="fa-brands fa-amazon text-base"></i> Check Price on Amazon
+              </a>
+              <a href="/compare/" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm px-5 py-3 rounded-xl border border-slate-700 transition">
+                <i class="fa-solid fa-scale-balanced text-brand-400"></i> Compare Side-by-Side
               </a>
               <button data-id="${p.id}" class="add-compare-btn inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm px-5 py-3 rounded-xl border border-slate-700 transition">
                 <i class="fa-solid fa-plus"></i> Add to Comparison
@@ -1343,7 +1375,7 @@ function renderServerProductReviewPage(p, allProducts) {
         <div class="space-y-4 text-sm text-slate-700 leading-relaxed">
           <h3 class="font-bold text-slate-900 text-base">1. Carpet &amp; Hard Floor Cleaning Performance</h3>
           <p>
-            During standardized testing on low and high pile carpet samples, the <strong>${escapeHtml(p.brand)} ${escapeHtml(p.model)}</strong> demonstrated strong dust agitation. The motorized floorhead handles fine dust, sand, and pet kibble without pushing debris forward on tile or hardwood floors. Explore more <a href="/category/${slugify(p.type)}" class="text-brand-600 font-bold hover:underline">${escapeHtml(p.type)} Vacuum Cleaners</a> in our testing directory.
+            During standardized testing on low and high pile carpet samples, the <strong>${escapeHtml(p.brand)} ${escapeHtml(p.model)}</strong> demonstrated strong dust agitation. The motorized floorhead handles fine dust, sand, and pet kibble without pushing debris forward on tile or hardwood floors. Explore more <a href="/category/${getCanonicalCategorySlug(p.type)}" class="text-brand-600 font-bold hover:underline">${escapeHtml(getCanonicalCategoryName(p.type))}</a> in our testing directory.
           </p>
 
           <h3 class="font-bold text-slate-900 text-base">2. Pet Hair Removal &amp; Anti-Tangle Brush Roll</h3>
@@ -1378,7 +1410,7 @@ function renderServerProductReviewPage(p, allProducts) {
             <i class="fa-solid fa-list text-brand-600"></i> Similar Vacuums
           </h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            ${similarProds.map(s => `
+            ${similarProds.map((s, idx) => `
               <div class="p-5 rounded-2xl border border-slate-200 bg-white hover:border-brand-500 hover:shadow-md transition space-y-3 flex flex-col justify-between">
                 <div class="flex items-start gap-3">
                   <a href="${s.reviewUrl}" class="w-16 h-16 bg-slate-50 border border-slate-100 rounded-xl p-1.5 shrink-0 flex items-center justify-center overflow-hidden">
@@ -1387,13 +1419,13 @@ function renderServerProductReviewPage(p, allProducts) {
                   <div class="space-y-1 min-w-0">
                     <a href="/brand/${s.brandSlug}" class="text-[10px] font-extrabold text-brand-600 uppercase hover:underline block truncate">${escapeHtml(s.brand)} Vacuums</a>
                     <h3 class="font-bold text-sm text-slate-900 leading-snug">
-                      <a href="${s.reviewUrl}" class="hover:text-brand-600 transition line-clamp-2">${escapeHtml(s.brand)} ${escapeHtml(s.model)} Review</a>
+                      <a href="${s.reviewUrl}" class="hover:text-brand-600 transition line-clamp-2">${escapeHtml(s.brand)} ${escapeHtml(s.model)} Review &amp; Specs</a>
                     </h3>
                     <p class="text-xs text-slate-500">Suction: ${escapeHtml(s.suctionKpaRaw || 'Standard')} kPa</p>
                   </div>
                 </div>
                 <a href="${s.reviewUrl}" class="text-xs font-bold text-brand-600 pt-2 border-t border-slate-100 flex items-center gap-1 hover:underline">
-                  ${escapeHtml(s.brand)} ${escapeHtml(s.model)} Review &rarr;
+                  ${idx === 0 ? `Read Full ${escapeHtml(s.model)} Review &rarr;` : idx === 1 ? `View ${escapeHtml(s.brand)} ${escapeHtml(s.model)} Specs &rarr;` : `Explore ${escapeHtml(s.model)} Review &rarr;`}
                 </a>
               </div>
             `).join('')}
@@ -1404,20 +1436,26 @@ function renderServerProductReviewPage(p, allProducts) {
       <!-- Compare With Section -->
       ${compareProds.length ? `
         <section class="space-y-4">
-          <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            <i class="fa-solid fa-scale-balanced text-brand-600"></i> Compare With
-          </h2>
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+              <i class="fa-solid fa-scale-balanced text-brand-600"></i> Compare With
+            </h2>
+            <a href="/compare/" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
+              Compare Tool <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </a>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            ${compareProds.map(s => {
+            ${compareProds.map((s, idx) => {
               const s1 = p.fullSlug.replace('-review', '');
               const s2 = s.fullSlug.replace('-review', '');
               const compUrl = `/compare/${s1}-vs-${s2}`;
+              const compLabel = idx === 0 ? `${escapeHtml(p.model)} vs ${escapeHtml(s.model)} Comparison` : idx === 1 ? `Compare ${escapeHtml(p.model)} vs ${escapeHtml(s.model)}` : `Technical Matchup: ${escapeHtml(p.model)} vs ${escapeHtml(s.model)}`;
               return `
                 <a href="${compUrl}" class="p-5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-brand-500 hover:shadow-md transition space-y-2 group block">
                   <div class="text-[10px] font-extrabold text-brand-600 uppercase">Head-to-Head Comparison</div>
-                  <h3 class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">${escapeHtml(p.model)} vs ${escapeHtml(s.model)} Comparison</h3>
+                  <h3 class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">${compLabel}</h3>
                   <p class="text-xs text-slate-500">${escapeHtml(p.suctionKpaRaw || 'Standard')} kPa vs ${escapeHtml(s.suctionKpaRaw || 'Standard')} kPa suction</p>
-                  <div class="text-xs font-bold text-brand-600 pt-1 flex items-center gap-1">${escapeHtml(p.model)} vs ${escapeHtml(s.model)} Comparison &rarr;</div>
+                  <div class="text-xs font-bold text-brand-600 pt-1 flex items-center gap-1">${compLabel} &rarr;</div>
                 </a>
               `;
             }).join('')}
@@ -1432,7 +1470,7 @@ function renderServerProductReviewPage(p, allProducts) {
             <i class="fa-solid fa-gem text-amber-500"></i> Better Alternatives
           </h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            ${altProds.map(a => `
+            ${altProds.map((a, idx) => `
               <div class="p-5 rounded-2xl border border-slate-200 bg-white hover:border-brand-500 hover:shadow-md transition space-y-3 flex flex-col justify-between">
                 <div class="flex items-start gap-3">
                   <a href="${a.reviewUrl}" class="w-16 h-16 bg-slate-50 border border-slate-100 rounded-xl p-1.5 shrink-0 flex items-center justify-center overflow-hidden">
@@ -1441,13 +1479,13 @@ function renderServerProductReviewPage(p, allProducts) {
                   <div class="space-y-1 min-w-0">
                     <a href="/brand/${a.brandSlug}" class="text-[10px] font-extrabold text-brand-600 uppercase hover:underline block truncate">${escapeHtml(a.brand)} Vacuums</a>
                     <h3 class="font-bold text-sm text-slate-900 leading-snug">
-                      <a href="${a.reviewUrl}" class="hover:text-brand-600 transition line-clamp-2">${escapeHtml(a.brand)} ${escapeHtml(a.model)} Review</a>
+                      <a href="${a.reviewUrl}" class="hover:text-brand-600 transition line-clamp-2">${escapeHtml(a.brand)} ${escapeHtml(a.model)} Review &amp; Analysis</a>
                     </h3>
                     <p class="text-xs text-slate-500">Rating: ${a.starRating ? a.starRating.toFixed(1) : '4.5'} / 5.0 | Suction: ${escapeHtml(a.suctionKpaRaw || 'Standard')} kPa</p>
                   </div>
                 </div>
                 <a href="${a.reviewUrl}" class="text-xs font-bold text-brand-600 pt-2 border-t border-slate-100 flex items-center gap-1 hover:underline">
-                  ${escapeHtml(a.brand)} ${escapeHtml(a.model)} Review &rarr;
+                  ${idx === 0 ? `Compare ${escapeHtml(a.model)} Specs &rarr;` : idx === 1 ? `Read Alternative Review &rarr;` : `See ${escapeHtml(a.brand)} ${escapeHtml(a.model)} Review &rarr;`}
                 </a>
               </div>
             `).join('')}
@@ -1462,7 +1500,7 @@ function renderServerProductReviewPage(p, allProducts) {
             <i class="fa-solid fa-file-lines text-indigo-600"></i> Related Reviews
           </h2>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            ${relatedProds.map(r => `
+            ${relatedProds.map((r, idx) => `
               <div class="p-5 rounded-2xl border border-slate-200 bg-white hover:border-brand-500 hover:shadow-md transition space-y-3 flex flex-col justify-between">
                 <div class="flex items-start gap-3">
                   <a href="${r.reviewUrl}" class="w-16 h-16 bg-slate-50 border border-slate-100 rounded-xl p-1.5 shrink-0 flex items-center justify-center overflow-hidden">
@@ -1471,13 +1509,13 @@ function renderServerProductReviewPage(p, allProducts) {
                   <div class="space-y-1 min-w-0">
                     <a href="/brand/${r.brandSlug}" class="text-[10px] font-extrabold text-brand-600 uppercase hover:underline block truncate">${escapeHtml(r.brand)} Vacuums</a>
                     <h3 class="font-bold text-sm text-slate-900 leading-snug">
-                      <a href="${r.reviewUrl}" class="hover:text-brand-600 transition line-clamp-2">${escapeHtml(r.brand)} ${escapeHtml(r.model)} Review</a>
+                      <a href="${r.reviewUrl}" class="hover:text-brand-600 transition line-clamp-2">${escapeHtml(r.brand)} ${escapeHtml(r.model)} Hands-On Review</a>
                     </h3>
                     <p class="text-xs text-slate-500">${escapeHtml(r.type)} | Suction: ${escapeHtml(r.suctionKpaRaw || 'Standard')} kPa</p>
                   </div>
                 </div>
                 <a href="${r.reviewUrl}" class="text-xs font-bold text-brand-600 pt-2 border-t border-slate-100 flex items-center gap-1 hover:underline">
-                  ${escapeHtml(r.brand)} ${escapeHtml(r.model)} Review &rarr;
+                  ${idx === 0 ? `Full Review &amp; Benchmarks &rarr;` : idx === 1 ? `Read ${escapeHtml(r.brand)} ${escapeHtml(r.model)} Review &rarr;` : `Inspect ${escapeHtml(r.model)} Specs &rarr;`}
                 </a>
               </div>
             `).join('')}
@@ -1504,14 +1542,23 @@ function renderServerProductReviewPage(p, allProducts) {
       <section class="p-5 bg-slate-50 border border-slate-200 rounded-2xl flex flex-wrap items-center justify-between gap-4 text-xs font-bold text-slate-700">
         <div class="flex items-center gap-2">
           <i class="fa-solid fa-folder-tree text-brand-600"></i>
-          <span>Related Directories:</span>
+          <span>Related Directories &amp; Tools:</span>
         </div>
         <div class="flex flex-wrap items-center gap-3">
-          <a href="/brand/${p.brandSlug}" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+          <a href="/brand/${p.brandSlug}" class="px-3.5 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
             ${escapeHtml(p.brand)} Vacuum Cleaners
           </a>
-          <a href="/category/${slugify(p.type)}" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
-            ${escapeHtml(p.type)} Vacuum Cleaners
+          <a href="/category/${getCanonicalCategorySlug(p.type)}" class="px-3.5 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            ${escapeHtml(getCanonicalCategoryName(p.type))}
+          </a>
+          <a href="/compare/" class="px-3.5 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Side-by-Side Comparison Tool
+          </a>
+          <a href="/categories" class="px-3.5 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition">
+            All Categories
+          </a>
+          <a href="/brands" class="px-3.5 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-600 hover:bg-slate-100 transition">
+            All Brands
           </a>
         </div>
       </section>
@@ -1678,7 +1725,7 @@ function renderServerBuyingGuidePage(guideSlug, allProducts) {
                       <a href="${p.reviewUrl}" class="hover:text-brand-600 transition">${escapeHtml(p.brand)} ${escapeHtml(p.model)} Review</a>
                     </h3>
                     <div class="flex flex-wrap gap-2 text-xs font-medium text-slate-600">
-                      <a href="/category/${slugify(p.type)}" class="bg-slate-100 px-2.5 py-0.5 rounded hover:bg-slate-200 text-slate-800">${escapeHtml(p.type)} Vacuums</a>
+                      <a href="/category/${getCanonicalCategorySlug(p.type)}" class="bg-slate-100 px-2.5 py-0.5 rounded hover:bg-slate-200 text-slate-800 font-semibold">${escapeHtml(getCanonicalCategoryName(p.type))}</a>
                       <span class="bg-slate-100 px-2.5 py-0.5 rounded">Suction: ${escapeHtml(suctionText)}</span>
                       ${p.hepaFiltration ? '<span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded font-bold">HEPA Sealed</span>' : ''}
                       ${p.starRating != null ? `<span class="text-amber-500 font-bold"><i class="fa-solid fa-star"></i> ${p.starRating.toFixed(1)}${p.numReviews != null ? ` (${p.numReviews.toLocaleString()})` : ''}</span>` : ''}
@@ -1686,7 +1733,10 @@ function renderServerBuyingGuidePage(guideSlug, allProducts) {
                   </div>
                 </div>
 
-                <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto shrink-0">
+                <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto shrink-0">
+                  <a href="${p.reviewUrl}" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                    Read Review &rarr;
+                  </a>
                   ${p.amazonLink ? `
                     <a href="${escapeAttr(p.amazonLink)}" target="_blank" rel="nofollow sponsored" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
                       <i class="fa-brands fa-amazon"></i> Check Amazon Price
@@ -1702,9 +1752,14 @@ function renderServerBuyingGuidePage(guideSlug, allProducts) {
       <!-- Head-to-Head Comparisons -->
       ${guideComparisons.length ? `
         <section class="space-y-4">
-          <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            <i class="fa-solid fa-scale-balanced text-brand-600"></i> Side-by-Side Model Comparisons
-          </h2>
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+              <i class="fa-solid fa-scale-balanced text-brand-600"></i> Side-by-Side Model Comparisons
+            </h2>
+            <a href="/compare/" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
+              Compare Tool <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </a>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             ${guideComparisons.map(c => {
               const s1 = c.p1.fullSlug.replace('-review', '');
@@ -1724,7 +1779,9 @@ function renderServerBuyingGuidePage(guideSlug, allProducts) {
 
       <!-- Explore Other Guides -->
       <section class="bg-slate-100 rounded-2xl p-6 border border-slate-200 space-y-3">
-        <h3 class="font-bold text-slate-900 text-sm">Explore Other Expert Vacuum Guides</h3>
+        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-book-open text-brand-600"></i> Explore Other Expert Vacuum Guides
+        </h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-bold text-brand-600">
           ${allGuideSlugs.map(s => `
             <a href="/guides/${s}" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group">
@@ -1732,6 +1789,41 @@ function renderServerBuyingGuidePage(guideSlug, allProducts) {
               <i class="fa-solid fa-arrow-right text-brand-600"></i>
             </a>
           `).join('')}
+        </div>
+      </section>
+
+      <!-- Category & Tool Directories Footer Links -->
+      <section class="p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+            <i class="fa-solid fa-folder-tree text-brand-600"></i> Related Categories &amp; Comparison Tools
+          </h3>
+          <a href="/compare/" class="text-xs font-bold text-brand-600 hover:underline">
+            Side-by-Side Comparison Tool &rarr;
+          </a>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs font-bold">
+          <a href="/category/cordless-stick" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Cordless Stick Vacuums
+          </a>
+          <a href="/category/robot-vacuums" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Robot Vacuums
+          </a>
+          <a href="/category/upright-vacuums" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Upright Vacuums
+          </a>
+          <a href="/category/canister-vacuums" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Canister Vacuums
+          </a>
+          <a href="/category/wet-dry-vacuums" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Wet &amp; Dry Vacuums
+          </a>
+          <a href="/categories" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
+            All Vacuum Categories &rarr;
+          </a>
+          <a href="/brands" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
+            All Vacuum Brands &rarr;
+          </a>
         </div>
       </section>
 
@@ -1885,32 +1977,131 @@ function renderServerCompareHubPage(allProducts, productSlugMap) {
       <!-- Content Section 1: Popular Vacuum Comparisons -->
       <section class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
         <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-          <i class="fa-solid fa-fire text-amber-500"></i> Popular Vacuum Comparisons
+          <i class="fa-solid fa-fire text-amber-500"></i> Popular Vacuum Head-to-Head Comparisons
         </h3>
         <ul class="space-y-3 text-sm text-slate-700 list-disc list-inside">
           <li>
-            <a href="/compare/dyson-v15-detect-vs-shark-stratos" class="font-bold text-brand-600 hover:underline">Dyson V15 Detect vs Shark Stratos Cordless</a> – Laser detection vs Clean Sense IQ
+            <a href="/compare/dyson-v15-detect-vs-shark-stratos" class="font-bold text-brand-600 hover:underline">Dyson V15 Detect vs Shark Stratos Cordless</a> – Laser particle detection vs Clean Sense IQ suction
           </li>
           <li>
-            <a href="/compare/irobot-roomba-j7-vs-roborock-s8" class="font-bold text-brand-600 hover:underline">iRobot Roomba j7+ vs Roborock S8 Pro Ultra</a> – Pet waste avoidance vs advanced mopping
+            <a href="/compare/irobot-roomba-j7-vs-roborock-s8" class="font-bold text-brand-600 hover:underline">iRobot Roomba j7+ vs Roborock S8 Pro Ultra</a> – Precision pet waste avoidance vs dual-roller sonic mopping
           </li>
           <li>
-            <a href="/compare/miele-complete-c3-vs-dyson-ball-animal-3" class="font-bold text-brand-600 hover:underline">Miele Complete C3 vs Dyson Ball Animal 3</a> – Sealed HEPA system vs strong agitator power
+            <a href="/compare/miele-complete-c3-vs-dyson-ball-animal-3" class="font-bold text-brand-600 hover:underline">Miele Complete C3 vs Dyson Ball Animal 3</a> – Sealed hospital-grade HEPA canister vs heavy-duty upright agitator
           </li>
           <li>
-            <a href="/category/cordless-stick" class="font-bold text-brand-600 hover:underline">Best Cordless Stick Vacuums Compared</a>
+            <a href="/category/cordless-stick" class="font-bold text-brand-600 hover:underline">Cordless Stick Vacuum Cleaners Comparison</a> – Lightweight rechargeable stick models with runtime and suction metrics
           </li>
           <li>
-            <a href="/guides/best-vacuum-for-pet-hair" class="font-bold text-brand-600 hover:underline">Best Robot Vacuums for Pet Hair</a>
-          </li>
-          <li>
-            <a href="/guides/best-budget-vacuums" class="font-bold text-brand-600 hover:underline">Best Budget Vacuums Under $300</a>
+            <a href="/category/robot-vacuums" class="font-bold text-brand-600 hover:underline">Robot Vacuum Cleaners Directory</a> – Automated vacuuming and mopping robots with LiDAR benchmarks
           </li>
         </ul>
       </section>
 
-      <!-- Content Section 2: How Our Vacuum Comparison Works -->
+      <!-- Content Section 2: Explore Tested Vacuum Categories -->
       <section class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <i class="fa-solid fa-folder-tree text-brand-600"></i> Explore Vacuums by Category
+          </h3>
+          <a href="/categories" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
+            All Categories <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </a>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-xs font-bold">
+          <a href="/category/cordless-stick" class="p-3 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 rounded-xl border border-slate-200 text-center text-slate-800 transition">
+            Cordless Stick
+          </a>
+          <a href="/category/robot-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 rounded-xl border border-slate-200 text-center text-slate-800 transition">
+            Robot Vacuums
+          </a>
+          <a href="/category/upright-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 rounded-xl border border-slate-200 text-center text-slate-800 transition">
+            Upright Vacuums
+          </a>
+          <a href="/category/canister-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 rounded-xl border border-slate-200 text-center text-slate-800 transition">
+            Canister Vacuums
+          </a>
+          <a href="/category/handheld-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 rounded-xl border border-slate-200 text-center text-slate-800 transition">
+            Handheld Vacuums
+          </a>
+          <a href="/category/wet-dry-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 hover:text-brand-600 rounded-xl border border-slate-200 text-center text-slate-800 transition">
+            Wet &amp; Dry
+          </a>
+        </div>
+      </section>
+
+      <!-- Content Section 3: Popular Vacuum Cleaner Brands -->
+      <section class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <i class="fa-solid fa-tag text-brand-600"></i> Compare Top Vacuum Brands
+          </h3>
+          <a href="/brands" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
+            All Brands <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </a>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs font-bold">
+          <a href="/brand/dyson" class="px-4 py-2 bg-white rounded-xl border border-slate-200 hover:border-brand-500 text-slate-800 hover:text-brand-600 transition">
+            Dyson Vacuums
+          </a>
+          <a href="/brand/shark" class="px-4 py-2 bg-white rounded-xl border border-slate-200 hover:border-brand-500 text-slate-800 hover:text-brand-600 transition">
+            Shark Vacuums
+          </a>
+          <a href="/brand/bissell" class="px-4 py-2 bg-white rounded-xl border border-slate-200 hover:border-brand-500 text-slate-800 hover:text-brand-600 transition">
+            Bissell Vacuums
+          </a>
+          <a href="/brand/irobot" class="px-4 py-2 bg-white rounded-xl border border-slate-200 hover:border-brand-500 text-slate-800 hover:text-brand-600 transition">
+            iRobot Roomba
+          </a>
+          <a href="/brand/roborock" class="px-4 py-2 bg-white rounded-xl border border-slate-200 hover:border-brand-500 text-slate-800 hover:text-brand-600 transition">
+            Roborock Vacuums
+          </a>
+          <a href="/brand/miele" class="px-4 py-2 bg-white rounded-xl border border-slate-200 hover:border-brand-500 text-slate-800 hover:text-brand-600 transition">
+            Miele Vacuums
+          </a>
+          <a href="/brand/tineco" class="px-4 py-2 bg-white rounded-xl border border-slate-200 hover:border-brand-500 text-slate-800 hover:text-brand-600 transition">
+            Tineco Vacuums
+          </a>
+          <a href="/brand/hoover" class="px-4 py-2 bg-white rounded-xl border border-slate-200 hover:border-brand-500 text-slate-800 hover:text-brand-600 transition">
+            Hoover Vacuums
+          </a>
+          <a href="/brand/eureka" class="px-4 py-2 bg-white rounded-xl border border-slate-200 hover:border-brand-500 text-slate-800 hover:text-brand-600 transition">
+            Eureka Vacuums
+          </a>
+        </div>
+      </section>
+
+      <!-- Content Section 4: Expert Buying Guides -->
+      <section class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
+        <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+          <i class="fa-solid fa-book-open text-brand-600"></i> Expert Vacuum Buying Guides
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-bold text-brand-600">
+          <a href="/guides/best-vacuum-for-pet-hair" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group">
+            <span class="text-slate-900 group-hover:text-brand-600 transition">10 Best Vacuum Cleaners for Pet Hair</span>
+            <i class="fa-solid fa-arrow-right text-brand-600"></i>
+          </a>
+          <a href="/guides/best-robot-vacuums-2026" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group">
+            <span class="text-slate-900 group-hover:text-brand-600 transition">Top 8 Best Robot Vacuums 2026 Guide</span>
+            <i class="fa-solid fa-arrow-right text-brand-600"></i>
+          </a>
+          <a href="/guides/best-hardwood-floor-vacuums" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group">
+            <span class="text-slate-900 group-hover:text-brand-600 transition">Best Vacuums for Hardwood Floors Guide</span>
+            <i class="fa-solid fa-arrow-right text-brand-600"></i>
+          </a>
+          <a href="/guides/best-budget-cordless-vacuums" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group">
+            <span class="text-slate-900 group-hover:text-brand-600 transition">Best Budget Cordless Vacuums Under $300</span>
+            <i class="fa-solid fa-arrow-right text-brand-600"></i>
+          </a>
+          <a href="/guides/bagged-vs-bagless-vacuums-guide" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group sm:col-span-2">
+            <span class="text-slate-900 group-hover:text-brand-600 transition">Bagged vs. Bagless Vacuums: Complete Allergy &amp; Hygiene Guide</span>
+            <i class="fa-solid fa-arrow-right text-brand-600"></i>
+          </a>
+        </div>
+      </section>
+
+      <!-- Content Section 5: How Our Vacuum Comparison Works -->
+      <section class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
         <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
           <i class="fa-solid fa-gears text-brand-600"></i> How Our Vacuum Comparison Works
         </h3>
@@ -1929,37 +2120,12 @@ function renderServerCompareHubPage(allProducts, productSlugMap) {
               <li>Customer Star Ratings</li>
             </ul>
           </li>
-          <li class="leading-relaxed"><strong class="text-slate-900">Read our expert verdict</strong> on which model is better for your specific needs (pet hair, hardwood floors, carpets, allergies, etc.)</li>
+          <li class="leading-relaxed"><strong class="text-slate-900">Read our verified spec breakdown</strong> to choose the best vacuum for your specific floor type, pet hair needs, and budget.</li>
         </ol>
       </section>
 
-      <!-- Content Section 3: Why Compare Vacuums Before Buying? -->
-      <section class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
-        <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-          <i class="fa-solid fa-circle-question text-brand-600"></i> Why Compare Vacuums Before Buying?
-        </h3>
-        <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
-          <p>
-            Choosing the wrong vacuum can waste hundreds of dollars. A high suction number doesn’t always mean better performance on your floors. Factors like brush roll design, filtration quality, and real-world runtime matter more than marketing claims.
-          </p>
-          <p>
-            At VacCompare, we focus on verified specifications and standardized comparison points so you can see the real differences between popular models from Dyson, Shark, Roborock, iRobot, Bissell, Miele, Tineco, and many more.
-          </p>
-        </div>
-      </section>
-
-      <!-- Content Section 4: Start Comparing Now -->
-      <section class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
-        <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-          <i class="fa-solid fa-bolt text-amber-500"></i> Start Comparing Now
-        </h3>
-        <p class="text-sm text-slate-700 leading-relaxed">
-          Use the comparison tool above or browse our most popular head-to-head matchups. Still not sure which type of vacuum you need? Check our <a href="/guides/best-vacuum-for-pet-hair" class="text-brand-600 font-bold hover:underline">Buying Guides</a> for recommendations based on floor type, pet ownership, and budget.
-        </p>
-      </section>
-
-      <!-- Content Section 5: Frequently Asked Questions -->
-      <section class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6">
+      <!-- Content Section 6: Frequently Asked Questions -->
+      <section class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6">
         <div>
           <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
             <i class="fa-solid fa-comments text-brand-600"></i> Frequently Asked Questions
@@ -1968,24 +2134,24 @@ function renderServerCompareHubPage(allProducts, productSlugMap) {
         </div>
 
         <div class="space-y-4 text-sm">
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-2">
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
             <h4 class="font-bold text-slate-900 text-sm sm:text-base">How many vacuum cleaners can I compare at once?</h4>
-            <p class="text-slate-600 leading-relaxed">You can compare up to 4 vacuum models side-by-side on VacCompare.</p>
+            <p class="text-slate-600 leading-relaxed">You can compare up to 4 vacuum models side-by-side using our free comparison tool above.</p>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-2">
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
             <h4 class="font-bold text-slate-900 text-sm sm:text-base">What specs do you compare?</h4>
-            <p class="text-slate-600 leading-relaxed">We compare suction power (kPa), noise level (dB), dust capacity, HEPA filtration, battery life, weight, power source, and customer ratings.</p>
+            <p class="text-slate-600 leading-relaxed">We compare suction power (kPa), noise level (dB), dust capacity, HEPA filtration, battery runtime, weight, power source, and customer star ratings.</p>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-2">
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
             <h4 class="font-bold text-slate-900 text-sm sm:text-base">Are the specifications accurate?</h4>
-            <p class="text-slate-600 leading-relaxed">Yes. We collect and cross-check technical data from manufacturer specifications, official product pages, and verified public listings.</p>
+            <p class="text-slate-600 leading-relaxed">Yes. We collect and cross-check technical data from manufacturer specifications, official product manuals, and verified public listings.</p>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-2">
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
             <h4 class="font-bold text-slate-900 text-sm sm:text-base">Can I compare robot vacuums with cordless stick vacuums?</h4>
-            <p class="text-slate-600 leading-relaxed">Yes. You can compare any combination of vacuum types available in our database.</p>
+            <p class="text-slate-600 leading-relaxed">Yes. You can compare any combination of vacuum types available in our verified database. For deep dives, check our <a href="/guides/best-robot-vacuums-2026" class="text-brand-600 font-bold hover:underline">Robot Vacuums Guide</a> and <a href="/category/cordless-stick" class="text-brand-600 font-bold hover:underline">Cordless Stick Vacuums Category</a>.</p>
           </div>
         </div>
       </section>
@@ -2303,30 +2469,40 @@ function renderServerBrandPage(brandName, bSlug, brandProducts, allProducts) {
       <!-- Vacuum Categories by Brand -->
       ${categories.length ? `
         <section class="bg-slate-100 rounded-2xl p-6 border border-slate-200 space-y-3">
-          <h2 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
-            <i class="fa-solid fa-folder-tree text-brand-600"></i> ${escapeHtml(brandName)} Vacuum Categories
-          </h2>
+          <div class="flex items-center justify-between">
+            <h2 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+              <i class="fa-solid fa-folder-tree text-brand-600"></i> ${escapeHtml(brandName)} Vacuum Categories
+            </h2>
+            <a href="/categories" class="text-xs font-bold text-brand-600 hover:underline">All Categories &rarr;</a>
+          </div>
           <div class="flex flex-wrap gap-2 text-xs font-bold">
             ${categories.map(cat => `
-              <a href="/category/${slugify(cat)}" class="px-4 py-2 bg-white rounded-xl border border-slate-200 hover:border-brand-500 text-brand-600 transition">
-                ${escapeHtml(cat)} Vacuum Cleaners
+              <a href="/category/${getCanonicalCategorySlug(cat)}" class="px-4 py-2 bg-white rounded-xl border border-slate-200 hover:border-brand-500 text-brand-600 transition">
+                ${escapeHtml(getCanonicalCategoryName(cat))}
               </a>
             `).join('')}
           </div>
         </section>
       ` : ''}
 
-      <!-- Expert Guides -->
-      <section class="bg-white border border-slate-200 rounded-2xl p-6 space-y-3">
-        <h2 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
-          <i class="fa-solid fa-book-open text-brand-600"></i> Recommended Buying Guides
-        </h2>
+      <!-- Expert Guides & Comparison Tool -->
+      <section class="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+            <i class="fa-solid fa-book-open text-brand-600"></i> Recommended Buying Guides &amp; Tools
+          </h2>
+          <a href="/compare/" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
+            Side-by-Side Comparison Tool &rarr;
+          </a>
+        </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-bold text-brand-600">
           <a href="/guides/best-vacuum-for-pet-hair" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between">
-            <span>10 Best Vacuum Cleaners for Pet Hair</span> &rarr;
+            <span class="text-slate-900">10 Best Vacuum Cleaners for Pet Hair</span>
+            <i class="fa-solid fa-arrow-right text-brand-600"></i>
           </a>
           <a href="/guides/best-budget-cordless-vacuums" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between">
-            <span>Best Budget Cordless Vacuums Under $300</span> &rarr;
+            <span class="text-slate-900">Best Budget Cordless Vacuums Under $300</span>
+            <i class="fa-solid fa-arrow-right text-brand-600"></i>
           </a>
         </div>
       </section>
@@ -2348,6 +2524,19 @@ function renderServerCategoryPage(catName, cSlug, catProducts, allProducts) {
   }
 
   const categoryBrands = Array.from(new Set(catProducts.map(p => p.brand))).filter(Boolean);
+
+  let catGuide1 = { url: '/guides/best-vacuum-for-pet-hair', title: '10 Best Vacuum Cleaners for Pet Hair' };
+  let catGuide2 = { url: '/guides/best-budget-cordless-vacuums', title: 'Best Budget Cordless Vacuums Under $300' };
+  if (cSlug.includes('robot')) {
+    catGuide1 = { url: '/guides/best-robot-vacuums-2026', title: 'Top 8 Best Robot Vacuums 2026 Guide' };
+    catGuide2 = { url: '/guides/best-vacuum-for-pet-hair', title: 'Best Pet Hair Vacuums (Tested & Ranked)' };
+  } else if (cSlug.includes('stick') || cSlug.includes('cordless')) {
+    catGuide1 = { url: '/guides/best-budget-cordless-vacuums', title: 'Best Budget Cordless Vacuums Under $300' };
+    catGuide2 = { url: '/guides/best-hardwood-floor-vacuums', title: 'Best Vacuums for Hardwood Floors' };
+  } else if (cSlug.includes('upright') || cSlug.includes('canister')) {
+    catGuide1 = { url: '/guides/bagged-vs-bagless-vacuums-guide', title: 'Bagged vs. Bagless Vacuums: Hygiene & Cost Guide' };
+    catGuide2 = { url: '/guides/best-vacuum-for-pet-hair', title: '10 Best Vacuum Cleaners for Pet Hair' };
+  }
 
   return `
     <article class="space-y-8 text-slate-800">
@@ -2410,9 +2599,12 @@ function renderServerCategoryPage(catName, cSlug, catProducts, allProducts) {
       <!-- Popular Brands in Category -->
       ${categoryBrands.length ? `
         <section class="bg-slate-100 rounded-2xl p-6 border border-slate-200 space-y-3">
-          <h2 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
-            <i class="fa-solid fa-tag text-brand-600"></i> Popular Brands for ${escapeHtml(catName)}
-          </h2>
+          <div class="flex items-center justify-between">
+            <h2 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+              <i class="fa-solid fa-tag text-brand-600"></i> Popular Brands for ${escapeHtml(catName)}
+            </h2>
+            <a href="/brands" class="text-xs font-bold text-brand-600 hover:underline">All Brands &rarr;</a>
+          </div>
           <div class="flex flex-wrap gap-2 text-xs font-bold">
             ${categoryBrands.map(b => `
               <a href="/brand/${slugify(b)}" class="px-4 py-2 bg-white rounded-xl border border-slate-200 hover:border-brand-500 text-brand-600 transition">
@@ -2423,17 +2615,24 @@ function renderServerCategoryPage(catName, cSlug, catProducts, allProducts) {
         </section>
       ` : ''}
 
-      <!-- Expert Buying Guides -->
-      <section class="bg-white border border-slate-200 rounded-2xl p-6 space-y-3">
-        <h2 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
-          <i class="fa-solid fa-book-open text-brand-600"></i> Related Buying Guides
-        </h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-bold text-brand-600">
-          <a href="/guides/best-vacuum-for-pet-hair" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between">
-            <span>10 Best Vacuum Cleaners for Pet Hair</span> &rarr;
+      <!-- Expert Buying Guides & Comparison Tool -->
+      <section class="bg-white border border-slate-200 rounded-2xl p-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+            <i class="fa-solid fa-book-open text-brand-600"></i> Related Buying Guides &amp; Tools
+          </h2>
+          <a href="/compare/" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
+            Compare Tool &rarr;
           </a>
-          <a href="/guides/best-budget-cordless-vacuums" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between">
-            <span>Best Budget Cordless Vacuums Under $300</span> &rarr;
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-bold text-brand-600">
+          <a href="${catGuide1.url}" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between">
+            <span class="text-slate-900">${catGuide1.title}</span>
+            <i class="fa-solid fa-arrow-right text-brand-600"></i>
+          </a>
+          <a href="${catGuide2.url}" class="p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between">
+            <span class="text-slate-900">${catGuide2.title}</span>
+            <i class="fa-solid fa-arrow-right text-brand-600"></i>
           </a>
         </div>
       </section>
@@ -2555,17 +2754,21 @@ function renderServerEeatPage(reqPath, allProducts) {
         <div>
           <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Vacuum Categories</h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            ${topTypes.map(t => `<a href="/category/${slugify(t)}" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">${escapeHtml(t)}</a>`).join('')}
+            ${topTypes.map(t => `<a href="/category/${getCanonicalCategorySlug(t)}" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">${escapeHtml(getCanonicalCategoryName(t))}</a>`).join('')}
           </div>
         </div>
 
         <div>
           <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Buying Guides &amp; Comparisons</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <a href="/guides/best-vacuum-for-pet-hair" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">10 Best Vacuum Cleaners for Pet Hair</a>
-            <a href="/guides/best-robot-vacuums-2026" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Top 8 Best Robot Vacuums</a>
+            <a href="/guides/best-vacuum-for-pet-hair" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">10 Best Vacuum Cleaners for Pet Hair (2026 Tested)</a>
+            <a href="/guides/best-robot-vacuums-2026" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Top 8 Best Robot Vacuums of 2026</a>
             <a href="/guides/best-hardwood-floor-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Best Vacuums for Hardwood Floors</a>
-            <a href="/compare/dyson-v15-vs-shark-stratos" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Dyson V15 vs Shark Stratos Comparison</a>
+            <a href="/guides/best-budget-cordless-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Best Budget Cordless Vacuums Under $300</a>
+            <a href="/guides/bagged-vs-bagless-vacuums-guide" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Bagged vs. Bagless Vacuums: Complete Buying Guide</a>
+            <a href="/compare/" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-brand-600 transition">Interactive Vacuum Comparison Hub &rarr;</a>
+            <a href="/compare/dyson-v15-detect-vs-shark-stratos-cordless" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Dyson V15 Detect vs Shark Stratos Cordless</a>
+            <a href="/compare/irobot-roomba-j7-vs-roborock-s8-pro-ultra" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">iRobot Roomba j7+ vs Roborock S8 Pro Ultra</a>
           </div>
         </div>
       </div>
@@ -2583,12 +2786,15 @@ function renderServerEeatPage(reqPath, allProducts) {
   `;
 }
 
-function renderServerBreadcrumbs(category, currentName) {
+function renderServerBreadcrumbs(category, currentName, categoryUrl) {
   if (category) {
+    const categoryLink = categoryUrl
+      ? `<a href="${escapeAttr(categoryUrl)}" class="hover:text-brand-600 font-medium text-slate-600 transition">${escapeHtml(category)}</a>`
+      : `<span class="text-slate-500 font-medium">${escapeHtml(category)}</span>`;
     return `
       <a href="/" class="hover:text-brand-600 flex items-center gap-1"><i class="fa-solid fa-house text-slate-400"></i> Home</a>
       <span class="text-slate-400">/</span>
-      <span class="text-slate-500 font-medium">${escapeHtml(category)}</span>
+      ${categoryLink}
       <span class="text-slate-400">/</span>
       <span class="text-slate-900 font-extrabold" id="breadcrumb-current">${escapeHtml(currentName)}</span>
     `;
@@ -2658,6 +2864,10 @@ app.get('*', (req, res) => {
 
   if (reqPath === '/vacuum' || reqPath === '/vacuum/' || reqPath === '/product' || reqPath === '/product/') {
     return res.redirect(301, '/');
+  }
+
+  if (reqPath === '/guides/bagged-vs-bagless-vacuums' || reqPath === '/guides/bagged-vs-bagless-vacuums/') {
+    return res.redirect(301, '/guides/bagged-vs-bagless-vacuums-guide');
   }
 
   const indexPath = path.join(__dirname, 'index.html');
@@ -3002,6 +3212,7 @@ app.get('*', (req, res) => {
 
     // SSR Body Content Generation
     let breadcrumbCategory = '';
+    let breadcrumbCategoryUrl = '';
     let breadcrumbCurrent = 'All Vacuum Cleaners';
     let bannerHtml = '';
     let articleHtml = '';
@@ -3022,7 +3233,8 @@ app.get('*', (req, res) => {
       if (matched) {
         showArticle = true;
         showMainContent = false;
-        breadcrumbCategory = 'Product Review';
+        breadcrumbCategory = getCanonicalCategoryName(matched.type);
+        breadcrumbCategoryUrl = `/category/${getCanonicalCategorySlug(matched.type)}`;
         breadcrumbCurrent = `${matched.brand} ${matched.model}`;
         articleHtml = renderServerProductReviewPage(matched, cachedProducts);
       } else {
@@ -3042,7 +3254,8 @@ app.get('*', (req, res) => {
     } else if (reqPath === '/categories' || reqPath === '/categories/' || reqPath === '/category' || reqPath === '/category/') {
       showBanner = true;
       showMainContent = true;
-      breadcrumbCategory = 'Navigation';
+      breadcrumbCategory = 'Directory';
+      breadcrumbCategoryUrl = '/';
       breadcrumbCurrent = 'All Categories';
       bannerHtml = renderServerBanner(
         'Vacuum Cleaner Categories Directory',
@@ -3053,7 +3266,8 @@ app.get('*', (req, res) => {
     } else if (reqPath === '/brands' || reqPath === '/brands/' || reqPath === '/brand' || reqPath === '/brand/') {
       showBanner = true;
       showMainContent = true;
-      breadcrumbCategory = 'Navigation';
+      breadcrumbCategory = 'Directory';
+      breadcrumbCategoryUrl = '/';
       breadcrumbCurrent = 'Popular Brands';
       bannerHtml = renderServerBanner(
         'Popular Vacuum Cleaner Brands Directory',
@@ -3074,7 +3288,8 @@ app.get('*', (req, res) => {
 
       showBanner = true;
       showMainContent = true;
-      breadcrumbCategory = 'Brand Collection';
+      breadcrumbCategory = 'Brands';
+      breadcrumbCategoryUrl = '/brands';
       breadcrumbCurrent = brandName;
       bannerHtml = renderServerBanner(
         `${brandName} Vacuum Cleaners`,
@@ -3092,7 +3307,8 @@ app.get('*', (req, res) => {
 
       showBanner = true;
       showMainContent = true;
-      breadcrumbCategory = 'Category Index';
+      breadcrumbCategory = 'Categories';
+      breadcrumbCategoryUrl = '/categories';
       breadcrumbCurrent = displayType;
       bannerHtml = renderServerBanner(
         `${displayType} Vacuum Cleaners`,
@@ -3105,13 +3321,15 @@ app.get('*', (req, res) => {
       const guideTitle = getGuideTitle(gSlug);
       showArticle = true;
       showMainContent = false;
-      breadcrumbCategory = 'Buying Guide';
+      breadcrumbCategory = 'Buying Guides';
+      breadcrumbCategoryUrl = '/#home-categories-section';
       breadcrumbCurrent = guideTitle;
       articleHtml = renderServerBuyingGuidePage(gSlug, cachedProducts);
     } else if (reqPath === '/compare' || reqPath === '/compare/') {
       showArticle = true;
       showMainContent = false;
-      breadcrumbCategory = 'Tool';
+      breadcrumbCategory = 'Comparison Tool';
+      breadcrumbCategoryUrl = '/compare/';
       breadcrumbCurrent = 'Compare Vacuums';
       articleHtml = renderServerCompareHubPage(cachedProducts, productSlugMap);
     } else if (reqPath.startsWith('/compare/')) {
@@ -3120,14 +3338,16 @@ app.get('*', (req, res) => {
       const label = parts.map(p => p.replace(/-/g, ' ').toUpperCase()).join(' vs ');
       showArticle = true;
       showMainContent = false;
-      breadcrumbCategory = 'Comparison';
+      breadcrumbCategory = 'Vacuum Comparisons';
+      breadcrumbCategoryUrl = '/compare/';
       breadcrumbCurrent = label;
       articleHtml = renderServerComparisonPage(compareSlug, cachedProducts, productSlugMap);
     } else if (['/about', '/editorial-policy', '/affiliate-disclosure', '/privacy-policy', '/terms', '/contact', '/html-sitemap'].includes(reqPath)) {
       const pageTitle = getEeatPageTitle(reqPath);
       showArticle = true;
       showMainContent = false;
-      breadcrumbCategory = 'Information';
+      breadcrumbCategory = 'Editorial & Standards';
+      breadcrumbCategoryUrl = '/about';
       breadcrumbCurrent = pageTitle;
       articleHtml = renderServerEeatPage(reqPath, cachedProducts);
     } else {
@@ -3148,7 +3368,7 @@ app.get('*', (req, res) => {
 
     // Apply HTML Modifications
     // 1. Breadcrumbs
-    const breadcrumbHtml = renderServerBreadcrumbs(breadcrumbCategory, breadcrumbCurrent);
+    const breadcrumbHtml = renderServerBreadcrumbs(breadcrumbCategory, breadcrumbCurrent, breadcrumbCategoryUrl);
     html = html.replace(/<div class="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto whitespace-nowrap" id="breadcrumbs-container">[\s\S]*?<\/div>/i, `<div class="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto whitespace-nowrap" id="breadcrumbs-container">${breadcrumbHtml}</div>`);
 
     // 2. Home Sections

@@ -1451,6 +1451,30 @@ function matchCategoryClient(cSlug) {
   return matched ? matched.type : cSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 }
 
+function getCanonicalCategorySlug(type) {
+  if (!type) return 'cordless-stick';
+  const norm = String(type).toLowerCase().trim();
+  if (norm.includes('robot')) return 'robot-vacuums';
+  if (norm.includes('stick') || norm.includes('cordless')) return 'cordless-stick';
+  if (norm.includes('upright')) return 'upright-vacuums';
+  if (norm.includes('canister')) return 'canister-vacuums';
+  if (norm.includes('handheld')) return 'handheld-vacuums';
+  if (norm.includes('wet') || norm.includes('dry')) return 'wet-dry-vacuums';
+  return slugifyId(type);
+}
+
+function getCanonicalCategoryName(type) {
+  if (!type) return 'Cordless Stick Vacuums';
+  const norm = String(type).toLowerCase().trim();
+  if (norm.includes('robot')) return 'Robot Vacuums';
+  if (norm.includes('stick') || norm.includes('cordless')) return 'Cordless Stick Vacuums';
+  if (norm.includes('upright')) return 'Upright Vacuums';
+  if (norm.includes('canister')) return 'Canister Vacuums';
+  if (norm.includes('handheld')) return 'Handheld Vacuums';
+  if (norm.includes('wet') || norm.includes('dry')) return 'Wet & Dry Vacuums';
+  return `${type} Vacuums`;
+}
+
 function matchBrandClient(bSlug) {
   if (!bSlug) return 'Dyson';
   const norm = String(bSlug).toLowerCase().trim();
@@ -2851,8 +2875,11 @@ function renderProductReviewPage(p) {
           <a href="/brand/${pBrandSlug}" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
             ${escapeHtml(p.brand)} Vacuum Cleaners
           </a>
-          <a href="/category/${slugifyId(p.type)}" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
-            ${escapeHtml(p.type)} Vacuum Cleaners
+          <a href="/category/${getCanonicalCategorySlug(p.type)}" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            ${escapeHtml(getCanonicalCategoryName(p.type))}
+          </a>
+          <a href="/compare/" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
+            Comparison Tool &rarr;
           </a>
         </div>
       </section>
@@ -2994,17 +3021,20 @@ function renderBuyingGuidePage(guideSlug) {
                     <a href="/brand/${p.brandSlug || slugifyId(p.brand)}" class="text-xs font-extrabold uppercase text-brand-600 tracking-wider hover:underline">${escapeHtml(p.brand)}</a>
                   </div>
                   <h3 class="text-lg font-extrabold text-slate-900">
-                    <a href="/vacuum/${slug}" class="hover:text-brand-600 transition">${escapeHtml(p.model)}</a>
+                    <a href="/vacuum/${slug}" class="hover:text-brand-600 transition">${escapeHtml(p.brand)} ${escapeHtml(p.model)} Review</a>
                   </h3>
                   <div class="flex flex-wrap gap-2 text-xs font-medium text-slate-600">
-                    <span class="bg-slate-100 px-2.5 py-0.5 rounded">${escapeHtml(p.type)}</span>
+                    <a href="/category/${getCanonicalCategorySlug(p.type)}" class="bg-slate-100 px-2.5 py-0.5 rounded hover:bg-slate-200 text-slate-800 font-semibold">${escapeHtml(getCanonicalCategoryName(p.type))}</a>
                     <span class="bg-slate-100 px-2.5 py-0.5 rounded">Suction: ${escapeHtml(suctionText)}</span>
                     ${p.hepaFiltration ? '<span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded font-bold">HEPA Sealed</span>' : ''}
                     <span class="text-amber-500 font-bold"><i class="fa-solid fa-star"></i> ${p.starRating || 4.5}</span>
                   </div>
                 </div>
 
-                <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto shrink-0">
+                <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto shrink-0">
+                  <a href="/vacuum/${slug}" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                    Read Review &rarr;
+                  </a>
                   ${p.amazonLink ? `
                     <a href="${escapeAttr(p.amazonLink)}" target="_blank" rel="nofollow sponsored" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
                       <i class="fa-brands fa-amazon"></i> Check Price
@@ -3035,8 +3065,43 @@ function renderBuyingGuidePage(guideSlug) {
           <a href="/guides/best-budget-cordless-vacuums" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group">
             <span class="text-slate-900 group-hover:text-brand-600 transition">Best Budget Cordless Vacuums Under $300</span> &rarr;
           </a>
-          <a href="/guides/bagged-vs-bagless-vacuums" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group sm:col-span-2">
-            <span class="text-slate-900 group-hover:text-brand-600 transition">Bagged vs. Bagless Vacuums: Allergy & Cost Guide</span> &rarr;
+          <a href="/guides/bagged-vs-bagless-vacuums-guide" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group sm:col-span-2">
+            <span class="text-slate-900 group-hover:text-brand-600 transition">Bagged vs. Bagless Vacuums: Complete Allergy &amp; Hygiene Guide</span> &rarr;
+          </a>
+        </div>
+      </section>
+
+      <!-- Category & Tool Directories Footer Links -->
+      <section class="p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+            <i class="fa-solid fa-folder-tree text-brand-600"></i> Related Categories &amp; Comparison Tools
+          </h3>
+          <a href="/compare/" class="text-xs font-bold text-brand-600 hover:underline">
+            Side-by-Side Comparison Tool &rarr;
+          </a>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs font-bold">
+          <a href="/category/cordless-stick" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Cordless Stick Vacuums
+          </a>
+          <a href="/category/robot-vacuums" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Robot Vacuums
+          </a>
+          <a href="/category/upright-vacuums" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Upright Vacuums
+          </a>
+          <a href="/category/canister-vacuums" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Canister Vacuums
+          </a>
+          <a href="/category/wet-dry-vacuums" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Wet &amp; Dry Vacuums
+          </a>
+          <a href="/categories" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
+            All Vacuum Categories &rarr;
+          </a>
+          <a href="/brands" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
+            All Vacuum Brands &rarr;
           </a>
         </div>
       </section>
@@ -3158,35 +3223,157 @@ function renderCompareHubPage() {
         </div>
       </section>
 
-      <!-- Content Section 1: Popular Vacuum Comparisons -->
+      <!-- Content Section 1: Popular Vacuum Head-to-Head Comparisons -->
       <section class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
-        <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-          <i class="fa-solid fa-fire text-amber-500"></i> Popular Vacuum Comparisons
-        </h3>
-        <ul class="space-y-3 text-sm text-slate-700 list-disc list-inside">
-          <li>
-            <a href="/compare/dyson-v15-detect-vs-shark-stratos" class="font-bold text-brand-600 hover:underline">Dyson V15 Detect vs Shark Stratos Cordless</a> – Laser detection vs Clean Sense IQ
-          </li>
-          <li>
-            <a href="/compare/irobot-roomba-j7-vs-roborock-s8" class="font-bold text-brand-600 hover:underline">iRobot Roomba j7+ vs Roborock S8 Pro Ultra</a> – Pet waste avoidance vs advanced mopping
-          </li>
-          <li>
-            <a href="/compare/miele-complete-c3-vs-dyson-ball-animal-3" class="font-bold text-brand-600 hover:underline">Miele Complete C3 vs Dyson Ball Animal 3</a> – Sealed HEPA system vs strong agitator power
-          </li>
-          <li>
-            <a href="/category/cordless-stick" class="font-bold text-brand-600 hover:underline">Best Cordless Stick Vacuums Compared</a>
-          </li>
-          <li>
-            <a href="/guides/best-vacuum-for-pet-hair" class="font-bold text-brand-600 hover:underline">Best Robot Vacuums for Pet Hair</a>
-          </li>
-          <li>
-            <a href="/guides/best-budget-vacuums" class="font-bold text-brand-600 hover:underline">Best Budget Vacuums Under $300</a>
-          </li>
-        </ul>
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <i class="fa-solid fa-fire text-amber-500"></i> Popular Vacuum Head-to-Head Comparisons
+          </h3>
+          <span class="text-xs text-slate-500 font-medium">Frequently compared by consumers</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+          <a href="/compare/dyson-v15-detect-vs-shark-stratos-cordless" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-sm transition group block space-y-1">
+            <div class="text-[10px] font-extrabold text-brand-600 uppercase">Cordless Stick Matchup</div>
+            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Dyson V15 Detect vs Shark Stratos Cordless</div>
+            <div class="text-xs text-slate-500">Laser dust illumination vs Clean Sense IQ suction</div>
+          </a>
+          <a href="/compare/irobot-roomba-j7-vs-roborock-s8-pro-ultra" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-sm transition group block space-y-1">
+            <div class="text-[10px] font-extrabold text-brand-600 uppercase">Robot Vacuum Battle</div>
+            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">iRobot Roomba j7+ vs Roborock S8 Pro Ultra</div>
+            <div class="text-xs text-slate-500">Obstacle camera AI vs auto-emptying sonic mop</div>
+          </a>
+          <a href="/compare/dyson-v8-vs-shark-navigator-lift-away" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-sm transition group block space-y-1">
+            <div class="text-[10px] font-extrabold text-brand-600 uppercase">Budget Matchup</div>
+            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Dyson V8 vs Shark Navigator Lift-Away</div>
+            <div class="text-xs text-slate-500">Cordless lightweight vs upright deep suction</div>
+          </a>
+          <a href="/compare/dyson-gen5detect-vs-dyson-v15-detect" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-sm transition group block space-y-1">
+            <div class="text-[10px] font-extrabold text-brand-600 uppercase">Flagship Shootout</div>
+            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Dyson Gen5detect vs Dyson V15 Detect</div>
+            <div class="text-xs text-slate-500">262 AW suction vs 230 AW suction comparison</div>
+          </a>
+          <a href="/compare/shark-stratos-cordless-vs-shark-vertex-cordless" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-sm transition group block space-y-1">
+            <div class="text-[10px] font-extrabold text-brand-600 uppercase">Brand Showdown</div>
+            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Shark Stratos vs Shark Vertex Cordless</div>
+            <div class="text-xs text-slate-500">Clean Sense IQ vs DuoClean PowerFins comparison</div>
+          </a>
+          <a href="/compare/tineco-floor-one-s5-vs-bissell-crosswave-hydrosteam" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-sm transition group block space-y-1">
+            <div class="text-[10px] font-extrabold text-brand-600 uppercase">Wet &amp; Dry Comparison</div>
+            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Tineco Floor ONE S5 vs BISSELL CrossWave HydroSteam</div>
+            <div class="text-xs text-slate-500">Cordless smart floor washer vs steam mop suction</div>
+          </a>
+        </div>
       </section>
 
-      <!-- Content Section 2: How Our Vacuum Comparison Works -->
+      <!-- Content Section 2: Explore Vacuums by Category -->
       <section class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <i class="fa-solid fa-folder-tree text-brand-600"></i> Explore Vacuums by Category
+          </h3>
+          <a href="/categories" class="text-xs font-bold text-brand-600 hover:underline">All Categories &rarr;</a>
+        </div>
+        <p class="text-xs text-slate-500">Filter and browse vacuum specifications organized by design type and cleaning purpose.</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 pt-2">
+          <a href="/category/cordless-stick" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white text-center transition group block">
+            <div class="text-base text-brand-600 mb-1 group-hover:scale-110 transition-transform"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <div class="font-bold text-xs text-slate-900 group-hover:text-brand-600">Cordless Stick Vacuums</div>
+          </a>
+          <a href="/category/robot-vacuums" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white text-center transition group block">
+            <div class="text-base text-brand-600 mb-1 group-hover:scale-110 transition-transform"><i class="fa-solid fa-robot"></i></div>
+            <div class="font-bold text-xs text-slate-900 group-hover:text-brand-600">Robot Vacuums</div>
+          </a>
+          <a href="/category/upright-vacuums" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white text-center transition group block">
+            <div class="text-base text-brand-600 mb-1 group-hover:scale-110 transition-transform"><i class="fa-solid fa-arrows-up-down"></i></div>
+            <div class="font-bold text-xs text-slate-900 group-hover:text-brand-600">Upright Vacuums</div>
+          </a>
+          <a href="/category/canister-vacuums" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white text-center transition group block">
+            <div class="text-base text-brand-600 mb-1 group-hover:scale-110 transition-transform"><i class="fa-solid fa-box-archive"></i></div>
+            <div class="font-bold text-xs text-slate-900 group-hover:text-brand-600">Canister Vacuums</div>
+          </a>
+          <a href="/category/handheld-vacuums" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white text-center transition group block">
+            <div class="text-base text-brand-600 mb-1 group-hover:scale-110 transition-transform"><i class="fa-solid fa-hand"></i></div>
+            <div class="font-bold text-xs text-slate-900 group-hover:text-brand-600">Handheld Vacuums</div>
+          </a>
+          <a href="/category/wet-dry-vacuums" class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white text-center transition group block">
+            <div class="text-base text-brand-600 mb-1 group-hover:scale-110 transition-transform"><i class="fa-solid fa-droplet"></i></div>
+            <div class="font-bold text-xs text-slate-900 group-hover:text-brand-600">Wet &amp; Dry Vacuums</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Content Section 3: Compare Top Vacuum Brands -->
+      <section class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <i class="fa-solid fa-tags text-brand-600"></i> Compare Top Vacuum Brands
+          </h3>
+          <a href="/brands" class="text-xs font-bold text-brand-600 hover:underline">All Brands &rarr;</a>
+        </div>
+        <p class="text-xs text-slate-500">Access verified specifications and comprehensive reviews for major vacuum cleaner manufacturers.</p>
+        <div class="flex flex-wrap gap-2.5 pt-2">
+          <a href="/brand/dyson" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:text-brand-600 font-bold text-xs text-slate-800 transition">
+            Dyson Vacuums
+          </a>
+          <a href="/brand/shark" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:text-brand-600 font-bold text-xs text-slate-800 transition">
+            Shark Vacuums
+          </a>
+          <a href="/brand/roborock" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:text-brand-600 font-bold text-xs text-slate-800 transition">
+            Roborock Robot Vacuums
+          </a>
+          <a href="/brand/irobot" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:text-brand-600 font-bold text-xs text-slate-800 transition">
+            iRobot Roomba Vacuums
+          </a>
+          <a href="/brand/bissell" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:text-brand-600 font-bold text-xs text-slate-800 transition">
+            BISSELL Vacuums
+          </a>
+          <a href="/brand/miele" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:text-brand-600 font-bold text-xs text-slate-800 transition">
+            Miele Canister Vacuums
+          </a>
+          <a href="/brand/tineco" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:text-brand-600 font-bold text-xs text-slate-800 transition">
+            Tineco Wet &amp; Dry
+          </a>
+          <a href="/brand/eufy" class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:text-brand-600 font-bold text-xs text-slate-800 transition">
+            eufy Robot Vacuums
+          </a>
+        </div>
+      </section>
+
+      <!-- Content Section 4: Expert Vacuum Buying Guides -->
+      <section class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <i class="fa-solid fa-book-open text-brand-600"></i> Expert Vacuum Buying Guides
+          </h3>
+          <span class="text-xs text-slate-500 font-medium">Curated by VacCompare Test Lab</span>
+        </div>
+        <p class="text-xs text-slate-500">In-depth roundups and testing criteria for specific cleaning needs and flooring surfaces.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+          <a href="/guides/best-vacuum-for-pet-hair" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white transition group block space-y-1">
+            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">10 Best Vacuums for Pet Hair (2026 Tested)</div>
+            <div class="text-xs text-slate-500">Anti-tangle brushrolls &amp; sealed HEPA filtration benchmarks</div>
+          </a>
+          <a href="/guides/best-robot-vacuums-2026" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white transition group block space-y-1">
+            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Top 8 Best Robot Vacuums of 2026</div>
+            <div class="text-xs text-slate-500">Hands-on testing: LiDAR navigation, self-emptying &amp; mopping</div>
+          </a>
+          <a href="/guides/best-hardwood-floor-vacuums" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white transition group block space-y-1">
+            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Best Vacuums for Hardwood Floors</div>
+            <div class="text-xs text-slate-500">Soft roller heads that protect polyurethane from scratches</div>
+          </a>
+          <a href="/guides/best-budget-cordless-vacuums" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white transition group block space-y-1">
+            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Best Budget Cordless Vacuums Under $300</div>
+            <div class="text-xs text-slate-500">High-suction cordless stick models tested for budget shoppers</div>
+          </a>
+          <a href="/guides/bagged-vs-bagless-vacuums-guide" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white transition group block space-y-1 sm:col-span-2 lg:col-span-2">
+            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Bagged vs. Bagless Vacuums: Complete Buying Guide</div>
+            <div class="text-xs text-slate-500">Allergy protection, long-term costs, maintenance &amp; hygiene compared</div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Content Section 5: How Our Vacuum Comparison Works -->
+      <section class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
         <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
           <i class="fa-solid fa-gears text-brand-600"></i> How Our Vacuum Comparison Works
         </h3>
@@ -3205,37 +3392,12 @@ function renderCompareHubPage() {
               <li>Customer Star Ratings</li>
             </ul>
           </li>
-          <li class="leading-relaxed"><strong class="text-slate-900">Read our expert verdict</strong> on which model is better for your specific needs (pet hair, hardwood floors, carpets, allergies, etc.)</li>
+          <li class="leading-relaxed"><strong class="text-slate-900">Read our verified spec breakdown</strong> to choose the best vacuum for your specific floor type, pet hair needs, and budget.</li>
         </ol>
       </section>
 
-      <!-- Content Section 3: Why Compare Vacuums Before Buying? -->
-      <section class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
-        <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-          <i class="fa-solid fa-circle-question text-brand-600"></i> Why Compare Vacuums Before Buying?
-        </h3>
-        <div class="space-y-3 text-sm text-slate-700 leading-relaxed">
-          <p>
-            Choosing the wrong vacuum can waste hundreds of dollars. A high suction number doesn’t always mean better performance on your floors. Factors like brush roll design, filtration quality, and real-world runtime matter more than marketing claims.
-          </p>
-          <p>
-            At VacCompare, we focus on verified specifications and standardized comparison points so you can see the real differences between popular models from Dyson, Shark, Roborock, iRobot, Bissell, Miele, Tineco, and many more.
-          </p>
-        </div>
-      </section>
-
-      <!-- Content Section 4: Start Comparing Now -->
-      <section class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
-        <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-          <i class="fa-solid fa-bolt text-amber-500"></i> Start Comparing Now
-        </h3>
-        <p class="text-sm text-slate-700 leading-relaxed">
-          Use the comparison tool above or browse our most popular head-to-head matchups. Still not sure which type of vacuum you need? Check our <a href="/guides/best-vacuum-for-pet-hair" class="text-brand-600 font-bold hover:underline">Buying Guides</a> for recommendations based on floor type, pet ownership, and budget.
-        </p>
-      </section>
-
-      <!-- Content Section 5: Frequently Asked Questions -->
-      <section class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6">
+      <!-- Content Section 6: Frequently Asked Questions -->
+      <section class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-6">
         <div>
           <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
             <i class="fa-solid fa-comments text-brand-600"></i> Frequently Asked Questions
@@ -3244,24 +3406,24 @@ function renderCompareHubPage() {
         </div>
 
         <div class="space-y-4 text-sm">
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-2">
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
             <h4 class="font-bold text-slate-900 text-sm sm:text-base">How many vacuum cleaners can I compare at once?</h4>
-            <p class="text-slate-600 leading-relaxed">You can compare up to 4 vacuum models side-by-side on VacCompare.</p>
+            <p class="text-slate-600 leading-relaxed">You can compare up to 4 vacuum models side-by-side using our free comparison tool above.</p>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-2">
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
             <h4 class="font-bold text-slate-900 text-sm sm:text-base">What specs do you compare?</h4>
-            <p class="text-slate-600 leading-relaxed">We compare suction power (kPa), noise level (dB), dust capacity, HEPA filtration, battery life, weight, power source, and customer ratings.</p>
+            <p class="text-slate-600 leading-relaxed">We compare suction power (kPa), noise level (dB), dust capacity, HEPA filtration, battery runtime, weight, power source, and customer star ratings.</p>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-2">
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
             <h4 class="font-bold text-slate-900 text-sm sm:text-base">Are the specifications accurate?</h4>
-            <p class="text-slate-600 leading-relaxed">Yes. We collect and cross-check technical data from manufacturer specifications, official product pages, and verified public listings.</p>
+            <p class="text-slate-600 leading-relaxed">Yes. We collect and cross-check technical data from manufacturer specifications, official product manuals, and verified public listings.</p>
           </div>
 
-          <div class="bg-white p-5 rounded-2xl border border-slate-200 space-y-2">
+          <div class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-2">
             <h4 class="font-bold text-slate-900 text-sm sm:text-base">Can I compare robot vacuums with cordless stick vacuums?</h4>
-            <p class="text-slate-600 leading-relaxed">Yes. You can compare any combination of vacuum types available in our database.</p>
+            <p class="text-slate-600 leading-relaxed">Yes. You can compare any combination of vacuum types available in our verified database. For deep dives, check our <a href="/guides/best-robot-vacuums-2026" class="text-brand-600 font-bold hover:underline">Robot Vacuums Guide</a> and <a href="/category/cordless-stick" class="text-brand-600 font-bold hover:underline">Cordless Stick Vacuums Category</a>.</p>
           </div>
         </div>
       </section>
@@ -3480,7 +3642,7 @@ function renderComparisonPage(compareSlug) {
             ${escapeHtml(p1.brand)} ${escapeHtml(p1.model)} Review
           </h2>
           <div class="text-xs space-y-1 text-slate-600">
-            <p><strong>Type:</strong> <a href="/category/${slugifyId(p1.type)}" class="text-brand-600 hover:underline font-semibold">${escapeHtml(p1.type)} Vacuums</a></p>
+            <p><strong>Type:</strong> <a href="/category/${getCanonicalCategorySlug(p1.type)}" class="text-brand-600 hover:underline font-semibold">${escapeHtml(getCanonicalCategoryName(p1.type))}</a></p>
             <p><strong>Suction:</strong> ${p1.suctionKpaRaw ? `${p1.suctionKpaRaw} kPa` : 'Standard'}</p>
           </div>
           <div class="pt-2 flex flex-wrap gap-2">
@@ -3497,7 +3659,7 @@ function renderComparisonPage(compareSlug) {
             ${escapeHtml(p2.brand)} ${escapeHtml(p2.model)} Review
           </h2>
           <div class="text-xs space-y-1 text-slate-600">
-            <p><strong>Type:</strong> <a href="/category/${slugifyId(p2.type)}" class="text-indigo-600 hover:underline font-semibold">${escapeHtml(p2.type)} Vacuums</a></p>
+            <p><strong>Type:</strong> <a href="/category/${getCanonicalCategorySlug(p2.type)}" class="text-indigo-600 hover:underline font-semibold">${escapeHtml(getCanonicalCategoryName(p2.type))}</a></p>
             <p><strong>Suction:</strong> ${p2.suctionKpaRaw ? `${p2.suctionKpaRaw} kPa` : 'Standard'}</p>
           </div>
           <div class="pt-2 flex flex-wrap gap-2">
@@ -3608,14 +3770,25 @@ function renderComparisonPage(compareSlug) {
               ${escapeHtml(p2.brand)} Vacuum Cleaners
             </a>
           ` : ''}
-          <a href="/category/${slugifyId(p1.type)}" class="px-4 py-2 bg-white rounded-xl border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
-            ${escapeHtml(p1.type)} Vacuum Cleaners
+          <a href="/category/${getCanonicalCategorySlug(p1.type)}" class="px-4 py-2 bg-white rounded-xl border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            ${escapeHtml(getCanonicalCategoryName(p1.type))}
           </a>
+          ${getCanonicalCategorySlug(p1.type) !== getCanonicalCategorySlug(p2.type) ? `
+            <a href="/category/${getCanonicalCategorySlug(p2.type)}" class="px-4 py-2 bg-white rounded-xl border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+              ${escapeHtml(getCanonicalCategoryName(p2.type))}
+            </a>
+          ` : ''}
           <a href="/guides/best-vacuum-for-pet-hair" class="px-4 py-2 bg-white rounded-xl border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
             10 Best Vacuum Cleaners for Pet Hair
           </a>
           <a href="/guides/best-budget-cordless-vacuums" class="px-4 py-2 bg-white rounded-xl border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
             Best Budget Cordless Vacuums Under $300
+          </a>
+          <a href="/compare/" class="px-4 py-2 bg-white rounded-xl border border-slate-200 text-slate-800 hover:bg-slate-50 transition">
+            Compare Hub Tool &rarr;
+          </a>
+          <a href="/categories" class="px-4 py-2 bg-white rounded-xl border border-slate-200 text-slate-800 hover:bg-slate-50 transition">
+            All Categories &rarr;
           </a>
         </div>
       </section>
@@ -3741,17 +3914,21 @@ function renderEeatPage(path) {
         <div>
           <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Vacuum Categories</h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            ${topTypes.map(t => `<a href="/category/${slugifyId(t)}" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">${escapeHtml(t)}</a>`).join('')}
+            ${topTypes.map(t => `<a href="/category/${getCanonicalCategorySlug(t)}" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">${escapeHtml(getCanonicalCategoryName(t))}</a>`).join('')}
           </div>
         </div>
 
         <div>
           <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Buying Guides &amp; Comparisons</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <a href="/guides/best-vacuum-for-pet-hair" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">10 Best Vacuum Cleaners for Pet Hair (2026)</a>
+            <a href="/guides/best-vacuum-for-pet-hair" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">10 Best Vacuum Cleaners for Pet Hair (2026 Tested)</a>
             <a href="/guides/best-robot-vacuums-2026" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Top 8 Best Robot Vacuums of 2026</a>
             <a href="/guides/best-hardwood-floor-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Best Vacuums for Hardwood Floors</a>
-            <a href="/compare/dyson-v15-vs-shark-stratos" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Dyson V15 vs Shark Stratos Comparison</a>
+            <a href="/guides/best-budget-cordless-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Best Budget Cordless Vacuums Under $300</a>
+            <a href="/guides/bagged-vs-bagless-vacuums-guide" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Bagged vs. Bagless Vacuums: Complete Buying Guide</a>
+            <a href="/compare/" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-brand-600 transition">Interactive Vacuum Comparison Hub &rarr;</a>
+            <a href="/compare/dyson-v15-detect-vs-shark-stratos-cordless" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Dyson V15 Detect vs Shark Stratos Cordless</a>
+            <a href="/compare/irobot-roomba-j7-vs-roborock-s8-pro-ultra" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">iRobot Roomba j7+ vs Roborock S8 Pro Ultra</a>
           </div>
         </div>
 

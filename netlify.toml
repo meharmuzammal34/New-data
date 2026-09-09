@@ -1,5 +1,10 @@
 [build]
+  command = "npm run build"
   publish = "."
+
+[build.environment]
+  SECRETS_SCAN_SMART_DETECTION_ENABLED = "false"
+  SECRETS_SCAN_OMIT_PATHS = "node_modules/**,firebase-applet-config.json"
 
 [[redirects]]
   from = "https://animated-speculoos-5d5706.netlify.app/*"

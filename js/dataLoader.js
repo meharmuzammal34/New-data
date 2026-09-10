@@ -134,10 +134,19 @@ function mapRowToProduct(row, index) {
   const asin = extractAsin(get(2), row);
   const imageUrl = getProductImageUrl(asin);
 
+  const brandSlug = slugify(brand);
+  const modelSlug = slugify(model);
+  const fullSlug = `${brandSlug}-${modelSlug}-review`;
+  const reviewUrl = `/vacuum/${fullSlug}`;
+
   const product = {
     id: `p-${index}-${slugify(brand + '-' + model)}`,
     brand,
     model,
+    brandSlug,
+    modelSlug,
+    fullSlug,
+    reviewUrl,
     asin,
     imageUrl,
     amazonLink: formatAmazonLink(get(2)),

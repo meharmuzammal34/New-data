@@ -572,6 +572,25 @@ function updateMetaDescription(desc) {
     document.head.appendChild(meta);
   }
   meta.setAttribute('content', desc);
+
+  const ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogDesc) ogDesc.setAttribute('content', desc);
+  const twDesc = document.querySelector('meta[name="twitter:description"]');
+  if (twDesc) twDesc.setAttribute('content', desc);
+}
+
+function updateRobotsTag(isNoIndex) {
+  let meta = document.querySelector('meta[name="robots"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.name = 'robots';
+    document.head.appendChild(meta);
+  }
+  if (isNoIndex) {
+    meta.setAttribute('content', 'noindex, nofollow');
+  } else {
+    meta.setAttribute('content', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1');
+  }
 }
 
 function formatProductMetaTitle(prodName) {
@@ -813,6 +832,25 @@ function onProductsLoaded() {
       renderCompareHubPage();
       updateBreadcrumbs('Tool', 'Compare Vacuums');
     }
+  } else if (path === '/reviews' || path === '/reviews/') {
+    renderReviewsHubPage();
+    bindArticleViewEvents(null);
+  } else if (path.startsWith('/reviews/')) {
+    const slug = path.replace('/reviews/', '').replace(/\/$/, '');
+    if (slug === 'shark-professional-navigator-upright-vacuum-cleaner-review') {
+      renderSharkNavigatorReviewPage();
+    } else {
+      const product = findProductBySlug(slug);
+      if (product) {
+        navigateTo(product.reviewUrl || (`/vacuum/${getProductReviewSlug(product)}`));
+      } else {
+        render404Page(path);
+        bindArticleViewEvents(null);
+        updateBreadcrumbs('Error', '404 Page Not Found');
+        document.title = '404 Page Not Found | VacCompare';
+        updateMetaDescription('The requested review could not be found.');
+      }
+    }
   } else if (path.startsWith('/brand/')) {
     const brandSlug = path.replace('/brand/', '').replace(/\/$/, '');
     const matchedBrand = matchBrandClient(brandSlug);
@@ -920,9 +958,10 @@ function bindArticleViewEvents(product) {
 }
 
 function handleRouteFromUrl() {
-  const path = window.location.pathname;
+  const rawPath = window.location.pathname || '/';
+  const path = (rawPath.length > 1 && rawPath.endsWith('/')) ? rawPath.slice(0, -1) : rawPath;
 
-  if (path === '/vacuum' || path === '/vacuum/') {
+  if (path === '/vacuum') {
     window.history.replaceState(null, '', '/');
     handleRouteFromUrl();
     return;
@@ -932,6 +971,7 @@ function handleRouteFromUrl() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
   updateCanonicalTag(path);
+  updateRobotsTag(false);
 
   if (els.mobileNavDrawer) els.mobileNavDrawer.classList.add('hidden');
 
@@ -945,8 +985,10 @@ function handleRouteFromUrl() {
   if (path === '/reviews/shark-professional-navigator-upright-vacuum-cleaner-review') {
     showArticleView();
     updateBreadcrumbs('Reviews', 'Shark Professional Navigator Upright');
-    document.title = 'Shark Professional Navigator Upright Vacuum Cleaner Review';
+    document.title = 'Shark Professional Navigator Upright Vacuum Cleaner Review | VacCompare';
     updateMetaDescription('Shark Professional Navigator Upright Vacuum Cleaner review covering suction, Lift-Away design, HEPA filtration, attachments, swivel steering, pros, cons, FAQs, and overall rating.');
+    updateCanonicalTag('/reviews/shark-professional-navigator-upright-vacuum-cleaner-review');
+    updateRobotsTag(false);
 
     if (hasSsrContent) {
       bindArticleViewEvents({ brand: 'Shark', model: 'Professional Navigator Upright NV356E' });
@@ -954,12 +996,14 @@ function handleRouteFromUrl() {
       renderSharkNavigatorReviewPage();
     }
   }
-  // Reviews Directory: /reviews or /reviews/
-  else if (path === '/reviews' || path === '/reviews/') {
+  // Reviews Directory: /reviews
+  else if (path === '/reviews') {
     showArticleView();
     updateBreadcrumbs('Reviews Directory', 'All Reviews');
     document.title = 'Vacuum Cleaner Reviews & Lab Ratings | VacCompare';
     updateMetaDescription('Read in-depth vacuum cleaner reviews and laboratory benchmarks. Detailed testing on suction power, HEPA filtration, noise levels, and real-world durability.');
+    updateCanonicalTag('/reviews');
+    updateRobotsTag(false);
 
     if (hasSsrContent) {
       bindArticleViewEvents(null);
@@ -969,18 +1013,37 @@ function handleRouteFromUrl() {
   }
   // Other /reviews/:slug aliases or redirects
   else if (path.startsWith('/reviews/')) {
-    const slug = path.replace('/reviews/', '').replace(/\/$/, '');
-    const product = findProductBySlug(slug);
-    if (product) {
-      navigateTo(product.reviewUrl);
+    const slug = path.replace('/reviews/', '');
+    if (slug === 'shark-professional-navigator-upright-vacuum-cleaner-review') {
+      showArticleView();
+      updateBreadcrumbs('Reviews', 'Shark Professional Navigator Upright');
+      document.title = 'Shark Professional Navigator Upright Vacuum Cleaner Review | VacCompare';
+      updateMetaDescription('Shark Professional Navigator Upright Vacuum Cleaner review covering suction, Lift-Away design, HEPA filtration, attachments, swivel steering, pros, cons, FAQs, and overall rating.');
+      updateCanonicalTag('/reviews/shark-professional-navigator-upright-vacuum-cleaner-review');
+      updateRobotsTag(false);
+      renderSharkNavigatorReviewPage();
       return;
+    }
+
+    if (state.allProducts && state.allProducts.length > 0) {
+      const product = findProductBySlug(slug);
+      if (product) {
+        navigateTo(product.reviewUrl || (`/vacuum/${getProductReviewSlug(product)}`));
+        return;
+      } else {
+        showArticleView();
+        render404Page(path);
+        bindArticleViewEvents(null);
+        updateBreadcrumbs('Error', '404 Page Not Found');
+        document.title = '404 Page Not Found | VacCompare';
+        updateMetaDescription('The requested review could not be found.');
+      }
     } else {
       showArticleView();
-      render404Page(path);
-      bindArticleViewEvents(null);
-      updateBreadcrumbs('Error', '404 Page Not Found');
-      document.title = '404 Page Not Found | VacCompare';
-      updateMetaDescription('The requested review could not be found.');
+      renderProductReviewSkeleton(slug);
+      const approxName = formatSlugToTitle(slug);
+      updateBreadcrumbs('Product Review', approxName);
+      document.title = `${approxName} Review & Specs | VacCompare`;
     }
   }
   // Product Review Page: /vacuum/:slug or /product/:slug
@@ -3276,14 +3339,25 @@ function renderReviewsHubPage() {
   if (!els.dedicatedArticleView) return;
 
   const allProds = state.allProducts || [];
-  const featuredModels = [
-    allProds.find(p => p.brand.toLowerCase().includes('dyson') && p.model.toLowerCase().includes('v15')),
-    allProds.find(p => p.brand.toLowerCase().includes('shark') && p.model.toLowerCase().includes('stratos')),
-    allProds.find(p => p.brand.toLowerCase().includes('roborock') && p.model.toLowerCase().includes('s8')),
-    allProds.find(p => p.brand.toLowerCase().includes('miele') && p.model.toLowerCase().includes('c3')),
-    allProds.find(p => p.brand.toLowerCase().includes('tineco') && p.model.toLowerCase().includes('s5')),
-    allProds.find(p => p.brand.toLowerCase().includes('shark') && p.model.toLowerCase().includes('nv352'))
+  const foundFeatured = [
+    allProds.find(p => p.brand && p.brand.toLowerCase().includes('dyson') && p.model && p.model.toLowerCase().includes('v15')),
+    allProds.find(p => p.brand && p.brand.toLowerCase().includes('shark') && p.model && p.model.toLowerCase().includes('stratos')),
+    allProds.find(p => p.brand && p.brand.toLowerCase().includes('roborock') && p.model && p.model.toLowerCase().includes('s8')),
+    allProds.find(p => p.brand && p.brand.toLowerCase().includes('miele') && p.model && p.model.toLowerCase().includes('c3')),
+    allProds.find(p => p.brand && p.brand.toLowerCase().includes('tineco') && p.model && p.model.toLowerCase().includes('s5')),
+    allProds.find(p => p.brand && p.brand.toLowerCase().includes('shark') && p.model && p.model.toLowerCase().includes('nv352'))
   ].filter(Boolean);
+
+  const fallbackFeatured = [
+    { brand: 'Dyson', model: 'V15s Detect Submarine', brandSlug: 'dyson', type: 'Stick', reviewUrl: '/vacuum/dyson-v15s-review', starRating: 4.8, numReviews: 1420, suctionKpaRaw: '240 AW', hepaFiltration: true, asin: 'B0C79MSX4Z', imageUrl: 'https://m.media-amazon.com/images/P/B0C79MSX4Z.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B0C79MSX4Z?tag=wat344r5-20' },
+    { brand: 'Shark', model: 'Stratos DuoClean PowerFins Upright', brandSlug: 'ninja-shark', type: 'Upright', reviewUrl: '/vacuum/ninja-shark-stratos-duoclean-powerfins-upright-vacuum-amazon-s-choice-review', starRating: 4.6, numReviews: 890, suctionKpaRaw: 'High', hepaFiltration: true, asin: 'B0B8TX8L1Q', imageUrl: 'https://m.media-amazon.com/images/P/B0B8TX8L1Q.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B0B8TX8L1Q?tag=wat344r5-20' },
+    { brand: 'Roborock', model: 'S8 Max Ultra', brandSlug: 'roborock', type: 'Robot', reviewUrl: '/vacuum/roborock-s8-max-ultra-review', starRating: 4.7, numReviews: 610, suctionKpaRaw: '10 kPa', hepaFiltration: true, asin: 'B0CWR995K3', imageUrl: 'https://m.media-amazon.com/images/P/B0CWR995K3.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B0CWR995K3?tag=wat344r5-20' },
+    { brand: 'Miele', model: 'Complete C3 125 Gala Edition', brandSlug: 'miele', type: 'Canister', reviewUrl: '/vacuum/miele-complete-c3-125-gala-edition-review', starRating: 4.9, numReviews: 530, suctionKpaRaw: '1200 W', hepaFiltration: true, asin: 'B0CSWSTK27', imageUrl: 'https://m.media-amazon.com/images/P/B0CSWSTK27.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B0CSWSTK27?tag=wat344r5-20' },
+    { brand: 'Tineco', model: 'Floor One S5', brandSlug: 'tineco', type: 'Wet/Dry', reviewUrl: '/vacuum/tineco-floor-one-s5-review', starRating: 4.5, numReviews: 2100, suctionKpaRaw: 'Smart iLoop', hepaFiltration: true, asin: 'B096VMBG2F', imageUrl: 'https://m.media-amazon.com/images/P/B096VMBG2F.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B096VMBG2F?tag=wat344r5-20' },
+    { brand: 'Shark', model: 'Navigator Lift-Away NV352', brandSlug: 'ninja-shark', type: 'Upright', reviewUrl: '/vacuum/shark-nv352-amazon-s-choice-review', starRating: 4.6, numReviews: 32000, suctionKpaRaw: 'Never Loses Suction', hepaFiltration: true, asin: 'B004Q4X51E', imageUrl: 'https://m.media-amazon.com/images/P/B004Q4X51E.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B004Q4X51E?tag=wat344r5-20' }
+  ];
+
+  const featuredModels = foundFeatured.length >= 4 ? foundFeatured : fallbackFeatured;
 
   const html = `
     <article class="space-y-8 text-slate-800">
@@ -3388,15 +3462,20 @@ function renderReviewsHubPage() {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           ${featuredModels.map(p => {
             const suctionText = p.suctionKpaRaw && p.suctionKpaRaw !== '-' ? `${p.suctionKpaRaw} kPa` : 'Standard';
+            const rUrl = p.reviewUrl || (`/vacuum/${getProductReviewSlug(p)}`);
+            const bSlug = p.brandSlug || slugifyId(p.brand);
+            const catSlug = getCanonicalCategorySlug(p.type);
+            const catName = getCanonicalCategoryName(p.type);
+            const aLink = p.amazonLink || (p.asin ? `https://www.amazon.com/dp/${p.asin}?tag=wat344r5-20` : null);
             return `
               <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:border-brand-500 hover:shadow-md transition flex flex-col justify-between space-y-4">
                 <div class="space-y-3">
                   <div class="flex items-center justify-between gap-2">
-                    <a href="/brand/${p.brandSlug}" class="text-[11px] font-extrabold text-brand-600 uppercase tracking-wider hover:underline">${escapeHtml(p.brand)}</a>
-                    <a href="/category/${getCanonicalCategorySlug(p.type)}" class="text-[11px] font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 px-2 py-0.5 rounded">${escapeHtml(getCanonicalCategoryName(p.type))}</a>
+                    <a href="/brand/${bSlug}" class="text-[11px] font-extrabold text-brand-600 uppercase tracking-wider hover:underline">${escapeHtml(p.brand)}</a>
+                    <a href="/category/${catSlug}" class="text-[11px] font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 px-2 py-0.5 rounded">${escapeHtml(catName)}</a>
                   </div>
 
-                  <a href="${p.reviewUrl}" class="h-44 bg-slate-50 rounded-xl p-3 flex items-center justify-center overflow-hidden block group">
+                  <a href="${rUrl}" class="h-44 bg-slate-50 rounded-xl p-3 flex items-center justify-center overflow-hidden block group">
                     <img src="${escapeAttr(p.imageUrl || getProductImageUrl(p.asin))}" alt="${escapeAttr(p.brand)} ${escapeAttr(p.model)}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
                   </a>
 
@@ -3407,7 +3486,7 @@ function renderReviewsHubPage() {
                       <span class="text-slate-400 font-normal">(${p.numReviews ? p.numReviews.toLocaleString() : '120'} reviews)</span>
                     </div>
                     <h3 class="font-extrabold text-base text-slate-900 leading-snug">
-                      <a href="${p.reviewUrl}" class="hover:text-brand-600 transition">${escapeHtml(p.brand)} ${escapeHtml(p.model)} Review</a>
+                      <a href="${rUrl}" class="hover:text-brand-600 transition">${escapeHtml(p.brand)} ${escapeHtml(p.model)} Review</a>
                     </h3>
                   </div>
 
@@ -3418,11 +3497,11 @@ function renderReviewsHubPage() {
                 </div>
 
                 <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                  <a href="${p.reviewUrl}" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition flex items-center gap-1">
+                  <a href="${rUrl}" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition flex items-center gap-1">
                     Read Review &rarr;
                   </a>
-                  ${p.amazonLink ? `
-                    <a href="${escapeAttr(p.amazonLink)}" target="_blank" rel="nofollow sponsored" class="text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-amber-100 px-2.5 py-1.5 rounded-lg transition inline-flex items-center gap-1">
+                  ${aLink ? `
+                    <a href="${escapeAttr(aLink)}" target="_blank" rel="nofollow sponsored" class="text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-amber-100 px-2.5 py-1.5 rounded-lg transition inline-flex items-center gap-1">
                       <i class="fa-brands fa-amazon text-amber-500"></i> Amazon
                     </a>
                   ` : ''}
@@ -4570,6 +4649,9 @@ function renderEeatPage(path) {
 
 /** 5. Dedicated 404 Page Renderer */
 function render404Page(path) {
+  updateRobotsTag(true);
+  document.title = '404 Page Not Found | VacCompare';
+  updateMetaDescription('The page you requested could not be found. Return to VacCompare to explore our vacuum cleaner comparisons and reviews database.');
   if (!els.dedicatedArticleView) return;
 
   const html = `

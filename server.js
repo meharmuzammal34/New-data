@@ -424,13 +424,16 @@ function findProductBySlugServer(slug, allProducts, slugMap) {
   const sub = list.find(p => {
     const s1 = slugify(`${p.brand}-${p.model}`);
     const s2 = slugify(p.model);
-    return (s2 && cleanSlug.includes(s2)) || (s1 && cleanSlug.includes(s1)) ||
-           (s2 && noReviewSlug.includes(s2)) || (s1 && noReviewSlug.includes(s1));
+    if (s1.length >= 8 && (cleanSlug.startsWith(s1) || noReviewSlug.startsWith(s1))) return true;
+    if (s2.length >= 8 && (cleanSlug.startsWith(s2) || noReviewSlug.startsWith(s2))) return true;
+    return false;
   });
   if (sub) return sub;
 
   // Fallback: Token-based scoring
   const slugTokens = noReviewSlug.split(/[^a-z0-9]+/).filter(Boolean);
+  if (slugTokens.length < 2) return null;
+
   let bestProd = null;
   let bestScore = -1;
 
@@ -448,30 +451,27 @@ function findProductBySlugServer(slug, allProducts, slugMap) {
     for (const t of slugTokens) {
       if (bTokens.includes(t) || bSlug === t) {
         if (!matchedBrand) {
-          score += 10;
+          score += 20;
           matchedBrand = true;
         }
       } else {
         if (mSlug === t || mTokens.includes(t)) {
           score += 40;
           matchedModel = true;
-        } else if (mSlug.startsWith(t) || t.startsWith(mSlug) || mSlug.includes(t)) {
+        } else if (t.length >= 4 && (mSlug.startsWith(t) || mTokens.some(mt => mt === t))) {
           score += 25;
-          matchedModel = true;
-        } else if (mTokens.some(mt => mt.startsWith(t) || t.startsWith(mt))) {
-          score += 15;
           matchedModel = true;
         }
       }
     }
-    if (matchedBrand && matchedModel) score += 20;
+    if (matchedBrand && matchedModel) score += 30;
 
     if (score > bestScore) {
       bestScore = score;
       bestProd = p;
     }
   }
-  return bestScore >= 20 ? bestProd : null;
+  return (bestScore >= 60 && bestProd) ? bestProd : null;
 }
 
 loadProductsServer();
@@ -2165,14 +2165,25 @@ function renderServerSharkNavigatorReviewPage(origin, allProducts) {
 
 function renderServerReviewsHubPage(origin, allProducts) {
   // Notable verified models from test database
-  const featuredModels = [
-    allProducts.find(p => p.brand.toLowerCase().includes('dyson') && p.model.toLowerCase().includes('v15')),
-    allProducts.find(p => p.brand.toLowerCase().includes('shark') && p.model.toLowerCase().includes('stratos')),
-    allProducts.find(p => p.brand.toLowerCase().includes('roborock') && p.model.toLowerCase().includes('s8')),
-    allProducts.find(p => p.brand.toLowerCase().includes('miele') && p.model.toLowerCase().includes('c3')),
-    allProducts.find(p => p.brand.toLowerCase().includes('tineco') && p.model.toLowerCase().includes('s5')),
-    allProducts.find(p => p.brand.toLowerCase().includes('shark') && p.model.toLowerCase().includes('nv352'))
+  const foundFeatured = [
+    allProducts.find(p => p.brand && p.brand.toLowerCase().includes('dyson') && p.model && p.model.toLowerCase().includes('v15')),
+    allProducts.find(p => p.brand && p.brand.toLowerCase().includes('shark') && p.model && p.model.toLowerCase().includes('stratos')),
+    allProducts.find(p => p.brand && p.brand.toLowerCase().includes('roborock') && p.model && p.model.toLowerCase().includes('s8')),
+    allProducts.find(p => p.brand && p.brand.toLowerCase().includes('miele') && p.model && p.model.toLowerCase().includes('c3')),
+    allProducts.find(p => p.brand && p.brand.toLowerCase().includes('tineco') && p.model && p.model.toLowerCase().includes('s5')),
+    allProducts.find(p => p.brand && p.brand.toLowerCase().includes('shark') && p.model && p.model.toLowerCase().includes('nv352'))
   ].filter(Boolean);
+
+  const fallbackFeatured = [
+    { brand: 'Dyson', model: 'V15s Detect Submarine', brandSlug: 'dyson', type: 'Stick', reviewUrl: '/vacuum/dyson-v15s-review', starRating: 4.8, numReviews: 1420, suctionKpaRaw: '240 AW', hepaFiltration: true, asin: 'B0C79MSX4Z', imageUrl: 'https://m.media-amazon.com/images/P/B0C79MSX4Z.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B0C79MSX4Z?tag=wat344r5-20' },
+    { brand: 'Shark', model: 'Stratos DuoClean PowerFins Upright', brandSlug: 'ninja-shark', type: 'Upright', reviewUrl: '/vacuum/ninja-shark-stratos-duoclean-powerfins-upright-vacuum-amazon-s-choice-review', starRating: 4.6, numReviews: 890, suctionKpaRaw: 'High', hepaFiltration: true, asin: 'B0B8TX8L1Q', imageUrl: 'https://m.media-amazon.com/images/P/B0B8TX8L1Q.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B0B8TX8L1Q?tag=wat344r5-20' },
+    { brand: 'Roborock', model: 'S8 Max Ultra', brandSlug: 'roborock', type: 'Robot', reviewUrl: '/vacuum/roborock-s8-max-ultra-review', starRating: 4.7, numReviews: 610, suctionKpaRaw: '10 kPa', hepaFiltration: true, asin: 'B0CWR995K3', imageUrl: 'https://m.media-amazon.com/images/P/B0CWR995K3.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B0CWR995K3?tag=wat344r5-20' },
+    { brand: 'Miele', model: 'Complete C3 125 Gala Edition', brandSlug: 'miele', type: 'Canister', reviewUrl: '/vacuum/miele-complete-c3-125-gala-edition-review', starRating: 4.9, numReviews: 530, suctionKpaRaw: '1200 W', hepaFiltration: true, asin: 'B0CSWSTK27', imageUrl: 'https://m.media-amazon.com/images/P/B0CSWSTK27.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B0CSWSTK27?tag=wat344r5-20' },
+    { brand: 'Tineco', model: 'Floor One S5', brandSlug: 'tineco', type: 'Wet/Dry', reviewUrl: '/vacuum/tineco-floor-one-s5-review', starRating: 4.5, numReviews: 2100, suctionKpaRaw: 'Smart iLoop', hepaFiltration: true, asin: 'B096VMBG2F', imageUrl: 'https://m.media-amazon.com/images/P/B096VMBG2F.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B096VMBG2F?tag=wat344r5-20' },
+    { brand: 'Shark', model: 'Navigator Lift-Away NV352', brandSlug: 'ninja-shark', type: 'Upright', reviewUrl: '/vacuum/shark-nv352-amazon-s-choice-review', starRating: 4.6, numReviews: 32000, suctionKpaRaw: 'Never Loses Suction', hepaFiltration: true, asin: 'B004Q4X51E', imageUrl: 'https://m.media-amazon.com/images/P/B004Q4X51E.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B004Q4X51E?tag=wat344r5-20' }
+  ];
+
+  const featuredModels = foundFeatured.length >= 4 ? foundFeatured : fallbackFeatured;
 
   return `
     <article class="space-y-8 text-slate-800">
@@ -2277,15 +2288,20 @@ function renderServerReviewsHubPage(origin, allProducts) {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           ${featuredModels.map(p => {
             const suctionText = p.suctionKpaRaw && p.suctionKpaRaw !== '-' ? `${p.suctionKpaRaw} kPa` : 'Standard';
+            const rUrl = p.reviewUrl || (`/vacuum/${p.fullSlug || (slugify(p.brand) + '-' + slugify(p.model) + '-review')}`);
+            const bSlug = p.brandSlug || slugify(p.brand);
+            const catSlug = getCanonicalCategorySlug(p.type);
+            const catName = getCanonicalCategoryName(p.type);
+            const aLink = p.amazonLink || (p.asin ? `https://www.amazon.com/dp/${p.asin}?tag=wat344r5-20` : null);
             return `
               <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:border-brand-500 hover:shadow-md transition flex flex-col justify-between space-y-4">
                 <div class="space-y-3">
                   <div class="flex items-center justify-between gap-2">
-                    <a href="/brand/${p.brandSlug}" class="text-[11px] font-extrabold text-brand-600 uppercase tracking-wider hover:underline">${escapeHtml(p.brand)}</a>
-                    <a href="/category/${getCanonicalCategorySlug(p.type)}" class="text-[11px] font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 px-2 py-0.5 rounded">${escapeHtml(getCanonicalCategoryName(p.type))}</a>
+                    <a href="/brand/${bSlug}" class="text-[11px] font-extrabold text-brand-600 uppercase tracking-wider hover:underline">${escapeHtml(p.brand)}</a>
+                    <a href="/category/${catSlug}" class="text-[11px] font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 px-2 py-0.5 rounded">${escapeHtml(catName)}</a>
                   </div>
 
-                  <a href="${p.reviewUrl}" class="h-44 bg-slate-50 rounded-xl p-3 flex items-center justify-center overflow-hidden block group">
+                  <a href="${rUrl}" class="h-44 bg-slate-50 rounded-xl p-3 flex items-center justify-center overflow-hidden block group">
                     <img src="${escapeAttr(p.imageUrl || getProductImageUrl(p.asin))}" alt="${escapeAttr(p.brand)} ${escapeAttr(p.model)}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
                   </a>
 
@@ -2296,7 +2312,7 @@ function renderServerReviewsHubPage(origin, allProducts) {
                       <span class="text-slate-400 font-normal">(${p.numReviews ? p.numReviews.toLocaleString() : '120'} reviews)</span>
                     </div>
                     <h3 class="font-extrabold text-base text-slate-900 leading-snug">
-                      <a href="${p.reviewUrl}" class="hover:text-brand-600 transition">${escapeHtml(p.brand)} ${escapeHtml(p.model)} Review</a>
+                      <a href="${rUrl}" class="hover:text-brand-600 transition">${escapeHtml(p.brand)} ${escapeHtml(p.model)} Review</a>
                     </h3>
                   </div>
 
@@ -2307,11 +2323,11 @@ function renderServerReviewsHubPage(origin, allProducts) {
                 </div>
 
                 <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                  <a href="${p.reviewUrl}" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition flex items-center gap-1">
+                  <a href="${rUrl}" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition flex items-center gap-1">
                     Read Review &rarr;
                   </a>
-                  ${p.amazonLink ? `
-                    <a href="${escapeAttr(p.amazonLink)}" target="_blank" rel="nofollow sponsored" class="text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-amber-100 px-2.5 py-1.5 rounded-lg transition inline-flex items-center gap-1">
+                  ${aLink ? `
+                    <a href="${escapeAttr(aLink)}" target="_blank" rel="nofollow sponsored" class="text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-amber-100 px-2.5 py-1.5 rounded-lg transition inline-flex items-center gap-1">
                       <i class="fa-brands fa-amazon text-amber-500"></i> Amazon
                     </a>
                   ` : ''}
@@ -3375,18 +3391,19 @@ app.get(['/vacuum', '/vacuum/', '/product', '/product/'], (req, res) => {
 /* ---------------------------------------------------------------- */
 
 app.get('*', (req, res) => {
-  const reqPath = req.path;
+  const rawReqPath = req.path || '/';
+  const reqPath = (rawReqPath.length > 1 && rawReqPath.endsWith('/')) ? rawReqPath.slice(0, -1) : rawReqPath;
 
   // Don't serve HTML index for missing static assets (prevent Unexpected token '<' errors)
   if (/\.(js|css|png|jpg|jpeg|gif|ico|svg|json|csv|woff2?|map|webmanifest|xml)$/i.test(reqPath)) {
     return res.status(404).send('Asset Not Found');
   }
 
-  if (reqPath === '/vacuum' || reqPath === '/vacuum/' || reqPath === '/product' || reqPath === '/product/') {
+  if (reqPath === '/vacuum' || reqPath === '/product') {
     return res.redirect(301, '/');
   }
 
-  if (reqPath === '/guides/bagged-vs-bagless-vacuums' || reqPath === '/guides/bagged-vs-bagless-vacuums/') {
+  if (reqPath === '/guides/bagged-vs-bagless-vacuums') {
     return res.redirect(301, '/guides/bagged-vs-bagless-vacuums-guide');
   }
 
@@ -3885,10 +3902,11 @@ app.get('*', (req, res) => {
         breadcrumbCurrent = `${matched.brand} ${matched.model}`;
         articleHtml = renderServerProductReviewPage(matched, cachedProducts);
       } else {
+        res.status(404);
         showArticle = true;
         showMainContent = false;
         breadcrumbCategory = 'Error';
-        breadcrumbCurrent = '404 Page Not Found';
+        breadcrumbCurrent = '404 - Page Not Found';
         articleHtml = `
           <div class="text-center py-16 bg-white rounded-2xl border border-slate-200 space-y-4">
             <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500"></i>
@@ -4045,6 +4063,20 @@ app.get('*', (req, res) => {
     // 5. Dedicated Article View
     if (showArticle && articleHtml) {
       html = html.replace('<div id="dedicated-article-view" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"></div>', `<div id="dedicated-article-view" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">${articleHtml}</div>`);
+    }
+
+    if (res.statusCode === 404) {
+      html = html.replace(/<title>.*?<\/title>/i, '<title>404 Page Not Found | VacCompare</title>');
+      html = html.replace(/<meta name="description"[^>]*>/i, '<meta name="description" content="The requested vacuum review or specification page could not be located in our verified database.">');
+      if (html.includes('<meta name="robots"')) {
+        html = html.replace(/<meta name="robots"[^>]*>/i, '<meta name="robots" content="noindex, nofollow">');
+      } else {
+        html = html.replace('</head>', '<meta name="robots" content="noindex, nofollow">\n</head>');
+      }
+      html = html.replace(/<meta property="og:title"[^>]*>/i, '<meta property="og:title" content="404 Page Not Found | VacCompare">');
+      html = html.replace(/<meta property="og:description"[^>]*>/i, '<meta property="og:description" content="The requested vacuum review or specification page could not be located in our verified database.">');
+      html = html.replace(/<meta name="twitter:title"[^>]*>/i, '<meta name="twitter:title" content="404 Page Not Found | VacCompare">');
+      html = html.replace(/<meta name="twitter:description"[^>]*>/i, '<meta name="twitter:description" content="The requested vacuum review or specification page could not be located in our verified database.">');
     }
 
     res.send(html);

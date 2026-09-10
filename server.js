@@ -390,12 +390,81 @@ function loadProductsServer() {
       productSlugMap.set(baseSlug, p);
       productSlugMap.set(modelSlug, p);
       productSlugMap.set(rawId, p);
+
+      const cleanB = cleanBrandName(brand);
+      const cleanBSlug = slugify(cleanB);
+      if (cleanBSlug && cleanBSlug !== brandSlug) {
+        productSlugMap.set(`${cleanBSlug}-${modelSlug}-review`, p);
+        productSlugMap.set(`${cleanBSlug}-${modelSlug}`, p);
+      }
+
+      // Add common model shorthand aliases (e.g. Dyson V15s -> dyson-v15, dyson-v15-detect)
+      const mLower = model.toLowerCase();
+      if (mLower.includes('v15')) {
+        productSlugMap.set('dyson-v15', p);
+        productSlugMap.set('dyson-v15-detect', p);
+        productSlugMap.set('dyson-v15-detect-review', p);
+      }
+      if (mLower.includes('stratos') && (brand.toLowerCase().includes('shark') || cleanB.toLowerCase().includes('shark'))) {
+        productSlugMap.set('shark-stratos', p);
+        productSlugMap.set('shark-stratos-cordless', p);
+        productSlugMap.set('shark-stratos-cordless-review', p);
+      }
+      if (mLower.includes('j7') && (brand.toLowerCase().includes('irobot') || mLower.includes('roomba'))) {
+        productSlugMap.set('irobot-roomba-j7', p);
+        productSlugMap.set('roomba-j7', p);
+      }
+      if (mLower.includes('s8') && brand.toLowerCase().includes('roborock')) {
+        productSlugMap.set('roborock-s8', p);
+        productSlugMap.set('roborock-s8-pro-ultra', p);
+      }
+      if (mLower.includes('v8') && brand.toLowerCase().includes('dyson')) {
+        productSlugMap.set('dyson-v8', p);
+      }
+      if (mLower.includes('navigator') && (brand.toLowerCase().includes('shark') || cleanB.toLowerCase().includes('shark'))) {
+        productSlugMap.set('shark-navigator', p);
+        productSlugMap.set('shark-navigator-lift-away', p);
+      }
+      if (mLower.includes('gen5') && brand.toLowerCase().includes('dyson')) {
+        productSlugMap.set('dyson-gen5detect', p);
+        productSlugMap.set('dyson-gen5', p);
+      }
+      if (mLower.includes('vertex') && (brand.toLowerCase().includes('shark') || cleanB.toLowerCase().includes('shark'))) {
+        productSlugMap.set('shark-vertex-cordless', p);
+        productSlugMap.set('shark-vertex', p);
+      }
     }
     cachedProducts = products;
     console.log(`Loaded ${products.length} products for server-side SEO generation.`);
   } catch (err) {
     console.error('Server CSV load error:', err);
   }
+}
+
+function cleanString(str) {
+  if (!str) return '';
+  return str
+    .replace(/\(\s*Amazon[\x27\u2019]?s\s+Choice\s*\)/gi, '')
+    .replace(/\bAmazon[\x27\u2019]?s\s+Choice\b/gi, '')
+    .replace(/\(\s*20\d\d\s*\)/gi, '')
+    .replace(/\b20\d\d\b/g, '')
+    .replace(/[®™]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function cleanBrandName(brand) {
+  let b = cleanString(brand);
+  if (/^ninja\s+shark/i.test(b)) return 'Shark';
+  if (/^irobot/i.test(b)) return 'iRobot';
+  if (/^(cordless|upright|for pet|for carpet|robot|handheld|car|wet|dry|canister|bagged|bagless)/i.test(b)) return '';
+  if (b.toUpperCase() === b && b.length > 2) {
+    if (b === 'ILIFE') return 'ILIFE';
+    if (b === 'DEWALT') return 'DEWALT';
+    if (b === 'BLACK+DECKER') return 'BLACK+DECKER';
+    return b.charAt(0).toUpperCase() + b.slice(1).toLowerCase();
+  }
+  return b;
 }
 
 function findProductBySlugServer(slug, allProducts, slugMap) {
@@ -415,17 +484,25 @@ function findProductBySlugServer(slug, allProducts, slugMap) {
     const s2 = slugify(p.model);
     const s3 = `${s1}-review`;
     const s4 = `${s2}-review`;
+    const cleanB = cleanBrandName(p.brand);
+    const cb1 = slugify(`${cleanB}-${p.model}`);
+    const cb2 = `${cb1}-review`;
     return cleanSlug === s1 || cleanSlug === s2 || cleanSlug === s3 || cleanSlug === s4 || cleanSlug === p.id ||
+           cleanSlug === cb1 || cleanSlug === cb2 ||
            noReviewSlug === s1 || noReviewSlug === s2 || noReviewSlug === p.id ||
-           withReviewSlug === s3 || withReviewSlug === s4;
+           noReviewSlug === cb1 ||
+           withReviewSlug === s3 || withReviewSlug === s4 || withReviewSlug === cb2;
   });
   if (exact) return exact;
 
   const sub = list.find(p => {
     const s1 = slugify(`${p.brand}-${p.model}`);
     const s2 = slugify(p.model);
-    if (s1.length >= 8 && (cleanSlug.startsWith(s1) || noReviewSlug.startsWith(s1))) return true;
-    if (s2.length >= 8 && (cleanSlug.startsWith(s2) || noReviewSlug.startsWith(s2))) return true;
+    const cleanB = cleanBrandName(p.brand);
+    const cb1 = slugify(`${cleanB}-${p.model}`);
+    if (s1.length >= 6 && (cleanSlug.startsWith(s1) || noReviewSlug.startsWith(s1))) return true;
+    if (cb1.length >= 6 && (cleanSlug.startsWith(cb1) || noReviewSlug.startsWith(cb1))) return true;
+    if (s2.length >= 6 && (cleanSlug.startsWith(s2) || noReviewSlug.startsWith(s2))) return true;
     return false;
   });
   if (sub) return sub;
@@ -438,8 +515,9 @@ function findProductBySlugServer(slug, allProducts, slugMap) {
   let bestScore = -1;
 
   for (const p of list) {
-    const bSlug = slugify(p.brand || '');
-    const cleanModel = (p.model || '').replace(new RegExp('^' + p.brand, 'i'), '').trim();
+    const cleanB = cleanBrandName(p.brand);
+    const bSlug = slugify(cleanB || p.brand || '');
+    const cleanModel = (p.model || '').replace(new RegExp('^' + (cleanB || p.brand || ''), 'i'), '').trim();
     const mSlug = slugify(cleanModel || p.model || '');
     const bTokens = bSlug.split(/[^a-z0-9]+/).filter(Boolean);
     const mTokens = mSlug.split(/[^a-z0-9]+/).filter(Boolean);
@@ -449,29 +527,29 @@ function findProductBySlugServer(slug, allProducts, slugMap) {
     let matchedModel = false;
 
     for (const t of slugTokens) {
-      if (bTokens.includes(t) || bSlug === t) {
+      if (bTokens.includes(t) || bSlug === t || (t.length >= 3 && bSlug.includes(t))) {
         if (!matchedBrand) {
-          score += 20;
+          score += 25;
           matchedBrand = true;
         }
       } else {
         if (mSlug === t || mTokens.includes(t)) {
           score += 40;
           matchedModel = true;
-        } else if (t.length >= 4 && (mSlug.startsWith(t) || mTokens.some(mt => mt === t))) {
-          score += 25;
+        } else if (t.length >= 2 && (mSlug.startsWith(t) || t.startsWith(mSlug) || mTokens.some(mt => mt.startsWith(t) || t.startsWith(mt)))) {
+          score += 30;
           matchedModel = true;
         }
       }
     }
-    if (matchedBrand && matchedModel) score += 30;
+    if (matchedBrand && matchedModel) score += 35;
 
     if (score > bestScore) {
       bestScore = score;
       bestProd = p;
     }
   }
-  return (bestScore >= 60 && bestProd) ? bestProd : null;
+  return (bestScore >= 55 && bestProd) ? bestProd : null;
 }
 
 loadProductsServer();
@@ -485,32 +563,6 @@ function formatComparisonMetaTitle(compareSlug, allProducts, productSlugMap) {
   const parts = compareSlug.split('-vs-');
   const part1 = parts[0] || '';
   const part2 = parts[1] || '';
-
-  function cleanString(str) {
-    if (!str) return '';
-    return str
-      .replace(/\(\s*Amazon[\x27\u2019]?s\s+Choice\s*\)/gi, '')
-      .replace(/\bAmazon[\x27\u2019]?s\s+Choice\b/gi, '')
-      .replace(/\(\s*20\d\d\s*\)/gi, '')
-      .replace(/\b20\d\d\b/g, '')
-      .replace(/[®™]/g, '')
-      .replace(/\s+/g, ' ')
-      .trim();
-  }
-
-  function cleanBrandName(brand) {
-    let b = cleanString(brand);
-    if (/^ninja\s+shark/i.test(b)) return 'Shark';
-    if (/^irobot/i.test(b)) return 'iRobot';
-    if (/^(cordless|upright|for pet|for carpet|robot|handheld|car|wet|dry|canister|bagged|bagless)/i.test(b)) return '';
-    if (b.toUpperCase() === b && b.length > 2) {
-      if (b === 'ILIFE') return 'ILIFE';
-      if (b === 'DEWALT') return 'DEWALT';
-      if (b === 'BLACK+DECKER') return 'BLACK+DECKER';
-      return b.charAt(0).toUpperCase() + b.slice(1).toLowerCase();
-    }
-    return b;
-  }
 
   function cleanModelForTitle(model, slugPart) {
     if (!model) return '';

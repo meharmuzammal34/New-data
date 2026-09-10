@@ -132,6 +132,7 @@ const PAGES = [
   '/',
   '/reviews',
   '/reviews/shark-professional-navigator-upright-vacuum-cleaner-review',
+  '/compare',
   '/about',
   '/editorial-policy',
   '/affiliate-disclosure',
@@ -269,7 +270,38 @@ const comparisonSitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 ${comparisonUrls}
 </urlset>`;
 
-// 6. Products sitemap
+// 6. Reviews sitemap (Dedicated Reviews Hub & Model Test Reports)
+const reviewHubUrls = [
+  `  <url>
+    <loc>${CANONICAL_ORIGIN}/reviews</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>`,
+  `  <url>
+    <loc>${CANONICAL_ORIGIN}/reviews/shark-professional-navigator-upright-vacuum-cleaner-review</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>`
+];
+
+const allReviewsUrls = [
+  ...reviewHubUrls,
+  ...products.map(p => `  <url>
+    <loc>${CANONICAL_ORIGIN}${p.reviewUrl}</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`)
+].join('\n');
+
+const reviewsSitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${allReviewsUrls}
+</urlset>`;
+
+// 7. Products sitemap
 const productsUrls = products.map(p => `  <url>
     <loc>${CANONICAL_ORIGIN}${p.reviewUrl}</loc>
     <lastmod>${today}</lastmod>
@@ -298,6 +330,7 @@ const imagesSitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 const sitemapIndexXml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap><loc>${CANONICAL_ORIGIN}/pages-sitemap.xml</loc></sitemap>
+  <sitemap><loc>${CANONICAL_ORIGIN}/reviews-sitemap.xml</loc></sitemap>
   <sitemap><loc>${CANONICAL_ORIGIN}/categories-sitemap.xml</loc></sitemap>
   <sitemap><loc>${CANONICAL_ORIGIN}/brands-sitemap.xml</loc></sitemap>
   <sitemap><loc>${CANONICAL_ORIGIN}/guides-sitemap.xml</loc></sitemap>
@@ -309,6 +342,7 @@ const sitemapIndexXml = `<?xml version="1.0" encoding="UTF-8"?>
 // 10. Comprehensive All-In-One Sitemap (sitemap-all.xml)
 const allUrls = [
   pagesUrls,
+  reviewHubUrls.join('\n'),
   categoriesUrls,
   brandsUrls,
   guidesUrls,
@@ -338,6 +372,20 @@ const feedXml = `<?xml version="1.0" encoding="UTF-8"?>
     <description>Latest vacuum cleaner reviews, comparisons, and buying guides.</description>
     <language>en-us</language>
     <atom:link href="${CANONICAL_ORIGIN}/feed.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>Vacuum Cleaner Reviews Directory &amp; Lab Benchmarks</title>
+      <link>${CANONICAL_ORIGIN}/reviews</link>
+      <guid>${CANONICAL_ORIGIN}/reviews</guid>
+      <pubDate>${new Date().toUTCString()}</pubDate>
+      <description>Explore hands-on evaluations, suction pressure measurements, HEPA particle capture ratings, and acoustic noise levels.</description>
+    </item>
+    <item>
+      <title>Shark Professional Navigator Upright Vacuum Cleaner Review</title>
+      <link>${CANONICAL_ORIGIN}/reviews/shark-professional-navigator-upright-vacuum-cleaner-review</link>
+      <guid>${CANONICAL_ORIGIN}/reviews/shark-professional-navigator-upright-vacuum-cleaner-review</guid>
+      <pubDate>${new Date().toUTCString()}</pubDate>
+      <description>Comprehensive lab review and performance assessment of the Shark Professional Navigator Upright Vacuum Cleaner.</description>
+    </item>
 ${feedItems}
   </channel>
 </rss>`;
@@ -345,6 +393,8 @@ ${feedItems}
 // 12. Robots.txt
 const robotsTxt = `User-agent: *
 Allow: /
+Allow: /reviews
+Allow: /reviews/
 Allow: /vacuum/
 Allow: /brand/
 Allow: /category/
@@ -378,6 +428,7 @@ dirs.forEach(d => {
   fs.writeFileSync(path.join(d, 'sitemap-index.xml'), sitemapIndexXml, 'utf8');
   fs.writeFileSync(path.join(d, 'sitemap-all.xml'), sitemapAllXml, 'utf8');
   fs.writeFileSync(path.join(d, 'pages-sitemap.xml'), pagesSitemapXml, 'utf8');
+  fs.writeFileSync(path.join(d, 'reviews-sitemap.xml'), reviewsSitemapXml, 'utf8');
   fs.writeFileSync(path.join(d, 'categories-sitemap.xml'), categoriesSitemapXml, 'utf8');
   fs.writeFileSync(path.join(d, 'brands-sitemap.xml'), brandsSitemapXml, 'utf8');
   fs.writeFileSync(path.join(d, 'guides-sitemap.xml'), guidesSitemapXml, 'utf8');

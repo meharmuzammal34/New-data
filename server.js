@@ -805,6 +805,8 @@ app.get('/robots.txt', (req, res) => {
   res.type('text/plain');
   res.send(`User-agent: *
 Allow: /
+Allow: /reviews
+Allow: /reviews/
 Allow: /vacuum/
 Allow: /brand/
 Allow: /category/
@@ -828,6 +830,7 @@ app.get('/sitemap.xml', (req, res) => {
   res.send(`<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap><loc>${CANONICAL_ORIGIN}/pages-sitemap.xml</loc></sitemap>
+  <sitemap><loc>${CANONICAL_ORIGIN}/reviews-sitemap.xml</loc></sitemap>
   <sitemap><loc>${CANONICAL_ORIGIN}/categories-sitemap.xml</loc></sitemap>
   <sitemap><loc>${CANONICAL_ORIGIN}/brands-sitemap.xml</loc></sitemap>
   <sitemap><loc>${CANONICAL_ORIGIN}/guides-sitemap.xml</loc></sitemap>
@@ -837,12 +840,27 @@ app.get('/sitemap.xml', (req, res) => {
 </sitemapindex>`);
 });
 
+app.get('/reviews-sitemap.xml', (req, res) => {
+  const CANONICAL_ORIGIN = getCanonicalOrigin(req);
+  res.type('application/xml');
+  const today = new Date().toISOString().split('T')[0];
+  const reviewHubUrls = [
+    `\n  <url>\n    <loc>${CANONICAL_ORIGIN}/reviews</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.95</priority>\n  </url>`,
+    `\n  <url>\n    <loc>${CANONICAL_ORIGIN}/reviews/shark-professional-navigator-upright-vacuum-cleaner-review</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.85</priority>\n  </url>`
+  ];
+  const prodUrls = cachedProducts.map(p => `\n  <url>\n    <loc>${CANONICAL_ORIGIN}${p.reviewUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`).join('');
+
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${reviewHubUrls.join('')}${prodUrls}\n</urlset>`);
+});
 
 app.get('/pages-sitemap.xml', (req, res) => {
   const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const pages = [
     '/',
+    '/reviews',
+    '/reviews/shark-professional-navigator-upright-vacuum-cleaner-review',
+    '/compare',
     '/about',
     '/editorial-policy',
     '/affiliate-disclosure',
@@ -856,8 +874,8 @@ app.get('/pages-sitemap.xml', (req, res) => {
   <url>
     <loc>${CANONICAL_ORIGIN}${p === '/' ? '/' : p}</loc>
     <lastmod>${today}</lastmod>
-    <changefreq>${p === '/' ? 'daily' : 'monthly'}</changefreq>
-    <priority>${p === '/' ? '1.0' : '0.6'}</priority>
+    <changefreq>${p === '/' || p === '/reviews' ? 'daily' : 'monthly'}</changefreq>
+    <priority>${p === '/' ? '1.0' : p === '/reviews' ? '0.95' : '0.6'}</priority>
   </url>`).join('');
 
   res.send(`<?xml version="1.0" encoding="UTF-8"?>
@@ -3332,6 +3350,31 @@ function renderServerEeatPage(reqPath, allProducts) {
     const topTypes = Array.from(new Set(allProducts.map(p => p.type))).slice(0, 10);
     bodyHtml = `
       <div class="space-y-8 text-xs">
+        <div>
+          <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Vacuum Cleaner Reviews &amp; Lab Tests</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <a href="/reviews" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-brand-600 transition flex items-center justify-between">
+              <span>Vacuum Cleaner Reviews Hub &amp; Directory</span>
+              <span class="text-xs bg-brand-100 text-brand-700 font-extrabold px-2 py-0.5 rounded-full">All Reviews &rarr;</span>
+            </a>
+            <a href="/reviews/shark-professional-navigator-upright-vacuum-cleaner-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">
+              Shark Professional Navigator Upright Review (Tested)
+            </a>
+            <a href="/vacuum/dyson-v15s-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">
+              Dyson V15s Detect Submarine Review
+            </a>
+            <a href="/vacuum/roborock-s8-max-ultra-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">
+              Roborock S8 Max Ultra Robot Review
+            </a>
+            <a href="/vacuum/miele-complete-c3-125-gala-edition-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">
+              Miele Complete C3 Gala Edition Review
+            </a>
+            <a href="/vacuum/tineco-floor-one-s5-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">
+              Tineco Floor One S5 Wet/Dry Review
+            </a>
+          </div>
+        </div>
+
         <div>
           <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Popular Vacuum Brands</h3>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">

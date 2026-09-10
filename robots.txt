@@ -1,5 +1,7 @@
 User-agent: *
 Allow: /
+Allow: /reviews
+Allow: /reviews/
 Allow: /vacuum/
 Allow: /brand/
 Allow: /category/

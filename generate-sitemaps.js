@@ -407,10 +407,13 @@ Allow: /privacy-policy
 Allow: /terms
 Allow: /contact
 Allow: /html-sitemap
+Allow: /ads.txt
 Disallow: /api/private/
 
 Sitemap: ${CANONICAL_ORIGIN}/sitemap.xml
 `;
+
+const adsTxt = `google.com, pub-3390062879159776, DIRECT, f08c47fec0942fa0\n`;
 
 // Destination directories: root and public
 const dirs = [
@@ -423,6 +426,7 @@ dirs.forEach(d => {
     fs.mkdirSync(d, { recursive: true });
   }
 
+  fs.writeFileSync(path.join(d, 'ads.txt'), adsTxt, 'utf8');
   fs.writeFileSync(path.join(d, 'sitemap.xml'), sitemapIndexXml, 'utf8');
   fs.writeFileSync(path.join(d, 'sitemap_index.xml'), sitemapIndexXml, 'utf8');
   fs.writeFileSync(path.join(d, 'sitemap-index.xml'), sitemapIndexXml, 'utf8');

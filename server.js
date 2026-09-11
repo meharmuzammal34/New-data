@@ -819,9 +819,15 @@ Allow: /privacy-policy
 Allow: /terms
 Allow: /contact
 Allow: /html-sitemap
+Allow: /ads.txt
 Disallow: /api/private/
 
 Sitemap: ${CANONICAL_ORIGIN}/sitemap.xml`);
+});
+
+app.get('/ads.txt', (req, res) => {
+  res.type('text/plain');
+  res.send('google.com, pub-3390062879159776, DIRECT, f08c47fec0942fa0\n');
 });
 
 app.get('/sitemap.xml', (req, res) => {

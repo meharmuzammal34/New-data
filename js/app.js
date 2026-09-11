@@ -1000,8 +1000,8 @@ function handleRouteFromUrl() {
   else if (path === '/reviews') {
     showArticleView();
     updateBreadcrumbs('Reviews Directory', 'All Reviews');
-    document.title = 'Vacuum Cleaner Reviews & Lab Ratings | VacCompare';
-    updateMetaDescription('Read in-depth vacuum cleaner reviews and laboratory benchmarks. Detailed testing on suction power, HEPA filtration, noise levels, and real-world durability.');
+    document.title = 'Vacuum Cleaner Reviews & Ratings | VacCompare';
+    updateMetaDescription('Read in-depth vacuum cleaner reviews and comparison benchmarks. Detailed analysis of suction power, HEPA filtration, noise levels, and real-world durability.');
     updateCanonicalTag('/reviews');
     updateRobotsTag(false);
 
@@ -1100,7 +1100,7 @@ function handleRouteFromUrl() {
     showFilterGridView(
       'Popular Vacuum Cleaner Brands Directory',
       'All Brands',
-      'Compare tested vacuum models across top manufacturers including Dyson, Shark, Bissell, iRobot, Roborock, Miele, Tineco, Hoover, Eureka, Eufy, and more.'
+      'Compare vacuum models across top manufacturers including Dyson, Shark, Bissell, iRobot, Roborock, Miele, Tineco, Hoover, Eureka, Eufy, and more.'
     );
     render();
     syncCheckboxesFromState();
@@ -1123,14 +1123,14 @@ function handleRouteFromUrl() {
     showFilterGridView(
       `${matchedBrand} Vacuum Cleaners`,
       'Brand Directory',
-      `Explore ${count || 'all'} tested ${matchedBrand} vacuum models with verified suction pressure benchmarks, HEPA filtration specs, decibel noise levels, and star ratings.`
+      `Explore ${count || 'all'} ${matchedBrand} vacuum models with verified suction pressure benchmarks, HEPA filtration specs, decibel noise levels, and star ratings.`
     );
     render();
     syncCheckboxesFromState();
 
     updateBreadcrumbs('Brand Collection', matchedBrand);
     document.title = `Best ${matchedBrand} Vacuum Cleaners (Reviews & Specs) | VacCompare`;
-    updateMetaDescription(`Explore tested ${matchedBrand} vacuum models with verified suction metrics, HEPA filtration, noise levels, and customer ratings.`);
+    updateMetaDescription(`Explore ${matchedBrand} vacuum models with verified suction metrics, HEPA filtration, noise levels, and customer ratings.`);
   }
   // Category Collection: /category/:categorySlug
   else if (path.startsWith('/category/')) {
@@ -1585,7 +1585,7 @@ function matchBrandClient(bSlug) {
 
 function getGuideTitle(slug) {
   const titles = {
-    'best-vacuum-for-pet-hair': '10 Best Vacuum Cleaners for Pet Hair (2026 Tested)',
+    'best-vacuum-for-pet-hair': '10 Best Vacuum Cleaners for Pet Hair (2026 Guide)',
     'best-robot-vacuums-2026': 'Top 8 Best Robot Vacuums of 2026: Hands-On Reviews',
     'best-hardwood-floor-vacuums': 'Best Vacuums for Hardwood Floors: Anti-Scratch Guide',
     'best-budget-cordless-vacuums': 'Best Budget Cordless Vacuums Under $300 (Ranked & Reviewed)',
@@ -1596,7 +1596,7 @@ function getGuideTitle(slug) {
 
 function getEeatPageTitle(path) {
   const titles = {
-    '/about': 'About VacCompare – Independent Vacuum Cleaner Testing & Reviews',
+    '/about': 'About VacCompare – Vacuum Cleaner Comparisons & Reviews',
     '/editorial-policy': 'Editorial Policy & Review Standards | VacCompare',
     '/affiliate-disclosure': 'Affiliate Disclosure | VacCompare',
     '/privacy-policy': 'Privacy Policy | VacCompare',
@@ -2780,7 +2780,7 @@ function renderProductReviewPage(p) {
             <i class="fa-solid fa-thumbs-up"></i> Key Advantages
           </h3>
           <ul class="text-xs space-y-2 text-emerald-900 list-disc list-inside">
-            <li>Tested suction metric delivers ${escapeHtml(suctionText)} for deep debris removal.</li>
+            <li>Suction rating delivers ${escapeHtml(suctionText)} for deep debris removal.</li>
             <li>${escapeHtml(hepaText)} captures allergen particles.</li>
             <li>Balanced weight design (${escapeHtml(weightText)}) for quick maneuverability.</li>
             <li>High overall customer satisfaction score (${p.starRating || 4.5}/5.0).</li>
@@ -3366,16 +3366,16 @@ function renderReviewsHubPage() {
 
         <div class="relative z-10 space-y-3 max-w-3xl">
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-extrabold uppercase tracking-wider">
-            <i class="fa-solid fa-star-half-stroke text-brand-400"></i> Vacuum Cleaner Reviews &amp; Lab Benchmarks
+            <i class="fa-solid fa-star-half-stroke text-brand-400"></i> Vacuum Cleaner Reviews &amp; Ratings
           </div>
           <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
             Vacuum Cleaner Reviews
           </h1>
           <p class="text-slate-300 text-sm leading-relaxed">
-            Explore hands-on evaluations, suction pressure measurements, HEPA particle capture ratings, acoustic noise levels, and long-term durability tests across top-rated upright, cordless stick, robot, and canister vacuum cleaners.
+            Explore hands-on evaluations, suction pressure measurements, HEPA particle capture ratings, acoustic noise levels, and long-term durability analyses across top-rated upright, cordless stick, robot, and canister vacuum cleaners.
           </p>
           <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center gap-4 text-xs text-slate-400 font-medium">
-            <span><i class="fa-solid fa-flask text-brand-400 mr-1"></i> Tested by VacCompare Lab</span>
+            <span><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Verified by VacCompare</span>
             <span><i class="fa-solid fa-shield-check text-emerald-400 mr-1"></i> Unbiased &amp; Spec-Backed</span>
             <span><i class="fa-solid fa-scale-balanced text-amber-400 mr-1"></i> Side-by-Side Comparisons</span>
           </div>
@@ -3440,11 +3440,11 @@ function renderReviewsHubPage() {
         </div>
       </section>
 
-      <!-- Verified Lab Reviews Grid -->
+      <!-- Verified Reviews Grid -->
       <section class="space-y-4">
         <div class="flex items-center justify-between">
           <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            <i class="fa-solid fa-microscope text-brand-600"></i> More Verified Lab Reviews
+            <i class="fa-solid fa-layer-group text-brand-600"></i> More Verified Reviews
           </h2>
           <a href="/" class="text-xs font-bold text-brand-600 hover:underline">
             View All ${allProds.length} Vacuums &rarr;
@@ -3550,7 +3550,7 @@ function renderBuyingGuidePage(guideSlug) {
 
   if (guideSlug === 'best-vacuum-for-pet-hair') {
     categoryBadge = 'Pet Hair Guide';
-    introText = 'Cleaning stubborn pet hair and dander requires high suction pressure, motorized brush rolls with anti-tangle technology, and sealed HEPA filtration. Our test lab evaluated 50+ vacuums to rank the top performers.';
+    introText = 'Cleaning stubborn pet hair and dander requires high suction pressure, motorized brush rolls with anti-tangle technology, and sealed HEPA filtration. Our research team evaluated 50+ vacuums to rank the top performers.';
     filterFn = p => p.hepaFiltration || (p.suctionKpaRaw && parseFloat(p.suctionKpaRaw) >= 18);
     criteriaHtml = `
       <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-700">
@@ -3561,7 +3561,7 @@ function renderBuyingGuidePage(guideSlug) {
     `;
   } else if (guideSlug === 'best-robot-vacuums-2026') {
     categoryBadge = 'Robot Comparison';
-    introText = 'Robot vacuums in 2026 feature self-emptying dustbins, 360 LiDAR navigation, AI obstacle avoidance, and auto-washing mop pads. Here are the top hands-on tested models.';
+    introText = 'Robot vacuums in 2026 feature self-emptying dustbins, 360 LiDAR navigation, AI obstacle avoidance, and auto-washing mop pads. Here are the top recommended models.';
     filterFn = p => p.type && p.type.toLowerCase().includes('robot');
     criteriaHtml = `
       <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-700">
@@ -3583,7 +3583,7 @@ function renderBuyingGuidePage(guideSlug) {
     `;
   } else if (guideSlug === 'best-budget-cordless-vacuums') {
     categoryBadge = 'Budget Deals';
-    introText = 'High-performance cordless stick vacuums do not have to cost over $700. We tested budget-friendly lightweight models delivering impressive suction under $300.';
+    introText = 'High-performance cordless stick vacuums do not have to cost over $700. We analyzed budget-friendly lightweight models delivering impressive suction under $300.';
     filterFn = p => p.cordedOrCordless === 'Cordless' && (p.priceUsd == null || p.priceUsd <= 350);
     criteriaHtml = `
       <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-700">
@@ -3636,7 +3636,7 @@ function renderBuyingGuidePage(guideSlug) {
           </p>
           <div class="pt-4 border-t border-slate-800 flex items-center gap-4 text-xs text-slate-400 font-medium">
             <span><i class="fa-solid fa-calendar mr-1"></i> Updated July 2026</span>
-            <span><i class="fa-solid fa-flask mr-1"></i> Tested by VacCompare Test Lab</span>
+            <span><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Verified by VacCompare Research</span>
           </div>
         </div>
       </header>
@@ -3644,7 +3644,7 @@ function renderBuyingGuidePage(guideSlug) {
       <!-- Key Criteria Box -->
       <section class="bg-amber-50 border border-amber-200 rounded-2xl p-6 space-y-3">
         <h2 class="text-sm font-extrabold text-amber-900 uppercase tracking-wider flex items-center gap-2">
-          <i class="fa-solid fa-list-check"></i> What We Looked For During Testing
+          <i class="fa-solid fa-list-check"></i> Key Specification Benchmarks
         </h2>
         ${criteriaHtml}
       </section>
@@ -3652,7 +3652,7 @@ function renderBuyingGuidePage(guideSlug) {
       <!-- Top Recommended Products -->
       <section class="space-y-6">
         <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">
-          Top Recommended Tested Models (${picks.length})
+          Top Recommended Models (${picks.length})
         </h2>
 
         <div class="space-y-4">
@@ -3991,17 +3991,17 @@ function renderCompareHubPage() {
           <h3 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
             <i class="fa-solid fa-book-open text-brand-600"></i> Expert Vacuum Buying Guides
           </h3>
-          <span class="text-xs text-slate-500 font-medium">Curated by VacCompare Test Lab</span>
+          <span class="text-xs text-slate-500 font-medium">Curated by VacCompare Editorial Team</span>
         </div>
-        <p class="text-xs text-slate-500">In-depth roundups and testing criteria for specific cleaning needs and flooring surfaces.</p>
+        <p class="text-xs text-slate-500">In-depth roundups and specification criteria for specific cleaning needs and flooring surfaces.</p>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
           <a href="/guides/best-vacuum-for-pet-hair" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white transition group block space-y-1">
-            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">10 Best Vacuums for Pet Hair (2026 Tested)</div>
+            <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">10 Best Vacuums for Pet Hair (2026 Guide)</div>
             <div class="text-xs text-slate-500">Anti-tangle brushrolls &amp; sealed HEPA filtration benchmarks</div>
           </a>
           <a href="/guides/best-robot-vacuums-2026" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white transition group block space-y-1">
             <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Top 8 Best Robot Vacuums of 2026</div>
-            <div class="text-xs text-slate-500">Hands-on testing: LiDAR navigation, self-emptying &amp; mopping</div>
+            <div class="text-xs text-slate-500">Features &amp; specs: LiDAR navigation, self-emptying &amp; mopping</div>
           </a>
           <a href="/guides/best-hardwood-floor-vacuums" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white transition group block space-y-1">
             <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Best Vacuums for Hardwood Floors</div>
@@ -4009,7 +4009,7 @@ function renderCompareHubPage() {
           </a>
           <a href="/guides/best-budget-cordless-vacuums" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white transition group block space-y-1">
             <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Best Budget Cordless Vacuums Under $300</div>
-            <div class="text-xs text-slate-500">High-suction cordless stick models tested for budget shoppers</div>
+            <div class="text-xs text-slate-500">High-suction cordless stick models selected for budget shoppers</div>
           </a>
           <a href="/guides/bagged-vs-bagless-vacuums-guide" class="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-brand-500 hover:bg-white transition group block space-y-1 sm:col-span-2 lg:col-span-2">
             <div class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Bagged vs. Bagless Vacuums: Complete Buying Guide</div>
@@ -4272,7 +4272,7 @@ function renderComparisonPage(compareSlug) {
             ${escapeHtml(p1.brand)} ${escapeHtml(p1.model)} vs ${escapeHtml(p2.brand)} ${escapeHtml(p2.model)} Comparison
           </h1>
           <p class="text-slate-300 text-sm leading-relaxed max-w-3xl">
-            Side-by-side technical specification matrix comparing the <strong>${escapeHtml(p1.brand)} ${escapeHtml(p1.model)}</strong> against the <strong>${escapeHtml(p2.brand)} ${escapeHtml(p2.model)}</strong>. Compare tested suction power (kPa), decibel noise levels, dust capacity, HEPA filtration standards, and user satisfaction ratings.
+            Side-by-side technical specification matrix comparing the <strong>${escapeHtml(p1.brand)} ${escapeHtml(p1.model)}</strong> against the <strong>${escapeHtml(p2.brand)} ${escapeHtml(p2.model)}</strong>. Compare suction power (kPa), decibel noise levels, dust capacity, HEPA filtration standards, and user satisfaction ratings.
           </p>
         </div>
       </header>
@@ -4344,7 +4344,7 @@ function renderComparisonPage(compareSlug) {
       <!-- Expert Verdict -->
       <section class="bg-slate-900 text-white p-6 sm:p-8 rounded-2xl space-y-3">
         <h2 class="text-lg font-extrabold text-white flex items-center gap-2">
-          <i class="fa-solid fa-award text-amber-400"></i> Test Lab Verdict: Which Should You Choose?
+          <i class="fa-solid fa-award text-amber-400"></i> VacCompare Verdict: Which Should You Choose?
         </h2>
         <div class="text-xs text-slate-300 leading-relaxed space-y-2">
           <p>
@@ -4496,7 +4496,7 @@ function renderEeatPage(path) {
         <p>VacCompare believes in complete financial transparency with our readers.</p>
         <p>VacCompare is a participant in the Amazon Services LLC Associates Program and other retail affiliate programs. When you click outbound product links on our database to retailers like Amazon, we may earn a referral commission on qualifying purchases at no extra cost to you.</p>
         <p class="text-xs text-slate-500 bg-slate-50 p-4 rounded-xl border border-slate-200">
-          Note: Affiliate partnerships never influence our test lab metrics, star ratings, or product comparison matrices.
+          Note: Affiliate partnerships never influence our editorial ratings, verified specs, or product comparison matrices.
         </p>
       </div>
     `;
@@ -4507,7 +4507,7 @@ function renderEeatPage(path) {
         <ul class="list-disc list-inside text-xs space-y-2">
           <li>We do not sell personal identification data to third-party brokers.</li>
           <li>We use standard web analytics cookies to improve site performance and search responsiveness.</li>
-          <li>Newsletter email addresses are used solely for requested price alerts and new test lab notifications.</li>
+          <li>Newsletter email addresses are used solely for requested price alerts and new vacuum update notifications.</li>
         </ul>
       </div>
     `;
@@ -4515,13 +4515,13 @@ function renderEeatPage(path) {
     bodyHtml = `
       <div class="space-y-4 text-sm text-slate-700 leading-relaxed">
         <p>By accessing and browsing VacCompare, you agree to these Terms of Service.</p>
-        <p class="text-xs text-slate-600">All content, product specifications, test laboratory data, and database structures are protected under intellectual property laws. Content is provided for personal comparison and product research purposes.</p>
+        <p class="text-xs text-slate-600">All content, product specifications, research data, and database structures are protected under intellectual property laws. Content is provided for personal comparison and product research purposes.</p>
       </div>
     `;
   } else if (path === '/contact') {
     bodyHtml = `
       <div class="space-y-6">
-        <p class="text-sm text-slate-700">Have a question about a vacuum specification, feedback on our test methodology, or editorial press inquiries? Send us a message below.</p>
+        <p class="text-sm text-slate-700">Have a question about a vacuum specification, feedback on our comparison methodology, or editorial press inquiries? Send us a message below.</p>
         <form id="contact-form" class="space-y-4 text-xs bg-slate-50 p-6 rounded-2xl border border-slate-200">
           <div>
             <label class="block font-bold text-slate-900 mb-1">Your Full Name</label>
@@ -4533,14 +4533,14 @@ function renderEeatPage(path) {
           </div>
           <div>
             <label class="block font-bold text-slate-900 mb-1">Subject</label>
-            <input type="text" required placeholder="Testing inquiry / Specification correction" class="w-full p-2.5 rounded-xl border border-slate-300 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <input type="text" required placeholder="Product inquiry / Specification update" class="w-full p-2.5 rounded-xl border border-slate-300 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500">
           </div>
           <div>
             <label class="block font-bold text-slate-900 mb-1">Message</label>
-            <textarea required rows="4" placeholder="How can our test lab team assist you?" class="w-full p-2.5 rounded-xl border border-slate-300 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+            <textarea required rows="4" placeholder="How can our team assist you?" class="w-full p-2.5 rounded-xl border border-slate-300 text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
           </div>
           <button type="submit" class="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs rounded-xl shadow-md transition">
-            Send Message to Test Lab
+            Send Message to VacCompare Team
           </button>
         </form>
       </div>
@@ -4567,7 +4567,7 @@ function renderEeatPage(path) {
         <div>
           <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Buying Guides &amp; Comparisons</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <a href="/guides/best-vacuum-for-pet-hair" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">10 Best Vacuum Cleaners for Pet Hair (2026 Tested)</a>
+            <a href="/guides/best-vacuum-for-pet-hair" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">10 Best Vacuum Cleaners for Pet Hair (2026 Guide)</a>
             <a href="/guides/best-robot-vacuums-2026" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Top 8 Best Robot Vacuums of 2026</a>
             <a href="/guides/best-hardwood-floor-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Best Vacuums for Hardwood Floors</a>
             <a href="/guides/best-budget-cordless-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Best Budget Cordless Vacuums Under $300</a>
@@ -4579,9 +4579,9 @@ function renderEeatPage(path) {
         </div>
 
         <div>
-          <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Lab Review Articles</h3>
+          <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Vacuum Review Articles</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <a href="/reviews" class="p-3 bg-brand-50 hover:bg-brand-100 rounded-xl border border-brand-200 font-bold text-brand-800 transition sm:col-span-2">→ Browse All Hands-On Vacuum Lab Reviews</a>
+            <a href="/reviews" class="p-3 bg-brand-50 hover:bg-brand-100 rounded-xl border border-brand-200 font-bold text-brand-800 transition sm:col-span-2">→ Browse All Vacuum Reviews</a>
             <a href="/reviews/dyson-v15-detect-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Dyson V15 Detect Hands-On Review</a>
             <a href="/reviews/shark-stratos-cordless-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Shark Stratos Cordless Review</a>
             <a href="/reviews/roborock-s8-pro-ultra-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Roborock S8 Pro Ultra Review</a>

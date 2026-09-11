@@ -33,7 +33,7 @@
 <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
 
 <!-- Open Graph -->
-<meta property="og:site_name" content="Vacuum Cleaner Lab">
+<meta property="og:site_name" content="VacCompare">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://vacuumcleanerlab.com/">
 <meta property="og:title" content="VacCompare – Vacuum Cleaner Comparisons &amp; Buying Guides">
@@ -114,17 +114,17 @@
 {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "Vacuum Cleaner Lab",
+  "name": "VacCompare",
   "url": "https://vacuumcleanerlab.com",
   "logo": "https://vacuumcleanerlab.com/assets/logo.svg",
-  "description": "Independent testing, specification analysis, and side-by-side comparison directory for vacuum cleaners."
+  "description": "Comprehensive specification analysis, reviews, and side-by-side comparison directory for vacuum cleaners."
 }
 </script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "name": "Vacuum Cleaner Lab",
+  "name": "VacCompare",
   "url": "https://vacuumcleanerlab.com",
   "potentialAction": {
     "@type": "SearchAction",
@@ -140,10 +140,10 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "How does VacCompare test vacuum cleaners?",
+      "name": "How does VacCompare evaluate vacuum cleaners?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "VacCompare evaluates vacuum cleaners using standardized suction pressure (kPa), airflow wattage, noise level (dB), HEPA filtration efficiency, and battery runtime benchmarks alongside verified owner feedback."
+        "text": "VacCompare evaluates vacuum cleaners using suction pressure (kPa), airflow wattage, noise level (dB), HEPA filtration efficiency, and battery runtime benchmarks alongside verified owner feedback."
       }
     },
     {
@@ -250,25 +250,22 @@
 </nav>
 
 <!-- ============ HERO SECTION ============ -->
-<section id="home-hero-section" class="relative overflow-hidden bg-[#07142e] text-white min-h-[480px] flex items-center">
-  <!-- Background Image with Right-Aligned Product Lineup -->
-  <div class="absolute inset-0 z-0 flex justify-end">
-    <div class="relative w-full md:w-3/4 lg:w-2/3 h-full">
-      <img src="/assets/vacuum_hero_banner.jpg" alt="Vacuum Cleaner Lineup - Robot, Stick, Upright, Canister, and Mop" class="w-full h-full object-cover object-right opacity-90 brightness-110" />
-      <!-- Gradient Fade from Dark Left to Transparent Right -->
-      <div class="absolute inset-0 bg-gradient-to-r from-[#07142e] via-[#07142e]/70 to-transparent"></div>
-    </div>
-    <!-- Global Left Gradient Overlay for crisp text legibility -->
-    <div class="absolute inset-0 bg-gradient-to-r from-[#07142e] via-[#07142e] via-35% to-transparent pointer-events-none"></div>
+<section id="home-hero-section" class="relative overflow-hidden bg-[#07142e] text-white py-10 sm:py-14">
+  <!-- Subtle Ambient Lighting -->
+  <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+    <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-600/15 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-24 left-1/4 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl"></div>
   </div>
 
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 relative z-10 w-full">
-    <div class="max-w-2xl lg:max-w-xl">
-      <div class="flex flex-wrap items-center gap-3 mb-5">
-        <a href="/" class="inline-flex items-center gap-2 p-2.5 bg-[#0e2759]/90 rounded-2xl border border-slate-700/60 shadow-lg backdrop-blur-md">
-          <img src="/assets/logo-dark.svg" alt="VacCompare Logo" class="h-8 sm:h-10 w-auto">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full space-y-8">
+    
+    <!-- Top Content Block -->
+    <div class="max-w-4xl mx-auto text-center space-y-4">
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a href="/" id="hero-logo-link" class="inline-flex items-center gap-2 p-2 bg-[#0e2759]/90 rounded-2xl border border-slate-700/60 shadow-lg backdrop-blur-md">
+          <img src="/assets/logo-dark.svg" alt="VacCompare Logo" id="hero-logo-img" class="h-8 sm:h-9 w-auto" referrerPolicy="no-referrer">
         </a>
-        <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-bold shadow-xs">
+        <div id="hero-verified-badge" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-bold shadow-xs">
           <i class="fa-solid fa-circle-check text-emerald-400"></i> Verified Vacuum Cleaner Reviews &amp; Specs
         </div>
       </div>
@@ -278,22 +275,47 @@
         Find the Right and Best Vacuum Cleaner with Confidence
       </h1>
 
-      <p class="mt-4 text-slate-300 text-sm sm:text-base leading-relaxed">
-        Compare over <span id="hero-count" class="font-bold text-white">1,032</span> vacuum cleaners — robot vacuums, cordless sticks, uprights, and canisters — by verified suction power (kPa), noise level (dB), dust capacity, HEPA filtration, and star ratings. Select up to 4 models to compare side by side.
+      <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
+        Compare over <span id="hero-count" class="font-bold text-white">1,032</span> vacuum cleaners — robot vacuums, cordless sticks, uprights, and canisters — by suction power (kPa), noise level (dB), dust capacity, HEPA filtration, and star ratings. Select up to 4 models to compare side by side.
       </p>
 
-      <div class="mt-6 flex flex-wrap gap-3">
-        <a href="#main-content" class="px-5 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm transition shadow-lg flex items-center gap-2">
+      <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+        <a href="#main-content" id="hero-filter-btn" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm transition shadow-lg flex items-center gap-2">
           <i class="fa-solid fa-filter"></i> Filter Vacuum Database
         </a>
-        <a href="/guides/best-vacuum-for-pet-hair" class="px-5 py-3 rounded-xl bg-[#142850]/90 hover:bg-[#1a3263] text-slate-200 font-bold text-sm border border-slate-700/80 transition flex items-center gap-2 backdrop-blur-xs">
+        <a href="/guides/best-vacuum-for-pet-hair" id="hero-guides-btn" class="px-6 py-3 rounded-xl bg-[#142850]/90 hover:bg-[#1a3263] text-slate-200 font-bold text-sm border border-slate-700/80 transition flex items-center gap-2 backdrop-blur-xs">
           <i class="fa-solid fa-book-open text-brand-400"></i> Read Buying Guides
         </a>
       </div>
 
       <!-- Quick Metrics Bar -->
-      <div id="hero-stats" class="mt-8 pt-6 border-t border-slate-800/80 flex flex-wrap gap-5 text-xs font-semibold text-slate-300"></div>
+      <div id="hero-stats" class="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-center gap-6 text-xs font-semibold text-slate-300"></div>
     </div>
+
+    <!-- Prominent Big Hero Banner Image Showcase -->
+    <div class="relative w-full max-w-6xl mx-auto rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-700/80 shadow-2xl shadow-black/60 bg-slate-900 group" id="hero-banner-container">
+      <img 
+        id="hero-banner-image" 
+        src="/assets/vacuum_hero_banner.jpg" 
+        alt="Vacuum Cleaner Lineup - Robot, Cordless Stick, Upright, and Canister Vacuums" 
+        class="w-full h-64 sm:h-80 md:h-[420px] lg:h-[480px] object-cover object-center transition-transform duration-700 group-hover:scale-105"
+        loading="eager"
+        referrerPolicy="no-referrer"
+      />
+      <!-- Bottom Soft Gradient Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-t from-[#07142e]/90 via-[#07142e]/20 to-transparent pointer-events-none"></div>
+      
+      <!-- Showcase Badge & Details -->
+      <div class="absolute bottom-3 sm:bottom-5 left-4 sm:left-6 right-4 sm:right-6 flex flex-wrap items-center justify-between gap-3 text-white pointer-events-none">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700/70 text-xs font-semibold text-brand-300">
+          <i class="fa-solid fa-layer-group text-brand-400"></i> Modern Vacuum Cleaner Lineup
+        </div>
+        <div class="px-3 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700/70 text-xs font-semibold text-slate-300">
+          1,032+ Models Compared
+        </div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -370,14 +392,14 @@
       <div class="flex items-center justify-between mb-4">
         <div>
           <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Expert Buying Guides</h2>
-          <p class="text-xs text-slate-500">Tested recommendations based on real flooring types, pet hair &amp; budget</p>
+          <p class="text-xs text-slate-500">Expert recommendations based on real flooring types, pet hair &amp; budget</p>
         </div>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="guides-grid">
         <a href="/guides/best-vacuum-for-pet-hair" class="p-5 rounded-2xl bg-white border border-slate-200 hover:shadow-lg transition flex flex-col justify-between group">
           <div>
             <span class="inline-block px-2.5 py-1 rounded-md bg-amber-100 text-amber-800 text-[11px] font-bold mb-2"><i class="fa-solid fa-dog mr-1"></i> Pet Hair Guide</span>
-            <h3 class="font-bold text-slate-900 text-base group-hover:text-brand-600 transition">10 Best Vacuum Cleaners for Pet Hair (2026 Tested)</h3>
+            <h3 class="font-bold text-slate-900 text-base group-hover:text-brand-600 transition">10 Best Vacuum Cleaners for Pet Hair (2026 Guide)</h3>
             <p class="text-xs text-slate-600 mt-2 leading-relaxed">Discover anti-tangle brush roll vacuums that trap dander and stubborn fur without losing suction.</p>
           </div>
           <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-brand-600">
@@ -616,10 +638,10 @@
       <div class="space-y-4 text-xs sm:text-sm">
         <details class="bg-white rounded-xl border border-slate-200 p-4 group">
           <summary class="font-bold text-slate-900 cursor-pointer flex items-center justify-between">
-            <span>How does VacCompare test vacuum cleaners?</span>
+            <span>How does VacCompare evaluate vacuum cleaners?</span>
             <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition"></i>
           </summary>
-          <p class="mt-3 text-slate-600 leading-relaxed">VacCompare measures real-world vacuum metrics including suction pressure (kPa), motor airflow wattage, acoustic noise emissions (dB), dust container capacity, sealed HEPA filtration percentage, and battery runtime degradation.</p>
+          <p class="mt-3 text-slate-600 leading-relaxed">VacCompare analyzes manufacturer benchmarks and verified specifications including suction pressure (kPa), motor airflow wattage, acoustic noise emissions (dB), dust container capacity, sealed HEPA filtration percentage, and battery runtime.</p>
         </details>
 
         <details class="bg-white rounded-xl border border-slate-200 p-4 group">
@@ -643,8 +665,8 @@
     <!-- Newsletter Section -->
     <div class="bg-brand-900 text-white rounded-2xl p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
       <div class="space-y-2 text-center md:text-left">
-        <h2 class="text-xl font-extrabold text-white">Get Latest Vacuum Deals &amp; Test Lab Alerts</h2>
-        <p class="text-xs text-brand-200 max-w-md">Join over 15,000 subscribers getting monthly price drops, newly tested vacuum specs, and exclusive buying advice.</p>
+        <h2 class="text-xl font-extrabold text-white">Get Latest Vacuum Deals &amp; Price Alerts</h2>
+        <p class="text-xs text-brand-200 max-w-md">Join over 15,000 subscribers getting monthly price drops, newly added vacuum specs, and exclusive buying advice.</p>
       </div>
       <form id="newsletter-form" class="w-full md:w-auto flex flex-col sm:flex-row gap-2">
         <input type="email" required placeholder="Enter your email address..." class="px-4 py-2.5 rounded-xl bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400 w-full sm:w-72" aria-label="Email Address">
@@ -785,7 +807,7 @@
     <!-- Bottom Disclaimer -->
     <div class="pt-8 border-t border-slate-800 text-xs text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-4">
       <p class="text-center sm:text-left">
-        As an Amazon Associate, VacCompare earns from qualifying purchases made through outbound links. Specifications are sourced from public product feeds and lab tests.
+        As an Amazon Associate, VacCompare earns from qualifying purchases made through outbound links. Specifications are sourced from manufacturer documentation, verified product feeds, and technical specifications.
       </p>
       <p class="shrink-0">&copy; <span id="footer-year">2026</span> VacCompare. All rights reserved.</p>
     </div>

@@ -1087,10 +1087,8 @@ function handleRouteFromUrl() {
       'All Categories',
       'Explore tailored vacuum designs for every floor type and cleaning need: Robot, Cordless Stick, Upright, Canister, Handheld, Wet & Dry, and Backpack models.'
     );
-    if (state.allProducts && state.allProducts.length > 0) {
-      render();
-      syncCheckboxesFromState();
-    }
+    render();
+    syncCheckboxesFromState();
     updateBreadcrumbs('Navigation', 'All Categories');
     document.title = 'Vacuum Cleaner Categories Directory & Comparison | VacCompare';
     updateMetaDescription('Explore all vacuum cleaner categories: Robot vacuums, Cordless stick, Upright, Canister, Handheld, Wet & Dry, Backpack, and Commercial.');
@@ -1104,10 +1102,8 @@ function handleRouteFromUrl() {
       'All Brands',
       'Compare tested vacuum models across top manufacturers including Dyson, Shark, Bissell, iRobot, Roborock, Miele, Tineco, Hoover, Eureka, Eufy, and more.'
     );
-    if (state.allProducts && state.allProducts.length > 0) {
-      render();
-      syncCheckboxesFromState();
-    }
+    render();
+    syncCheckboxesFromState();
     updateBreadcrumbs('Navigation', 'Popular Brands');
     document.title = 'Popular Vacuum Cleaner Brands Directory | VacCompare';
     updateMetaDescription('Compare top vacuum cleaner brands: Dyson, Shark, Bissell, iRobot Roomba, Roborock, Miele, Tineco, Hoover, Eureka, Eufy, Black & Decker, and more.');
@@ -1129,10 +1125,8 @@ function handleRouteFromUrl() {
       'Brand Directory',
       `Explore ${count || 'all'} tested ${matchedBrand} vacuum models with verified suction pressure benchmarks, HEPA filtration specs, decibel noise levels, and star ratings.`
     );
-    if (state.allProducts && state.allProducts.length > 0) {
-      render();
-      syncCheckboxesFromState();
-    }
+    render();
+    syncCheckboxesFromState();
 
     updateBreadcrumbs('Brand Collection', matchedBrand);
     document.title = `Best ${matchedBrand} Vacuum Cleaners (Reviews & Specs) | VacCompare`;
@@ -1156,10 +1150,8 @@ function handleRouteFromUrl() {
       'Category Index',
       `Compare ${count || 'all'} top-rated ${displayType.toLowerCase()} vacuums side by side. Filter by price, suction power (kPa), battery runtime, weight, and HEPA filter status.`
     );
-    if (state.allProducts && state.allProducts.length > 0) {
-      render();
-      syncCheckboxesFromState();
-    }
+    render();
+    syncCheckboxesFromState();
 
     updateBreadcrumbs('Category', displayType);
     document.title = `${displayType} Vacuum Cleaners – Reviews & Specs | VacCompare`;

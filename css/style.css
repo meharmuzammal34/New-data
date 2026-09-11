@@ -172,21 +172,3 @@
 #type-options::-webkit-scrollbar-thumb, #brand-options::-webkit-scrollbar-thumb {
   background: #cbd5e1; border-radius: 4px;
 }
-
-/* Direct-Route Initial Rendering & Anti-Flash Rules */
-html.is-deep-route #home-hero-section,
-html.is-deep-route #home-brands-section,
-html.is-deep-route #home-categories-section,
-html.is-deep-route #home-featured-section {
-  display: none !important;
-}
-
-html.route-article #main-content,
-html.route-not-found #main-content {
-  display: none !important;
-}
-
-html.route-article #dedicated-article-view,
-html.route-not-found #dedicated-article-view {
-  display: block !important;
-}

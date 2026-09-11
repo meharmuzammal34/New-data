@@ -92,6 +92,16 @@ async function init() {
   const currentYearEl = document.getElementById('footer-year');
   if (currentYearEl) currentYearEl.textContent = new Date().getFullYear();
 
+  // Support ?search= query parameter on page load
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchParam = urlParams.get('search');
+    if (searchParam) {
+      state.search = searchParam.trim().toLowerCase();
+      if (els.searchInput) els.searchInput.value = searchParam;
+    }
+  } catch (e) {}
+
   // Initial Route Handling: resolve route immediately before data loading
   handleRouteFromUrl();
   window.addEventListener('popstate', handleRouteFromUrl);
@@ -203,9 +213,8 @@ function bindStaticEvents() {
       searchTimer = setTimeout(() => {
         state.search = query;
         state.page = 1;
-        if (state.currentRoute !== '/') {
-          navigateTo('/');
-        } else {
+        const currentPath = window.location.pathname || '/';
+        if (currentPath === '/' || currentPath === '/index.html') {
           render();
         }
         renderAutocomplete(query);
@@ -214,20 +223,28 @@ function bindStaticEvents() {
 
     els.searchInput.addEventListener('keydown', (e) => {
       const items = els.searchAutocomplete ? els.searchAutocomplete.querySelectorAll('.autocomplete-item') : [];
-      if (!items.length) return;
 
       if (e.key === 'ArrowDown') {
+        if (!items.length) return;
         e.preventDefault();
         activeIndex = (activeIndex + 1) % items.length;
         highlightItem(items, activeIndex);
       } else if (e.key === 'ArrowUp') {
+        if (!items.length) return;
         e.preventDefault();
         activeIndex = (activeIndex - 1 + items.length) % items.length;
         highlightItem(items, activeIndex);
       } else if (e.key === 'Enter') {
         if (activeIndex >= 0 && items[activeIndex]) {
           e.preventDefault();
-          items[activeIndex].click();
+          const targetUrl = items[activeIndex].getAttribute('href') || items[activeIndex].getAttribute('data-url');
+          if (targetUrl) window.location.href = targetUrl;
+        } else {
+          const q = els.searchInput.value.trim();
+          if (q) {
+            e.preventDefault();
+            window.location.href = `/?search=${encodeURIComponent(q)}`;
+          }
         }
       } else if (e.key === 'Escape') {
         hideAutocomplete();
@@ -279,7 +296,7 @@ function bindStaticEvents() {
       const slug = getProductReviewSlug(p);
       const suction = p.suctionKpaRaw && p.suctionKpaRaw !== '-' ? `${p.suctionKpaRaw} kPa` : p.type;
       return `
-        <div data-url="/vacuum/${slug}" class="autocomplete-item p-3 border-b border-slate-100 hover:bg-slate-50 cursor-pointer flex items-center justify-between transition text-xs">
+        <a href="/vacuum/${slug}" class="autocomplete-item p-3 border-b border-slate-100 hover:bg-slate-50 flex items-center justify-between transition text-xs block text-slate-800 hover:text-brand-600 no-underline">
           <div>
             <span class="font-extrabold text-slate-900">${escapeHtml(p.brand)}</span>
             <span class="text-slate-600 font-medium ml-1">${escapeHtml(p.model)}</span>
@@ -288,7 +305,7 @@ function bindStaticEvents() {
           <div class="text-right shrink-0 font-bold text-brand-600">
             ${suction}
           </div>
-        </div>
+        </a>
       `;
     }).join('');
 
@@ -296,14 +313,6 @@ function bindStaticEvents() {
     els.searchAutocomplete.classList.remove('hidden');
     els.searchInput.setAttribute('aria-expanded', 'true');
     activeIndex = -1;
-
-    els.searchAutocomplete.querySelectorAll('.autocomplete-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const url = item.getAttribute('data-url');
-        hideAutocomplete();
-        navigateTo(url);
-      });
-    });
   }
 
   // Sort & Filters
@@ -396,33 +405,6 @@ function bindStaticEvents() {
     els.pageModal.addEventListener('click', (e) => { if (e.target === els.pageModal) toggleModal(els.pageModal, false); });
   }
 
-  // SPA Client-Side Link Interception for seamless internal navigation
-  document.addEventListener('click', (e) => {
-    if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
-    const link = e.target.closest('a');
-    if (!link) return;
-    const href = link.getAttribute('href');
-    if (!href) return;
-
-    if (link.target === '_blank' || link.hasAttribute('download') ||
-        href.startsWith('http://') || href.startsWith('https://') ||
-        href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('javascript:')) {
-      return;
-    }
-
-    if (href.startsWith('#')) return;
-
-    if (href.startsWith('/#')) {
-      const currentPath = window.location.pathname;
-      if (currentPath === '/' || currentPath === '/index.html' || currentPath === '') {
-        return;
-      }
-    }
-
-    e.preventDefault();
-    navigateTo(href);
-  });
-
   // Newsletter Form
   if (els.newsletterForm) {
     els.newsletterForm.addEventListener('submit', (e) => {
@@ -449,23 +431,9 @@ function bindStaticEvents() {
 /* Multi-Page Navigation & Route Sync                               */
 /* ---------------------------------------------------------------- */
 
-function navigateTo(path, pushState = true) {
+function navigateTo(path) {
   if (!path) return;
-  const [pathname, hash] = path.split('#');
-  if (pushState) {
-    window.history.pushState(null, '', path);
-  } else {
-    window.history.replaceState(null, '', path);
-  }
-  handleRouteFromUrl();
-  if (hash) {
-    setTimeout(() => {
-      const target = document.getElementById(hash);
-      if (target) target.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
-  } else {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
+  window.location.href = path;
 }
 
 function setHeroHeadingTag(isH1) {
@@ -1895,18 +1863,6 @@ function renderGrid(products) {
       e.stopPropagation();
       const id = btn.dataset.id;
       toggleCompare(id);
-    });
-  });
-
-  els.productGrid.querySelectorAll('.view-review-btn').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const id = btn.dataset.id;
-      const product = state.allProducts.find(x => x.id === id);
-      if (product) {
-        const slug = getProductReviewSlug(product);
-        navigateTo(`/vacuum/${slug}`);
-      }
     });
   });
 }

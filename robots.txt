@@ -14,6 +14,7 @@ Allow: /privacy-policy
 Allow: /terms
 Allow: /contact
 Allow: /html-sitemap
+Allow: /ads.txt
 Disallow: /api/private/
 
 Sitemap: https://vacuumcleanerlab.com/sitemap.xml

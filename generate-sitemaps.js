@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { ALL_REVIEWS } from './reviews-data.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -278,12 +279,12 @@ const reviewHubUrls = [
     <changefreq>daily</changefreq>
     <priority>0.95</priority>
   </url>`,
-  `  <url>
-    <loc>${CANONICAL_ORIGIN}/reviews/shark-professional-navigator-upright-vacuum-cleaner-review</loc>
+  ...ALL_REVIEWS.map(r => `  <url>
+    <loc>${CANONICAL_ORIGIN}/reviews/${r.slug}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
-  </url>`
+  </url>`)
 ];
 
 const allReviewsUrls = [

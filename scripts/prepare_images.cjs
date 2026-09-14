@@ -1,0 +1,98 @@
+const fs = require('fs');
+const path = require('path');
+
+const data = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/parsed_reviews.json')));
+const assetsDir = path.join(__dirname, '../assets/reviews');
+
+const brandColors = {
+  'Dyson': { bg1: '#312e81', bg2: '#1e1b4b', text: '#e0e7ff', accent: '#818cf8', tag: 'Dyson Cyclone' },
+  'Shark': { bg1: '#881337', bg2: '#4c0519', text: '#ffe4e6', accent: '#fb7185', tag: 'Shark Lift-Away' },
+  'Hoover': { bg1: '#7f1d1d', bg2: '#450a0a', text: '#fee2e2', accent: '#f87171', tag: 'Hoover WindTunnel' },
+  'BISSELL': { bg1: '#064e3b', bg2: '#022c22', text: '#d1fae5', accent: '#34d399', tag: 'BISSELL CleanView' },
+  'Eureka': { bg1: '#78350f', bg2: '#451a03', text: '#fef3c7', accent: '#fbbf24', tag: 'Eureka AirSpeed' },
+  'Kenmore': { bg1: '#1e3a5f', bg2: '#0f172a', text: '#e0f2fe', accent: '#38bdf8', tag: 'Kenmore Progressive' }
+};
+
+data.forEach(item => {
+  const jpgPath = path.join(assetsDir, `${item.slug}.jpg`);
+  const hasJpg = fs.existsSync(jpgPath) && fs.statSync(jpgPath).size > 1000;
+  
+  if (hasJpg) {
+    item.imagePath = `/assets/reviews/${item.slug}.jpg`;
+    return;
+  }
+
+  const svgPath = path.join(assetsDir, `${item.slug}.svg`);
+  const color = brandColors[item.brand] || { bg1: '#1e293b', bg2: '#0f172a', text: '#f1f5f9', accent: '#94a3b8', tag: item.brand };
+  
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="${color.bg1}"/>
+      <stop offset="100%" stop-color="${color.bg2}"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="${color.accent}"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.8"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <rect width="500" height="500" rx="32" fill="url(#bg)"/>
+  
+  <!-- Subtle circular grid / concentric lines -->
+  <circle cx="250" cy="220" r="160" fill="none" stroke="${color.accent}" stroke-width="1.5" stroke-dasharray="4 6" opacity="0.2"/>
+  <circle cx="250" cy="220" r="120" fill="none" stroke="${color.accent}" stroke-width="1.5" opacity="0.25"/>
+  <circle cx="250" cy="220" r="80" fill="${color.accent}" opacity="0.08"/>
+
+  <!-- Vacuum Cleaner Icon Graphic -->
+  <g filter="url(#shadow)" transform="translate(190, 90)">
+    <!-- Upright / Stick vacuum stylized body -->
+    <rect x="52" y="10" width="16" height="40" rx="8" fill="url(#accent)"/>
+    <path d="M 52 30 Q 30 30 30 60 L 30 90 Q 30 110 50 110 L 70 110 Q 90 110 90 90 L 90 60 Q 90 30 68 30 Z" fill="#ffffff" fill-opacity="0.95"/>
+    <rect x="54" y="60" width="12" height="40" rx="4" fill="${color.bg2}" opacity="0.8"/>
+    <!-- Extension Wand -->
+    <rect x="56" y="110" width="8" height="85" rx="3" fill="url(#accent)"/>
+    <!-- Motor canister & cyclone cylinder -->
+    <rect x="42" y="125" width="36" height="50" rx="10" fill="#ffffff" fill-opacity="0.9"/>
+    <rect x="48" y="135" width="24" height="30" rx="6" fill="${color.accent}" opacity="0.5"/>
+    <!-- Floor Nozzle -->
+    <path d="M 20 205 L 100 205 L 110 225 L 10 225 Z" fill="#ffffff" fill-opacity="0.95"/>
+    <rect x="25" y="222" width="70" height="6" rx="3" fill="${color.accent}"/>
+    <!-- Wheels -->
+    <circle cx="28" cy="216" r="8" fill="${color.bg2}"/>
+    <circle cx="28" cy="216" r="4" fill="${color.accent}"/>
+    <circle cx="92" cy="216" r="8" fill="${color.bg2}"/>
+    <circle cx="92" cy="216" r="4" fill="${color.accent}"/>
+  </g>
+
+  <!-- Brand badge -->
+  <rect x="180" y="340" width="140" height="28" rx="14" fill="${color.accent}" opacity="0.25"/>
+  <text x="250" y="359" fill="${color.accent}" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="800" text-anchor="middle" letter-spacing="1.5">${item.brand.toUpperCase()}</text>
+
+  <!-- Model Name -->
+  <text x="250" y="398" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="800" text-anchor="middle">
+    ${item.model.length > 28 ? item.model.substring(0, 26) + '...' : item.model}
+  </text>
+  
+  <!-- Category & Rating -->
+  <text x="250" y="425" fill="${color.text}" font-family="system-ui, -apple-system, sans-serif" font-size="14" font-weight="600" text-anchor="middle" opacity="0.85">
+    ${item.category} • ★ ${item.overallScore} / 5.0
+  </text>
+  
+  <!-- Editor Verified Tag -->
+  <rect x="165" y="445" width="170" height="24" rx="12" fill="#ffffff" fill-opacity="0.1"/>
+  <text x="250" y="461" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="11" font-weight="700" text-anchor="middle" letter-spacing="0.5">
+    ✓ COMPREHENSIVE LAB REVIEW
+  </text>
+</svg>`;
+
+  fs.writeFileSync(svgPath, svg, 'utf8');
+  item.imagePath = `/assets/reviews/${item.slug}.svg`;
+});
+
+// Update parsed_reviews.json with local imagePath
+fs.writeFileSync(path.join(__dirname, '../data/parsed_reviews.json'), JSON.stringify(data, null, 2));
+console.log('Successfully prepared images and SVGs for all reviews!');

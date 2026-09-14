@@ -2,6 +2,8 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import { ALL_REVIEWS, getReviewBySlug, REVIEWS_BY_SLUG } from './reviews-data.js';
+import { renderServerReviewArticlePage, renderServerReviewsHubPage } from './server-reviews-renderer.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -850,13 +852,11 @@ app.get('/reviews-sitemap.xml', (req, res) => {
   const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const today = new Date().toISOString().split('T')[0];
-  const reviewHubUrls = [
-    `\n  <url>\n    <loc>${CANONICAL_ORIGIN}/reviews</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.95</priority>\n  </url>`,
-    `\n  <url>\n    <loc>${CANONICAL_ORIGIN}/reviews/shark-professional-navigator-upright-vacuum-cleaner-review</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.85</priority>\n  </url>`
-  ];
+  const hubUrl = `\n  <url>\n    <loc>${CANONICAL_ORIGIN}/reviews</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.95</priority>\n  </url>`;
+  const reviewUrls = ALL_REVIEWS.map(r => `\n  <url>\n    <loc>${CANONICAL_ORIGIN}/reviews/${r.slug}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.85</priority>\n  </url>`).join('');
   const prodUrls = cachedProducts.map(p => `\n  <url>\n    <loc>${CANONICAL_ORIGIN}${p.reviewUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`).join('');
 
-  res.send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${reviewHubUrls.join('')}${prodUrls}\n</urlset>`);
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${hubUrl}${reviewUrls}${prodUrls}\n</urlset>`);
 });
 
 app.get('/pages-sitemap.xml', (req, res) => {
@@ -865,7 +865,7 @@ app.get('/pages-sitemap.xml', (req, res) => {
   const pages = [
     '/',
     '/reviews',
-    '/reviews/shark-professional-navigator-upright-vacuum-cleaner-review',
+    ...ALL_REVIEWS.map(r => `/reviews/${r.slug}`),
     '/compare',
     '/about',
     '/editorial-policy',
@@ -1908,539 +1908,8 @@ function renderServerBuyingGuidePage(guideSlug, allProducts) {
 }
 
 function renderServerSharkNavigatorReviewPage(origin, allProducts) {
-  const amazonProductUrl = 'https://www.amazon.com/dp/B005KMDV9A?tag=wat344r5-20';
-
-  return `
-    <article class="space-y-8 text-slate-800">
-      
-      <!-- Top Action Bar -->
-      <div class="flex items-center justify-between gap-4">
-        <a href="/reviews" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
-          <i class="fa-solid fa-arrow-left"></i> All Vacuum Reviews
-        </a>
-        <button id="page-copy-md-btn" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition">
-          <i class="fa-solid fa-copy"></i> Copy Review
-        </button>
-      </div>
-
-      <!-- Hero Header with Product Image -->
-      <header class="relative overflow-hidden bg-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl">
-        <div class="absolute inset-0 z-0 flex justify-end pointer-events-none opacity-40">
-          <div class="relative w-full md:w-3/4 lg:w-2/3 h-full">
-            <img src="/assets/vacuum_hero_banner.jpg" alt="Vacuum Banner Background" class="w-full h-full object-cover object-right brightness-110" />
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900 via-40% to-transparent"></div>
-        </div>
-
-        <div class="relative z-10 flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8">
-          
-          <!-- Left Content -->
-          <div class="flex-1 space-y-4">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-              <div class="flex flex-wrap items-center gap-2">
-                <a href="/brand/shark" class="px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-extrabold uppercase tracking-wider hover:underline">
-                  Shark Vacuum Cleaners
-                </a>
-                <a href="/category/upright-vacuums" class="px-3 py-1 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-xs font-semibold hover:text-white hover:border-slate-500 transition">
-                  <i class="fa-solid fa-plug text-slate-400 mr-1"></i> Upright Vacuums
-                </a>
-              </div>
-              <span class="text-amber-400 font-extrabold text-sm flex items-center gap-1">
-                <i class="fa-solid fa-star"></i> 4.5 / 5.0 (Editor Rating)
-              </span>
-            </div>
-
-            <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-              Shark Professional Navigator Upright Vacuum Cleaner Review
-            </h1>
-
-            <div class="text-slate-300 text-sm leading-relaxed space-y-3 max-w-2xl">
-              <p>
-                While the process of buying a vacuum cleaner might seem simple, it is actually complicated by the sheer number of styles, brands, and models on offer. Trying to determine which vacuum cleaner is the most powerful, technologically advanced, and budget friendly, is therefore a monumental task. So what do you do in this situation? Simple; you can ask me!
-              </p>
-              <p>
-                After some careful research I have come upon the Shark Professional Navigator Upright, which stands out as one of the best vacuum cleaner options on the market. This Lift-Away vacuum cleaner prides itself on it’s never lose suction ability, and its anti-allergen complete seal system.
-              </p>
-              <p>
-                The powerful, portable, lightweight and large capacity vacuum cleaner therefore allows you to execute deep carpet cleaning and bare floor cleaning like never before. So if you are looking for a quick and easy way to clean your house, read the Shark Pro Navigator review below.
-              </p>
-            </div>
-
-            <div class="pt-4 border-t border-slate-700/80 flex flex-wrap items-center gap-4">
-              <a href="${amazonProductUrl}" target="_blank" rel="nofollow sponsored" class="inline-flex items-center gap-2.5 bg-amber-400 hover:bg-amber-500 text-slate-950 font-extrabold text-sm px-6 py-3 rounded-xl shadow-lg transition">
-                <i class="fa-brands fa-amazon text-base"></i> See Customer Rating
-              </a>
-              <a href="${amazonProductUrl}" target="_blank" rel="nofollow sponsored" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm px-5 py-3 rounded-xl border border-slate-700 transition">
-                <i class="fa-brands fa-amazon text-amber-400"></i> Check Price on Amazon
-              </a>
-              <a href="/category/upright-vacuums" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm px-5 py-3 rounded-xl border border-slate-700 transition">
-                <i class="fa-solid fa-plug text-brand-400"></i> Upright Vacuums
-              </a>
-            </div>
-          </div>
-
-          <!-- Right Product Image Showcase Card -->
-          <div class="w-full sm:w-72 lg:w-80 shrink-0 bg-white rounded-2xl p-5 border border-slate-200 shadow-2xl flex flex-col items-center justify-center text-slate-900 relative group">
-            <div class="w-full h-56 flex items-center justify-center relative overflow-hidden bg-slate-50/50 rounded-xl">
-              <img src="/assets/vendorimagesNV356E_Image1._CB304632530_.jpg" 
-                   alt="Shark Professional Navigator Upright Vacuum Cleaner" 
-                   class="max-h-52 max-w-full object-contain transition-transform duration-300 group-hover:scale-105" 
-                   onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
-            </div>
-            <div class="mt-4 pt-3 border-t border-slate-100 w-full flex items-center justify-between">
-              <span class="text-xs font-bold text-slate-500">Editor Score</span>
-              <span class="text-amber-500 font-extrabold text-sm flex items-center gap-1">
-                <i class="fa-solid fa-star"></i> 4.5 / 5.0
-              </span>
-            </div>
-            <div class="mt-2 w-full text-center">
-              <a href="${amazonProductUrl}" target="_blank" rel="nofollow sponsored" class="text-xs text-brand-600 hover:text-brand-800 font-bold hover:underline inline-flex items-center gap-1.5">
-                <i class="fa-brands fa-amazon text-amber-500"></i> See Customer Rating
-              </a>
-            </div>
-          </div>
-
-        </div>
-      </header>
-
-      <!-- Editor Rating Section -->
-      <section class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
-          <div>
-            <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-              <i class="fa-solid fa-award text-amber-500"></i> Editor Rating
-            </h2>
-            <p class="text-xs text-slate-500 mt-0.5">Evaluation criteria across design, features, health filtration, and price value</p>
-          </div>
-          <div class="flex items-center gap-3 bg-amber-50 border border-amber-200 px-4 py-2.5 rounded-xl shrink-0">
-            <span class="text-xs font-bold text-amber-900 uppercase tracking-wide">Overall Rating</span>
-            <div class="flex items-center gap-1.5">
-              <div class="flex text-amber-400 text-sm">
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star-half-stroke"></i>
-              </div>
-              <span class="text-2xl font-black text-slate-900">4.5</span>
-              <span class="text-xs text-slate-500">/ 5.0</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Rating Categories (Design, Features, Health, Price) -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
-            <span class="text-xs text-slate-500 font-bold uppercase tracking-wider block">Design</span>
-            <div class="mt-2 flex items-center gap-1 text-slate-400 text-xs font-semibold">
-              <i class="fa-solid fa-circle-check text-emerald-500 text-[11px]"></i> Evaluated
-            </div>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
-            <span class="text-xs text-slate-500 font-bold uppercase tracking-wider block">Features</span>
-            <div class="mt-2 flex items-center gap-1 text-slate-400 text-xs font-semibold">
-              <i class="fa-solid fa-circle-check text-emerald-500 text-[11px]"></i> Evaluated
-            </div>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
-            <span class="text-xs text-slate-500 font-bold uppercase tracking-wider block">Health</span>
-            <div class="mt-2 flex items-center gap-1 text-slate-400 text-xs font-semibold">
-              <i class="fa-solid fa-circle-check text-emerald-500 text-[11px]"></i> Evaluated
-            </div>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
-            <span class="text-xs text-slate-500 font-bold uppercase tracking-wider block">Price</span>
-            <div class="mt-2 flex items-center gap-1 text-slate-400 text-xs font-semibold">
-              <i class="fa-solid fa-circle-check text-emerald-500 text-[11px]"></i> Evaluated
-            </div>
-          </div>
-        </div>
-
-        <!-- Summary Section -->
-        <div class="p-5 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
-          <h3 class="text-sm font-extrabold text-slate-900 uppercase tracking-wider">Summary</h3>
-          <p class="text-sm text-slate-700 leading-relaxed">
-            After some careful research I have come upon the Shark Professional Navigator Upright, which stands out as one of the best vacuum cleaner options on the market. This Lift-Away vacuum cleaner prides itself on it’s never lose suction ability, and its anti-allergen complete seal system. The powerful, portable, lightweight and large capacity vacuum cleaner therefore allows you to execute deep carpet cleaning and bare floor cleaning like never before.
-          </p>
-          <div class="pt-2 flex items-center justify-between flex-wrap gap-2">
-            <span class="text-2xl font-black text-brand-700">4.5</span>
-            <a href="${amazonProductUrl}" target="_blank" rel="nofollow sponsored" class="inline-flex items-center gap-2 text-xs font-bold text-brand-600 hover:text-brand-800 hover:underline">
-              <i class="fa-brands fa-amazon text-amber-500"></i> See Customer Rating
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- Pros & Cons Section -->
-      <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="bg-emerald-50 border border-emerald-200 p-6 rounded-2xl text-emerald-950 space-y-4">
-          <h3 class="font-extrabold text-base text-emerald-900 flex items-center gap-2">
-            <i class="fa-solid fa-thumbs-up text-emerald-600"></i> Pros
-          </h3>
-          <ul class="text-xs sm:text-sm space-y-2 text-emerald-900 list-disc list-inside">
-            <li>Foam and HEPA filters work efficiently</li>
-            <li>Cord is long</li>
-            <li>Can clean a wide array of surfaces</li>
-            <li>Easy to maneuver</li>
-            <li>Has anti-allergen technology</li>
-            <li>Excellent suction</li>
-            <li>Price is great</li>
-            <li>Dust cup cleans easily</li>
-            <li>Easy to assemble</li>
-            <li>Lightweight and sturdy construction</li>
-            <li>Quiet performance</li>
-            <li>Can switch between an upright and canister vacuum</li>
-          </ul>
-        </div>
-
-        <div class="bg-rose-50 border border-rose-200 p-6 rounded-2xl text-rose-950 space-y-4">
-          <h3 class="font-extrabold text-base text-rose-900 flex items-center gap-2">
-            <i class="fa-solid fa-thumbs-down text-rose-600"></i> Cons
-          </h3>
-          <ul class="text-xs sm:text-sm space-y-2 text-rose-900 list-disc list-inside">
-            <li>Hose is short</li>
-            <li>Poor edge cleaning</li>
-            <li>No on-board storage</li>
-          </ul>
-        </div>
-      </section>
-
-      <!-- Full Review Article Content -->
-      <section class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-8 shadow-xs">
-        <div class="space-y-2 border-b border-slate-100 pb-4">
-          <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">
-            Detailed Review &amp; Features Breakdown
-          </h2>
-          <p class="text-xs text-slate-500">Comprehensive examination of the Shark Pro Navigator Upright features, performance, and ergonomics.</p>
-        </div>
-
-        <div class="space-y-6 text-sm text-slate-700 leading-relaxed">
-          <div class="space-y-2">
-            <h3 class="text-base sm:text-lg font-bold text-slate-900">Never Lose Suction and Sealed Vacuum Technology</h3>
-            <p>
-              The Shark Pro Navigator is equipped with advanced cyclonic technology, which works to efficiently separate fine dirt from your air. In this way dirt is prevented from clogging up your filters, in turn ensuring that your vacuum cleaner does not lose suction with time.
-            </p>
-            <p>
-              Additionally, this upright vacuum is composed of Shark’s popular anti-allergen Complete Seal Technology, and top notch HEPA filtration system. These two features work seamlessly to capture and remove 99.9% of dust and allergens, so that you can breathe fresh air.
-            </p>
-          </div>
-
-          <div class="space-y-2">
-            <h3 class="text-base sm:text-lg font-bold text-slate-900">Lift Away Canister and Premium Attachments</h3>
-            <p>
-              Another great feature of the Shark Navigator is its lightweight, portable, and large capacity dust cup, which allows you to conveniently move around your house and car without feeling bogged down. This easy to empty dust cup works closely with a dust-away hard floor attachment and a powerful pet attachment.
-            </p>
-            <p>
-              The patented dust-away attachment allows for efficient and powerful floor cleaning, while the pet attachment makes it easy to lift pet hair from the floor, carpets, and upholstery. Lastly, the Navigator has a microfiber pad that will wipe away tiny dirt particles that are invisible to the eye.
-            </p>
-          </div>
-
-          <div class="space-y-2">
-            <h3 class="text-base sm:text-lg font-bold text-slate-900">Swivel Steering</h3>
-            <p>
-              The Navigator is also popular for its swivel steering, which allows you to maneuver around furniture and obstacles without losing control of the vacuum. The swivel steering combined with the lightweight design of the vacuum make is simple and fun to execute your cleaning.
-            </p>
-          </div>
-
-          <div class="space-y-2">
-            <h3 class="text-base sm:text-lg font-bold text-slate-900">Amazing Deep Carpet Cleaning</h3>
-            <p>
-              The upright vacuum cleaner also consists of powerful suction abilities, which allow you to pick up all visible and invisible dirt embedded into you carpet. This upright therefore has the ability to clean thick carpets as easily as it can clean bare floors and rugs.
-            </p>
-            <p>
-              The efficient vacuum cleaner is therefore perfect for cleaning up all the dirt, dust, and pet hair found deep down in your carpets.
-            </p>
-          </div>
-
-          <div class="space-y-2">
-            <h3 class="text-base sm:text-lg font-bold text-slate-900">Brushroll</h3>
-            <p>
-              The Navigator Upright can also perform multi-surface cleaning, thanks to its motorized rotating brush. This brushroll has an on/off switch, which you can use depending on whether you are cleaning bare floors or thick carpets. When the brushroll is on it will loosen up dirt embedded in your carpet fibers, and when it is off it can clean bare floors without causing any scratches.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Frequently Asked Questions (FAQ) -->
-      <section class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-6 shadow-xs">
-        <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-          <i class="fa-solid fa-circle-question text-brand-600"></i> Frequently Asked Questions (FAQ)
-        </h2>
-        <div class="space-y-4 text-sm">
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
-            <p class="font-bold text-slate-900">Q. What accessories do you get with the Professional Navigator Upright vacuum cleaner?</p>
-            <p class="text-slate-700">A. The Upright comes with a dusting brush, 8 inch crevice tool, pet hair power brush, microfiber pad, and a dust away hard floor attachment.</p>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
-            <p class="font-bold text-slate-900">Q. What is the difference between the standard brush roll and gentle brush roll?</p>
-            <p class="text-slate-700">A. The standard brush is designed for the carpet, while the gentle brush is designed for hardwood floors.</p>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
-            <p class="font-bold text-slate-900">Q. Are the filters of the Shark Professional Navigator washable?</p>
-            <p class="text-slate-700">A. Yes, the foam and HEPA filters are easy to wash.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Final Verdict -->
-      <section class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl p-6 sm:p-8 space-y-4 shadow-lg">
-        <div class="flex items-center gap-2.5 text-amber-400 font-extrabold text-sm uppercase tracking-wider">
-          <i class="fa-solid fa-certificate"></i> Final Verdict
-        </div>
-        <p class="text-base sm:text-lg font-medium text-slate-100 leading-relaxed">
-          The Shark Professional Navigator is an excellent vacuum cleaner that boasts of sturdy construction and a user friendly design. There is no doubt that this vacuum cleaner is the best in its class and price range. You won’t find better!
-        </p>
-        <div class="pt-2 flex flex-wrap items-center gap-4">
-          <a href="${amazonProductUrl}" target="_blank" rel="nofollow sponsored" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-extrabold text-xs transition shadow-md">
-            <i class="fa-brands fa-amazon"></i> See Customer Rating
-          </a>
-          <a href="${amazonProductUrl}" target="_blank" rel="nofollow sponsored" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition">
-            <i class="fa-brands fa-amazon text-amber-400"></i> Check Amazon Price
-          </a>
-          <a href="/category/upright-vacuums" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition">
-            Compare Upright Vacuums
-          </a>
-          <a href="/brand/shark" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs border border-slate-700 transition">
-            More Shark Vacuums
-          </a>
-        </div>
-      </section>
-
-      <!-- Related Category & Buying Guides Directory -->
-      <section class="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-4">
-        <h3 class="font-extrabold text-sm text-slate-900 uppercase tracking-wider text-brand-600">Explore Related Guides &amp; Categories</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <a href="/category/upright-vacuums" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-xs transition block space-y-1 group">
-            <span class="text-xs font-bold text-slate-900 group-hover:text-brand-600 block flex items-center justify-between">
-              <span>Upright Vacuums Directory</span>
-              <i class="fa-solid fa-arrow-right text-slate-400 group-hover:translate-x-0.5 transition-transform"></i>
-            </span>
-            <span class="text-[11px] text-slate-500 block">Compare deep-cleaning upright models side-by-side</span>
-          </a>
-          <a href="/guides/best-vacuum-for-pet-hair" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-xs transition block space-y-1 group">
-            <span class="text-xs font-bold text-slate-900 group-hover:text-brand-600 block flex items-center justify-between">
-              <span>Best Vacuums for Pet Hair</span>
-              <i class="fa-solid fa-arrow-right text-slate-400 group-hover:translate-x-0.5 transition-transform"></i>
-            </span>
-            <span class="text-[11px] text-slate-500 block">Anti-tangle brushrolls &amp; sealed HEPA filtration</span>
-          </a>
-          <a href="/guides/bagged-vs-bagless-vacuums-guide" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-xs transition block space-y-1 group">
-            <span class="text-xs font-bold text-slate-900 group-hover:text-brand-600 block flex items-center justify-between">
-              <span>Bagged vs. Bagless Guide</span>
-              <i class="fa-solid fa-arrow-right text-slate-400 group-hover:translate-x-0.5 transition-transform"></i>
-            </span>
-            <span class="text-[11px] text-slate-500 block">Hygiene comparison, dustbins, and allergy advice</span>
-          </a>
-        </div>
-      </section>
-
-    </article>
-  `;
-}
-
-function renderServerReviewsHubPage(origin, allProducts) {
-  // Notable verified models from test database
-  const foundFeatured = [
-    allProducts.find(p => p.brand && p.brand.toLowerCase().includes('dyson') && p.model && p.model.toLowerCase().includes('v15')),
-    allProducts.find(p => p.brand && p.brand.toLowerCase().includes('shark') && p.model && p.model.toLowerCase().includes('stratos')),
-    allProducts.find(p => p.brand && p.brand.toLowerCase().includes('roborock') && p.model && p.model.toLowerCase().includes('s8')),
-    allProducts.find(p => p.brand && p.brand.toLowerCase().includes('miele') && p.model && p.model.toLowerCase().includes('c3')),
-    allProducts.find(p => p.brand && p.brand.toLowerCase().includes('tineco') && p.model && p.model.toLowerCase().includes('s5')),
-    allProducts.find(p => p.brand && p.brand.toLowerCase().includes('shark') && p.model && p.model.toLowerCase().includes('nv352'))
-  ].filter(Boolean);
-
-  const fallbackFeatured = [
-    { brand: 'Dyson', model: 'V15s Detect Submarine', brandSlug: 'dyson', type: 'Stick', reviewUrl: '/vacuum/dyson-v15s-review', starRating: 4.8, numReviews: 1420, suctionKpaRaw: '240 AW', hepaFiltration: true, asin: 'B0C79MSX4Z', imageUrl: 'https://m.media-amazon.com/images/P/B0C79MSX4Z.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B0C79MSX4Z?tag=wat344r5-20' },
-    { brand: 'Shark', model: 'Stratos DuoClean PowerFins Upright', brandSlug: 'ninja-shark', type: 'Upright', reviewUrl: '/vacuum/ninja-shark-stratos-duoclean-powerfins-upright-vacuum-amazon-s-choice-review', starRating: 4.6, numReviews: 890, suctionKpaRaw: 'High', hepaFiltration: true, asin: 'B0B8TX8L1Q', imageUrl: 'https://m.media-amazon.com/images/P/B0B8TX8L1Q.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B0B8TX8L1Q?tag=wat344r5-20' },
-    { brand: 'Roborock', model: 'S8 Max Ultra', brandSlug: 'roborock', type: 'Robot', reviewUrl: '/vacuum/roborock-s8-max-ultra-review', starRating: 4.7, numReviews: 610, suctionKpaRaw: '10 kPa', hepaFiltration: true, asin: 'B0CWR995K3', imageUrl: 'https://m.media-amazon.com/images/P/B0CWR995K3.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B0CWR995K3?tag=wat344r5-20' },
-    { brand: 'Miele', model: 'Complete C3 125 Gala Edition', brandSlug: 'miele', type: 'Canister', reviewUrl: '/vacuum/miele-complete-c3-125-gala-edition-review', starRating: 4.9, numReviews: 530, suctionKpaRaw: '1200 W', hepaFiltration: true, asin: 'B0CSWSTK27', imageUrl: 'https://m.media-amazon.com/images/P/B0CSWSTK27.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B0CSWSTK27?tag=wat344r5-20' },
-    { brand: 'Tineco', model: 'Floor One S5', brandSlug: 'tineco', type: 'Wet/Dry', reviewUrl: '/vacuum/tineco-floor-one-s5-review', starRating: 4.5, numReviews: 2100, suctionKpaRaw: 'Smart iLoop', hepaFiltration: true, asin: 'B096VMBG2F', imageUrl: 'https://m.media-amazon.com/images/P/B096VMBG2F.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B096VMBG2F?tag=wat344r5-20' },
-    { brand: 'Shark', model: 'Navigator Lift-Away NV352', brandSlug: 'ninja-shark', type: 'Upright', reviewUrl: '/vacuum/shark-nv352-amazon-s-choice-review', starRating: 4.6, numReviews: 32000, suctionKpaRaw: 'Never Loses Suction', hepaFiltration: true, asin: 'B004Q4X51E', imageUrl: 'https://m.media-amazon.com/images/P/B004Q4X51E.01._SL500_.jpg', amazonLink: 'https://www.amazon.com/dp/B004Q4X51E?tag=wat344r5-20' }
-  ];
-
-  const featuredModels = foundFeatured.length >= 4 ? foundFeatured : fallbackFeatured;
-
-  return `
-    <article class="space-y-8 text-slate-800">
-      
-      <!-- Reviews Hub Header -->
-      <header class="relative overflow-hidden bg-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl space-y-4">
-        <div class="absolute inset-0 z-0 flex justify-end pointer-events-none opacity-40">
-          <div class="relative w-full md:w-3/4 lg:w-2/3 h-full">
-            <img src="/assets/vacuum_hero_banner.jpg" alt="Vacuum Banner Background" class="w-full h-full object-cover object-right brightness-110" />
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
-          </div>
-          <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900 via-35% to-transparent"></div>
-        </div>
-
-        <div class="relative z-10 space-y-3 max-w-3xl">
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-extrabold uppercase tracking-wider">
-            <i class="fa-solid fa-star-half-stroke text-brand-400"></i> Vacuum Cleaner Reviews &amp; Ratings
-          </div>
-          <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Vacuum Cleaner Reviews
-          </h1>
-          <p class="text-slate-300 text-sm leading-relaxed">
-            Explore comprehensive evaluations, suction pressure measurements, HEPA particle capture ratings, acoustic noise levels, and long-term durability analyses across top-rated upright, cordless stick, robot, and canister vacuum cleaners.
-          </p>
-          <div class="pt-3 border-t border-slate-800 flex flex-wrap items-center gap-4 text-xs text-slate-400 font-medium">
-            <span><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Verified by VacCompare</span>
-            <span><i class="fa-solid fa-shield-check text-emerald-400 mr-1"></i> Unbiased &amp; Spec-Backed</span>
-            <span><i class="fa-solid fa-scale-balanced text-amber-400 mr-1"></i> Side-by-Side Comparisons</span>
-          </div>
-        </div>
-      </header>
-
-      <!-- FEATURED REVIEW CARD: Shark Professional Navigator Upright Vacuum Cleaner -->
-      <section class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            <i class="fa-solid fa-award text-amber-500"></i> Featured Review
-          </h2>
-          <span class="text-xs font-extrabold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full uppercase tracking-wider">
-            Recently Published
-          </span>
-        </div>
-
-        <div class="bg-white rounded-3xl border-2 border-brand-500/30 p-6 sm:p-8 shadow-md hover:shadow-xl transition flex flex-col lg:flex-row items-center gap-8">
-          <!-- Featured Image -->
-          <a href="/reviews/shark-professional-navigator-upright-vacuum-cleaner-review" class="w-full sm:w-72 lg:w-80 shrink-0 bg-slate-50 border border-slate-200 rounded-2xl p-6 flex items-center justify-center group overflow-hidden">
-            <img src="/assets/vendorimagesNV356E_Image1._CB304632530_.jpg" 
-                 alt="Shark Professional Navigator Upright Vacuum Cleaner" 
-                 class="max-h-56 max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
-                 onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
-          </a>
-
-          <!-- Details & Excerpt -->
-          <div class="flex-1 space-y-4 w-full">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="px-2.5 py-0.5 rounded-md bg-brand-100 text-brand-800 text-xs font-bold">Shark</span>
-              <span class="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 text-xs font-semibold">Upright Vacuums</span>
-              <div class="flex items-center gap-1 text-amber-500 font-extrabold text-xs ml-auto">
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star-half-stroke"></i>
-                <span class="text-slate-900 ml-1 text-sm font-black">4.5 / 5.0</span>
-              </div>
-            </div>
-
-            <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 leading-snug">
-              <a href="/reviews/shark-professional-navigator-upright-vacuum-cleaner-review" class="hover:text-brand-600 transition">
-                Shark Professional Navigator Upright Vacuum Cleaner Review
-              </a>
-            </h3>
-
-            <!-- Short Excerpt extracted ONLY from article -->
-            <p class="text-sm text-slate-600 leading-relaxed">
-              After some careful research I have come upon the Shark Professional Navigator Upright, which stands out as one of the best vacuum cleaner options on the market. This Lift-Away vacuum cleaner prides itself on it’s never lose suction ability, and its anti-allergen complete seal system.
-            </p>
-
-            <div class="pt-2 flex flex-wrap items-center gap-3">
-              <a href="/reviews/shark-professional-navigator-upright-vacuum-cleaner-review" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition inline-flex items-center gap-2">
-                Read Full Review <i class="fa-solid fa-arrow-right"></i>
-              </a>
-              <a href="https://www.amazon.com/dp/B005KMDV9A?tag=wat344r5-20" target="_blank" rel="nofollow sponsored" class="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs transition inline-flex items-center gap-1.5">
-                <i class="fa-brands fa-amazon"></i> See Customer Rating
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Verified Reviews Grid -->
-      <section class="space-y-4">
-        <div class="flex items-center justify-between">
-          <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            <i class="fa-solid fa-layer-group text-brand-600"></i> More Verified Reviews
-          </h2>
-          <a href="/" class="text-xs font-bold text-brand-600 hover:underline">
-            View All ${allProducts.length} Vacuums &rarr;
-          </a>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          ${featuredModels.map(p => {
-            const suctionText = p.suctionKpaRaw && p.suctionKpaRaw !== '-' ? `${p.suctionKpaRaw} kPa` : 'Standard';
-            const rUrl = p.reviewUrl || (`/vacuum/${p.fullSlug || (slugify(p.brand) + '-' + slugify(p.model) + '-review')}`);
-            const bSlug = p.brandSlug || slugify(p.brand);
-            const catSlug = getCanonicalCategorySlug(p.type);
-            const catName = getCanonicalCategoryName(p.type);
-            const aLink = p.amazonLink || (p.asin ? `https://www.amazon.com/dp/${p.asin}?tag=wat344r5-20` : null);
-            return `
-              <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:border-brand-500 hover:shadow-md transition flex flex-col justify-between space-y-4">
-                <div class="space-y-3">
-                  <div class="flex items-center justify-between gap-2">
-                    <a href="/brand/${bSlug}" class="text-[11px] font-extrabold text-brand-600 uppercase tracking-wider hover:underline">${escapeHtml(p.brand)}</a>
-                    <a href="/category/${catSlug}" class="text-[11px] font-semibold text-slate-500 hover:text-slate-800 bg-slate-100 px-2 py-0.5 rounded">${escapeHtml(catName)}</a>
-                  </div>
-
-                  <a href="${rUrl}" class="h-44 bg-slate-50 rounded-xl p-3 flex items-center justify-center overflow-hidden block group">
-                    <img src="${escapeAttr(p.imageUrl || getProductImageUrl(p.asin))}" alt="${escapeAttr(p.brand)} ${escapeAttr(p.model)}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
-                  </a>
-
-                  <div class="space-y-1">
-                    <div class="flex items-center gap-1.5 text-amber-500 text-xs font-bold">
-                      <i class="fa-solid fa-star"></i>
-                      <span>${p.starRating ? p.starRating.toFixed(1) : '4.5'}</span>
-                      <span class="text-slate-400 font-normal">(${p.numReviews ? p.numReviews.toLocaleString() : '120'} reviews)</span>
-                    </div>
-                    <h3 class="font-extrabold text-base text-slate-900 leading-snug">
-                      <a href="${rUrl}" class="hover:text-brand-600 transition">${escapeHtml(p.brand)} ${escapeHtml(p.model)} Review</a>
-                    </h3>
-                  </div>
-
-                  <div class="flex flex-wrap gap-2 text-xs text-slate-600">
-                    <span class="bg-slate-100 px-2.5 py-0.5 rounded">Suction: ${escapeHtml(suctionText)}</span>
-                    ${p.hepaFiltration ? '<span class="bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-semibold">HEPA Sealed</span>' : ''}
-                  </div>
-                </div>
-
-                <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
-                  <a href="${rUrl}" class="text-xs font-bold text-brand-600 hover:text-brand-800 transition flex items-center gap-1">
-                    Read Review &rarr;
-                  </a>
-                  ${aLink ? `
-                    <a href="${escapeAttr(aLink)}" target="_blank" rel="nofollow sponsored" class="text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-amber-100 px-2.5 py-1.5 rounded-lg transition inline-flex items-center gap-1">
-                      <i class="fa-brands fa-amazon text-amber-500"></i> Amazon
-                    </a>
-                  ` : ''}
-                </div>
-              </div>
-            `;
-          }).join('')}
-        </div>
-      </section>
-
-      <!-- Category Quick Links -->
-      <section class="bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-4">
-        <h3 class="font-extrabold text-sm text-slate-900 uppercase tracking-wider text-brand-600">Browse Vacuum Cleaners By Category</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 text-xs font-bold text-center">
-          <a href="/category/upright-vacuums" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 transition text-slate-800 hover:text-brand-600">
-            Upright
-          </a>
-          <a href="/category/cordless-stick" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 transition text-slate-800 hover:text-brand-600">
-            Cordless Stick
-          </a>
-          <a href="/category/robot-vacuums" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 transition text-slate-800 hover:text-brand-600">
-            Robot
-          </a>
-          <a href="/category/canister-vacuums" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 transition text-slate-800 hover:text-brand-600">
-            Canister
-          </a>
-          <a href="/category/handheld-vacuums" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 transition text-slate-800 hover:text-brand-600">
-            Handheld
-          </a>
-          <a href="/category/wet-dry-vacuums" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 transition text-slate-800 hover:text-brand-600">
-            Wet &amp; Dry
-          </a>
-        </div>
-      </section>
-
-    </article>
-  `;
+  const r = getReviewBySlug("shark-professional-navigator-upright-vacuum-cleaner-review");
+  return renderServerReviewArticlePage(r, origin, allProducts);
 }
 
 function renderServerCompareHubPage(allProducts, productSlugMap) {
@@ -3585,11 +3054,12 @@ app.get('*', (req, res) => {
         ]
       });
     }
-    // Specific Review Page: /reviews/shark-professional-navigator-upright-vacuum-cleaner-review
-    else if (reqPath === '/reviews/shark-professional-navigator-upright-vacuum-cleaner-review') {
-      canonical = `${CANONICAL_ORIGIN}/reviews/shark-professional-navigator-upright-vacuum-cleaner-review`;
-      title = 'Shark Professional Navigator Upright Vacuum Cleaner Review';
-      description = 'Shark Professional Navigator Upright Vacuum Cleaner review covering suction, Lift-Away design, HEPA filtration, attachments, swivel steering, pros, cons, FAQs, and overall rating.';
+    // Specific Review Article Page (Any of the 19 reviews)
+    else if (getReviewBySlug(reqPath) && reqPath !== '/reviews' && reqPath !== '/reviews/') {
+      const rev = getReviewBySlug(reqPath);
+      canonical = `${CANONICAL_ORIGIN}/reviews/${rev.slug}`;
+      title = `${rev.title} | VacCompare`;
+      description = rev.summaryText ? (rev.summaryText.length > 160 ? rev.summaryText.substring(0, 157) + '...' : rev.summaryText) : `${rev.title} - comprehensive laboratory benchmarks, pros, cons, and buying advice.`;
 
       // Breadcrumb schema
       schemaJson.push({
@@ -3598,8 +3068,8 @@ app.get('*', (req, res) => {
         "itemListElement": [
           { "@type": "ListItem", "position": 1, "name": "Home", "item": CANONICAL_ORIGIN },
           { "@type": "ListItem", "position": 2, "name": "Reviews", "item": `${CANONICAL_ORIGIN}/reviews` },
-          { "@type": "ListItem", "position": 3, "name": "Upright Vacuums", "item": `${CANONICAL_ORIGIN}/category/upright-vacuums` },
-          { "@type": "ListItem", "position": 4, "name": "Shark Professional Navigator Upright Vacuum Cleaner Review", "item": canonical }
+          { "@type": "ListItem", "position": 3, "name": rev.category || "Vacuum Reviews", "item": `${CANONICAL_ORIGIN}/category/${rev.categorySlug || 'upright-vacuums'}` },
+          { "@type": "ListItem", "position": 4, "name": rev.title, "item": canonical }
         ]
       });
 
@@ -3607,20 +3077,20 @@ app.get('*', (req, res) => {
       schemaJson.push({
         "@context": "https://schema.org",
         "@type": "Product",
-        "name": "Shark Professional Navigator Upright Vacuum Cleaner",
-        "image": `${CANONICAL_ORIGIN}/assets/vendorimagesNV356E_Image1._CB304632530_.jpg`,
+        "name": rev.title.replace(/ Review$/i, ''),
+        "image": rev.imageUrl && rev.imageUrl.startsWith('http') ? rev.imageUrl : `${CANONICAL_ORIGIN}${rev.imageUrl || '/assets/vacuum_placeholder.svg'}`,
         "description": description,
         "brand": {
           "@type": "Brand",
-          "name": "Shark"
+          "name": rev.brand || "Vacuum"
         },
-        "category": "Upright Vacuums",
+        "category": rev.category || "Vacuum Cleaners",
         "review": {
           "@type": "Review",
-          "name": "Shark Professional Navigator Upright Vacuum Cleaner Review",
+          "name": rev.title,
           "reviewRating": {
             "@type": "Rating",
-            "ratingValue": "4.5",
+            "ratingValue": String(rev.rating || "4.5"),
             "bestRating": "5"
           },
           "author": {
@@ -3635,37 +3105,21 @@ app.get('*', (req, res) => {
         }
       });
 
-      // FAQPage Schema
-      schemaJson.push({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": [
-          {
+      // FAQPage Schema if FAQs exist
+      if (rev.faqs && rev.faqs.length > 0) {
+        schemaJson.push({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": rev.faqs.map(faq => ({
             "@type": "Question",
-            "name": "What accessories do you get with the Professional Navigator Upright vacuum cleaner?",
+            "name": faq.q,
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "The Upright comes with a dusting brush, 8 inch crevice tool, pet hair power brush, microfiber pad, and a dust away hard floor attachment."
+              "text": faq.a
             }
-          },
-          {
-            "@type": "Question",
-            "name": "What is the difference between the standard brush roll and gentle brush roll?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "The standard brush is designed for the carpet, while the gentle brush is designed for hardwood floors."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Are the filters of the Shark Professional Navigator washable?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes, the foam and HEPA filters are easy to wash."
-            }
-          }
-        ]
-      });
+          }))
+        });
+      }
     }
     // Reviews Directory: /reviews or /reviews/
     else if (reqPath === '/reviews' || reqPath === '/reviews/') {
@@ -3978,20 +3432,21 @@ app.get('*', (req, res) => {
       showMainContent = true;
       breadcrumbCurrent = 'All Vacuum Cleaners';
       productGridHtml = cachedProducts.slice(0, 24).map(p => renderServerCard(p)).join('');
-    } else if (reqPath === '/reviews/shark-professional-navigator-upright-vacuum-cleaner-review') {
-      showArticle = true;
-      showMainContent = false;
-      breadcrumbCategory = 'Reviews';
-      breadcrumbCategoryUrl = '/reviews';
-      breadcrumbCurrent = 'Shark Professional Navigator Upright';
-      articleHtml = renderServerSharkNavigatorReviewPage(CANONICAL_ORIGIN, cachedProducts);
     } else if (reqPath === '/reviews' || reqPath === '/reviews/') {
       showArticle = true;
       showMainContent = false;
       breadcrumbCategory = 'Reviews Directory';
       breadcrumbCategoryUrl = '/reviews';
       breadcrumbCurrent = 'All Reviews';
-      articleHtml = renderServerReviewsHubPage(CANONICAL_ORIGIN, cachedProducts);
+      articleHtml = renderServerReviewsHubPage(CANONICAL_ORIGIN, cachedProducts, ALL_REVIEWS);
+    } else if (getReviewBySlug(reqPath)) {
+      const matchedReview = getReviewBySlug(reqPath);
+      showArticle = true;
+      showMainContent = false;
+      breadcrumbCategory = matchedReview.category || 'Reviews';
+      breadcrumbCategoryUrl = matchedReview.categorySlug ? `/category/${matchedReview.categorySlug}` : '/reviews';
+      breadcrumbCurrent = matchedReview.title;
+      articleHtml = renderServerReviewArticlePage(matchedReview, CANONICAL_ORIGIN, cachedProducts);
     } else if (reqPath.startsWith('/vacuum/') || reqPath.startsWith('/product/')) {
       const slug = reqPath.replace(/^\/(vacuum|product)\//, '').replace(/\/$/, '');
       const matched = findProductBySlugServer(slug, cachedProducts, productSlugMap);

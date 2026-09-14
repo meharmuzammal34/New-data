@@ -1,6 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<!-- Compatibility patch: Ensure window.fetch is writable to prevent "Cannot set property fetch of #<Window> which has only a getter" errors in sandboxed iframes/analytics -->
+<script>
+  (function() {
+    try {
+      if (typeof window !== 'undefined' && typeof window.fetch === 'function') {
+        var _nativeFetch = window.fetch.bind(window);
+        try {
+          Object.defineProperty(window, 'fetch', {
+            value: _nativeFetch,
+            writable: true,
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e1) {
+          try {
+            Object.defineProperty(window, 'fetch', {
+              get: function() { return _nativeFetch; },
+              set: function(fn) { _nativeFetch = fn; },
+              configurable: true,
+              enumerable: true
+            });
+          } catch (e2) {}
+        }
+        try {
+          if (typeof Window !== 'undefined' && Window.prototype) {
+            var desc = Object.getOwnPropertyDescriptor(Window.prototype, 'fetch');
+            if (desc && desc.get && !desc.set) {
+              Object.defineProperty(Window.prototype, 'fetch', {
+                get: function() { return _nativeFetch; },
+                set: function(fn) { _nativeFetch = fn; },
+                configurable: true,
+                enumerable: true
+              });
+            }
+          }
+        } catch (e3) {}
+      }
+    } catch (err) {}
+  })();
+</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8SWQ40D32C"></script>
 <script>

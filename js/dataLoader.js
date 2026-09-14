@@ -207,7 +207,8 @@ function mapRowToProduct(row, index) {
 }
 
 async function loadProducts() {
-  const res = await fetch(CSV_PATH);
+  const fetchFn = (typeof window !== 'undefined' && window.fetch) ? window.fetch.bind(window) : fetch;
+  const res = await fetchFn(CSV_PATH);
   if (!res.ok) throw new Error(`Failed to load CSV: ${res.status}`);
   const text = await res.text();
   const rows = parseCSV(text);

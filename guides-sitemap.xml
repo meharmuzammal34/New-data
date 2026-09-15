@@ -1,33 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://vacuumcleanerlab.com/guides/best-vacuum-for-pet-hair</loc>
-    <lastmod>2026-09-14</lastmod>
+    <loc>https://vacuumcleanerlab.com/guides</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://vacuumcleanerlab.com/guides/how-to-choose-the-best-vacuum-cleaner-for-stairs-ultimate-guide</loc>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://vacuumcleanerlab.com/guides/best-vacuum-cleaner-cordless-guide-and-reviews</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://vacuumcleanerlab.com/guides/best-vacuum-cleaner-under-50-guide-and-reviews</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://vacuumcleanerlab.com/guides/best-vacuum-cleaners-under-100-guide-and-reviews</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://vacuumcleanerlab.com/guides/best-vacuum-cleaner-under-150-guide-and-reviews</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://vacuumcleanerlab.com/guides/best-vacuum-cleaner-under-200-guide-and-reviews</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://vacuumcleanerlab.com/guides/best-vacuum-cleaner-under-300-guide-and-reviews</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://vacuumcleanerlab.com/guides/best-vacuum-for-pet-hair</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.80</priority>
   </url>
   <url>
     <loc>https://vacuumcleanerlab.com/guides/best-robot-vacuums-2026</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.80</priority>
   </url>
   <url>
     <loc>https://vacuumcleanerlab.com/guides/best-hardwood-floor-vacuums</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.80</priority>
   </url>
   <url>
     <loc>https://vacuumcleanerlab.com/guides/best-budget-cordless-vacuums</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.80</priority>
   </url>
   <url>
     <loc>https://vacuumcleanerlab.com/guides/bagged-vs-bagless-vacuums-guide</loc>
-    <lastmod>2026-09-14</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
+    <priority>0.80</priority>
   </url>
 </urlset>

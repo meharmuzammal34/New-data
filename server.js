@@ -4,6 +4,8 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { ALL_REVIEWS, getReviewBySlug, REVIEWS_BY_SLUG } from './reviews-data.js';
 import { renderServerReviewArticlePage, renderServerReviewsHubPage } from './server-reviews-renderer.js';
+import { ALL_GUIDES, getGuideBySlug, GUIDES_BY_SLUG } from './guides-data.js';
+import { renderServerGuideArticlePage, renderServerGuidesHubPage } from './server-guides-renderer.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -760,7 +762,7 @@ function formatProductMetaDescription(prodName) {
   return str;
 }
 
-const BUYING_GUIDES = [
+const LEGACY_BUYING_GUIDES = [
   {
     slug: 'best-vacuum-for-pet-hair',
     title: '10 Best Vacuum Cleaners for Pet Hair (Guide & Ranked)',
@@ -787,6 +789,8 @@ const BUYING_GUIDES = [
     description: 'Uncover the pros, cons, long-term costs, and allergy filtration benefits of bagged vs bagless vacuum cleaners.',
   }
 ];
+
+const BUYING_GUIDES = [...ALL_GUIDES, ...LEGACY_BUYING_GUIDES];
 
 const POPULAR_BRANDS = ['Dyson', 'Shark', 'Bissell', 'iRobot', 'Roborock', 'Miele', 'Tineco', 'Hoover', 'Eureka'];
 const POPULAR_CATEGORIES = [
@@ -989,16 +993,30 @@ app.get('/guides-sitemap.xml', (req, res) => {
   const CANONICAL_ORIGIN = getCanonicalOrigin(req);
   res.type('application/xml');
   const today = new Date().toISOString().split('T')[0];
-  const urls = BUYING_GUIDES.map(g => `
+  const hubUrl = `
+  <url>
+    <loc>${CANONICAL_ORIGIN}/guides</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.95</priority>
+  </url>`;
+  const archiveUrls = ALL_GUIDES.map(g => `
+  <url>
+    <loc>${CANONICAL_ORIGIN}/guides/${g.slug}</loc>
+    <lastmod>${g.dateModified || today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+  </url>`).join('');
+  const legacyUrls = LEGACY_BUYING_GUIDES.map(g => `
   <url>
     <loc>${CANONICAL_ORIGIN}/guides/${g.slug}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.855</priority>
+    <priority>0.80</priority>
   </url>`).join('');
 
   res.send(`<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${hubUrl}${archiveUrls}${legacyUrls}
 </urlset>`);
 });
 
@@ -2977,6 +2995,12 @@ app.get('*', (req, res) => {
     return res.redirect(301, '/guides/bagged-vs-bagless-vacuums-guide');
   }
 
+  // 301 Redirect direct legacy Wayback guide URLs to canonical /guides/:slug
+  const directGuideMatch = ALL_GUIDES.find(g => '/' + g.slug === reqPath);
+  if (directGuideMatch) {
+    return res.redirect(301, `/guides/${directGuideMatch.slug}`);
+  }
+
   const indexPath = path.join(__dirname, 'index.html');
 
   fs.readFile(indexPath, 'utf8', (err, rawHtml) => {
@@ -3266,23 +3290,79 @@ app.get('*', (req, res) => {
         "url": canonical
       });
     }
+    // Buying Guides Hub: /guides or /guides/
+    else if (reqPath === '/guides' || reqPath === '/guides/') {
+      title = 'Vacuum Cleaner Buying Guides & Reviews (2026 Edition) | Vacuum Cleaner Lab';
+      description = 'Complete 2026 vacuum cleaner buying guides for stairs, cordless vacuums, budget picks under $50, $100, $150, $200, and $300. Side-by-side comparison tables, specs, and laboratory test rankings.';
+      canonical = `${CANONICAL_ORIGIN}/guides`;
+
+      schemaJson.push({
+        "@context": "https://schema.org",
+        "@type": "CollectionPage",
+        "name": "Vacuum Cleaner Buying Guides",
+        "url": canonical,
+        "description": description,
+        "mainEntity": {
+          "@type": "ItemList",
+          "itemListElement": ALL_GUIDES.map((g, idx) => ({
+            "@type": "ListItem",
+            "position": idx + 1,
+            "url": `${CANONICAL_ORIGIN}/guides/${g.slug}`,
+            "name": g.title
+          }))
+        }
+      });
+
+      schemaJson.push({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": `${CANONICAL_ORIGIN}/` },
+          { "@type": "ListItem", "position": 2, "name": "Buying Guides", "item": canonical }
+        ]
+      });
+    }
     // Buying Guides: /guides/:guideSlug
     else if (reqPath.startsWith('/guides/')) {
       const gSlug = reqPath.replace('/guides/', '').replace(/\/$/, '');
-      const matchedGuide = BUYING_GUIDES.find(g => g.slug === gSlug);
+      const matchedArchiveGuide = getGuideBySlug(gSlug);
+      const matchedLegacyGuide = LEGACY_BUYING_GUIDES.find(g => g.slug === gSlug);
+      const matchedGuide = matchedArchiveGuide || matchedLegacyGuide;
+
       if (matchedGuide) {
-        title = `${matchedGuide.title} | VacCompare`;
-        description = matchedGuide.description;
+        title = `${matchedGuide.title} | Vacuum Cleaner Lab`;
+        description = matchedGuide.description || `Expert buying guide for ${matchedGuide.title}. Tested specs, comparisons, and 2026 recommendations.`;
+        canonical = `${CANONICAL_ORIGIN}/guides/${matchedGuide.slug}`;
 
         schemaJson.push({
           "@context": "https://schema.org",
           "@type": "Article",
           "headline": matchedGuide.title,
-          "description": matchedGuide.description,
-          "author": { "@type": "Organization", "name": "VacCompare Editorial Team" },
-          "publisher": { "@type": "Organization", "name": "VacCompare", "logo": { "@type": "ImageObject", "url": `${CANONICAL_ORIGIN}/assets/logo.svg` } },
-          "datePublished": "2026-01-15T00:00:00Z",
-          "dateModified": "2026-07-29T00:00:00Z"
+          "description": description,
+          "image": matchedGuide.primaryImage ? `${CANONICAL_ORIGIN}${matchedGuide.primaryImage}` : `${CANONICAL_ORIGIN}/assets/vacuum_hero_banner.jpg`,
+          "author": { 
+            "@type": "Organization", 
+            "name": "Vacuum Cleaner Lab Editorial Team",
+            "url": `${CANONICAL_ORIGIN}/about`
+          },
+          "publisher": { 
+            "@type": "Organization", 
+            "name": "Vacuum Cleaner Lab", 
+            "logo": { "@type": "ImageObject", "url": `${CANONICAL_ORIGIN}/assets/logo.svg` } 
+          },
+          "datePublished": matchedGuide.datePublished ? `${matchedGuide.datePublished}T00:00:00Z` : "2026-01-15T00:00:00Z",
+          "dateModified": "2026-09-15T00:00:00Z",
+          "mainEntityOfPage": canonical
+        });
+
+        schemaJson.push({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": `${CANONICAL_ORIGIN}/` },
+            { "@type": "ListItem", "position": 2, "name": "Buying Guides", "item": `${CANONICAL_ORIGIN}/guides` },
+            { "@type": "ListItem", "position": 3, "name": matchedGuide.shortTitle || matchedGuide.title, "item": canonical }
+          ]
         });
       }
     }
@@ -3537,15 +3617,30 @@ app.get('*', (req, res) => {
         `Compare ${count || 'all'} top-rated ${displayType.toLowerCase()} vacuums side by side. Filter by price, suction power (kPa), battery runtime, weight, and HEPA filter status.`
       );
       productGridHtml = displayProducts.map(p => renderServerCard(p)).join('');
-    } else if (reqPath.startsWith('/guides/')) {
-      const gSlug = reqPath.replace('/guides/', '').replace(/\/$/, '');
-      const guideTitle = getGuideTitle(gSlug);
+    } else if (reqPath === '/guides' || reqPath === '/guides/') {
       showArticle = true;
       showMainContent = false;
-      breadcrumbCategory = 'Buying Guides';
-      breadcrumbCategoryUrl = '/#home-categories-section';
-      breadcrumbCurrent = guideTitle;
-      articleHtml = renderServerBuyingGuidePage(gSlug, cachedProducts);
+      breadcrumbCategory = 'Guides Directory';
+      breadcrumbCategoryUrl = '/guides';
+      breadcrumbCurrent = 'All Buying Guides';
+      articleHtml = renderServerGuidesHubPage(ALL_GUIDES, CANONICAL_ORIGIN);
+    } else if (reqPath.startsWith('/guides/')) {
+      const gSlug = reqPath.replace('/guides/', '').replace(/\/$/, '');
+      const matchedArchiveGuide = getGuideBySlug(gSlug);
+      showArticle = true;
+      showMainContent = false;
+      if (matchedArchiveGuide) {
+        breadcrumbCategory = matchedArchiveGuide.category || 'Buying Guides';
+        breadcrumbCategoryUrl = '/guides';
+        breadcrumbCurrent = matchedArchiveGuide.shortTitle || matchedArchiveGuide.title;
+        articleHtml = renderServerGuideArticlePage(matchedArchiveGuide, CANONICAL_ORIGIN, cachedProducts);
+      } else {
+        const guideTitle = getGuideTitle(gSlug);
+        breadcrumbCategory = 'Buying Guides';
+        breadcrumbCategoryUrl = '/guides';
+        breadcrumbCurrent = guideTitle;
+        articleHtml = renderServerBuyingGuidePage(gSlug, cachedProducts);
+      }
     } else if (reqPath === '/compare' || reqPath === '/compare/') {
       showArticle = true;
       showMainContent = false;

@@ -3427,21 +3427,133 @@ function renderReviewArticleClient(review) {
         </div>
       </section>
 
+      <!-- Featured In Buying Guides Section -->
+      ${(() => {
+        const linking = window.INTERNAL_LINKING;
+        const relatedGuides = linking ? linking.getRelatedGuidesForReview(review.slug) : [];
+        if (!relatedGuides || relatedGuides.length === 0) return '';
+        return `
+          <section id="review-featured-guides" class="bg-gradient-to-br from-amber-50/70 via-white to-brand-50/40 rounded-3xl border border-amber-200 p-6 sm:p-8 shadow-xs space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-100 pb-4">
+              <div>
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-amber-900 bg-amber-200/80 px-3 py-1 rounded-full mb-1">
+                  <i class="fa-solid fa-bookmark text-amber-700"></i> Editorial Buying Guides
+                </span>
+                <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  Featured In Vacuum Cleaner Lab Buyer's Guides
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-600 mt-1">
+                  See how the ${escapeHtml(review.model)} scored against competing vacuum cleaners in our comprehensive category comparisons and laboratory testing guides.
+                </p>
+              </div>
+              <a href="/guides" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-slate-200 hover:border-brand-500 text-slate-800 hover:text-brand-600 text-xs font-bold shadow-2xs self-start sm:self-auto whitespace-nowrap transition">
+                All Buying Guides &rarr;
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              ${relatedGuides.map(g => `
+                <div class="p-5 bg-white rounded-2xl border border-slate-200 hover:border-brand-400 hover:shadow-md transition flex flex-col justify-between space-y-3 group">
+                  <div class="space-y-2">
+                    <div class="flex items-center justify-between gap-2">
+                      <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand-600 bg-brand-50 px-2.5 py-0.5 rounded border border-brand-100">${escapeHtml(g.category)}</span>
+                      <span class="text-[11px] text-slate-400 font-semibold">${escapeHtml(g.readTime)}</span>
+                    </div>
+                    <h4 class="text-base font-extrabold text-slate-900 group-hover:text-brand-600 transition leading-snug">
+                      <a href="/guides/${escapeAttr(g.slug)}">${escapeHtml(g.title)}</a>
+                    </h4>
+                    <p class="text-xs text-amber-950/90 font-medium leading-relaxed bg-amber-50/70 p-3 rounded-xl border border-amber-100">
+                      <i class="fa-solid fa-award text-amber-600 mr-1.5"></i> ${escapeHtml(g.contextNote)}
+                    </p>
+                  </div>
+                  <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-600">${escapeHtml(g.priceRange)}</span>
+                    <a href="/guides/${escapeAttr(g.slug)}" class="inline-flex items-center gap-1 font-extrabold text-brand-600 hover:text-brand-800">
+                      Read Buying Guide &rarr;
+                    </a>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </section>
+        `;
+      })()}
+
+      <!-- Direct Competitors & Bench-Tested Alternatives -->
+      ${(() => {
+        const linking = window.INTERNAL_LINKING;
+        const competitors = linking ? linking.getCompetingReviews(review.slug) : [];
+        if (!competitors || competitors.length === 0) return '';
+        return `
+          <section id="review-competing-models" class="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-slate-700 bg-slate-100 px-3 py-1 rounded-full mb-1">
+                  <i class="fa-solid fa-scale-balanced text-brand-600"></i> Side-by-Side Contenders
+                </span>
+                <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  Direct Competitors Tested in This Class
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                  Compare laboratory test results, suction benchmarks, and user satisfaction with competing models in the same category.
+                </p>
+              </div>
+              <a href="/reviews" class="inline-flex items-center gap-1 text-xs font-bold text-brand-600 hover:underline self-start sm:self-auto">
+                Explore All 19 Reviews &rarr;
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              ${competitors.map(comp => `
+                <div class="p-5 bg-slate-50/60 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:bg-white hover:shadow-md transition flex flex-col justify-between space-y-4 group">
+                  <div class="space-y-3">
+                    <div class="h-36 bg-white rounded-xl border border-slate-100 p-2 flex items-center justify-center overflow-hidden">
+                      <img src="${escapeAttr(comp.imagePath)}" alt="${escapeAttr(comp.title)}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+                    </div>
+                    <div>
+                      <div class="flex items-center justify-between text-[11px] mb-1">
+                        <span class="font-bold text-brand-600 uppercase tracking-wider">${escapeHtml(comp.brand)}</span>
+                        <span class="font-extrabold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/60"><i class="fa-solid fa-star text-[9px] text-amber-500"></i> ${comp.overallScore}</span>
+                      </div>
+                      <h4 class="text-sm font-extrabold text-slate-900 group-hover:text-brand-600 transition leading-snug">
+                        <a href="/reviews/${escapeAttr(comp.slug)}">${escapeHtml(comp.title)}</a>
+                      </h4>
+                    </div>
+                    <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                      ${escapeHtml(comp.summaryVerdict)}
+                    </p>
+                  </div>
+                  <div class="pt-3 border-t border-slate-200/60 flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-700">${escapeHtml(comp.price)}</span>
+                    <a href="/reviews/${escapeAttr(comp.slug)}" class="font-extrabold text-brand-600 hover:underline inline-flex items-center gap-1">
+                      Full Review &rarr;
+                    </a>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </section>
+        `;
+      })()}
+
       <!-- Related Category & Buying Guides Directory -->
       <section class="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-8 space-y-4">
-        <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Explore Related Guides &amp; Categories</h3>
+        <div class="flex items-center justify-between">
+          <h3 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Explore Related Guides &amp; Categories</h3>
+          <a href="/guides" class="text-xs font-bold text-brand-600 hover:underline">All Buying Guides &rarr;</a>
+        </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <a href="${escapeAttr(categoryUrl)}" class="p-4 bg-white hover:bg-brand-50 rounded-2xl border border-slate-200 hover:border-brand-500 transition group">
             <div class="font-extrabold text-slate-900 text-sm group-hover:text-brand-600 transition">${escapeHtml(review.category)} Directory</div>
             <div class="text-xs text-slate-500 mt-1">Browse all verified ${escapeHtml(review.category).toLowerCase()} models.</div>
           </a>
+          <a href="/guides/best-vacuum-cleaners-under-200" class="p-4 bg-white hover:bg-brand-50 rounded-2xl border border-slate-200 hover:border-brand-500 transition group">
+            <div class="font-extrabold text-slate-900 text-sm group-hover:text-brand-600 transition">Best Vacuums Under $200</div>
+            <div class="text-xs text-slate-500 mt-1">Top budget performance tested by our lab technicians.</div>
+          </a>
           <a href="/guides/best-vacuum-for-pet-hair" class="p-4 bg-white hover:bg-brand-50 rounded-2xl border border-slate-200 hover:border-brand-500 transition group">
             <div class="font-extrabold text-slate-900 text-sm group-hover:text-brand-600 transition">Best Vacuums for Pet Hair</div>
-            <div class="text-xs text-slate-500 mt-1">Tested against stubborn pet fur and dander.</div>
-          </a>
-          <a href="/guides/bagged-vs-bagless-vacuums-guide" class="p-4 bg-white hover:bg-brand-50 rounded-2xl border border-slate-200 hover:border-brand-500 transition group">
-            <div class="font-extrabold text-slate-900 text-sm group-hover:text-brand-600 transition">Bagged vs Bagless Guide</div>
-            <div class="text-xs text-slate-500 mt-1">Understand the cost, filtration, and hygiene differences.</div>
+            <div class="text-xs text-slate-500 mt-1">Tested against stubborn pet fur, dander, and deep carpet fibers.</div>
           </a>
         </div>
       </section>
@@ -4318,6 +4430,18 @@ function renderGuideArticleClient(guide) {
                       <td class="p-3.5 font-bold text-slate-900 text-sm">
                         <div class="font-extrabold text-slate-900 leading-snug">${escapeHtml(modelName)}</div>
                         <div class="text-[11px] text-slate-500 font-normal mt-0.5">${escapeHtml(r.highlights || 'Top-tier floor care performance')}</div>
+                        ${(() => {
+                          const linking = window.INTERNAL_LINKING;
+                          const rev = linking ? linking.findReviewByItem(r) : null;
+                          if (!rev) return '';
+                          return `
+                            <div class="mt-1">
+                              <a href="/reviews/${escapeAttr(rev.slug)}" class="inline-flex items-center gap-1 text-[11px] font-extrabold text-brand-600 hover:text-brand-800 hover:underline">
+                                <i class="fa-solid fa-microscope text-brand-500"></i> Read Lab Test Report &rarr;
+                              </a>
+                            </div>
+                          `;
+                        })()}
                       </td>
                       <td class="p-3.5 whitespace-nowrap">
                         <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-semibold text-[11px] border border-slate-200/60">
@@ -4345,10 +4469,22 @@ function renderGuideArticleClient(guide) {
                           </div>
                         </div>
                       </td>
-                      <td class="p-3.5 text-center whitespace-nowrap">
+                      <td class="p-3.5 text-center whitespace-nowrap space-y-1.5">
                         <a href="${escapeAttr(amazonLink)}" target="_blank" rel="nofollow sponsored" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs transition shadow-xs hover:shadow">
                           <i class="fa-brands fa-amazon text-sm"></i> Check Price
                         </a>
+                        ${(() => {
+                          const linking = window.INTERNAL_LINKING;
+                          const rev = linking ? linking.findReviewByItem(r) : null;
+                          if (!rev) return '';
+                          return `
+                            <div>
+                              <a href="/reviews/${escapeAttr(rev.slug)}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-700 font-bold text-[10px] border border-brand-200/80 transition whitespace-nowrap">
+                                <i class="fa-solid fa-flask text-brand-600"></i> Full Lab Review
+                              </a>
+                            </div>
+                          `;
+                        })()}
                       </td>
                     </tr>
                   `;
@@ -4425,9 +4561,48 @@ function renderGuideArticleClient(guide) {
                       <a href="${escapeAttr(pAmazon)}" target="_blank" rel="nofollow sponsored" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-black text-xs transition shadow-sm hover:shadow">
                         <i class="fa-brands fa-amazon text-base"></i> Check Price &amp; Reviews on Amazon &rarr;
                       </a>
+                      ${(() => {
+                        const linking = window.INTERNAL_LINKING;
+                        const rev = linking ? linking.findReviewByItem(sec) : null;
+                        if (!rev) return '';
+                        return `
+                          <a href="/reviews/${escapeAttr(rev.slug)}" class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition shadow-sm hover:shadow">
+                            <i class="fa-solid fa-microscope text-amber-400"></i> Read Laboratory Test Report &rarr;
+                          </a>
+                        `;
+                      })()}
                     </div>
                   </div>
                 </div>
+
+                ${(() => {
+                  const linking = window.INTERNAL_LINKING;
+                  const rev = linking ? linking.findReviewByItem(sec) : null;
+                  if (!rev) return '';
+                  return `
+                    <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-50/90 via-amber-50/60 to-brand-50/50 border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-2xs">
+                      <div class="space-y-1">
+                        <div class="flex items-center gap-2 flex-wrap">
+                          <span class="inline-flex items-center gap-1 text-[11px] font-extrabold uppercase tracking-wider text-amber-900 bg-amber-200/80 px-2.5 py-0.5 rounded-full">
+                            <i class="fa-solid fa-flask text-amber-700"></i> Verified In-Depth Lab Test
+                          </span>
+                          <span class="text-xs font-bold text-slate-800 bg-white/90 px-2.5 py-0.5 rounded-md border border-slate-200/60">
+                            Lab Score: <strong class="text-amber-600">${rev.overallScore}</strong> / 5.0
+                          </span>
+                        </div>
+                        <div class="text-sm font-extrabold text-slate-900">
+                          Detailed Bench Test &amp; Teardown Available for ${escapeHtml(rev.model)}
+                        </div>
+                        <p class="text-xs text-slate-600 max-w-2xl leading-relaxed">
+                          ${escapeHtml(rev.summaryVerdict)}
+                        </p>
+                      </div>
+                      <a href="/reviews/${escapeAttr(rev.slug)}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs whitespace-nowrap transition shadow-xs hover:shadow self-start sm:self-auto">
+                        <i class="fa-solid fa-file-lines text-amber-400"></i> Read Full Lab Review &rarr;
+                      </a>
+                    </div>
+                  `;
+                })()}
 
                 <!-- Review Narrative Paragraphs -->
                 <div class="space-y-3.5 text-slate-700 text-sm sm:text-base leading-relaxed">
@@ -4536,6 +4711,63 @@ function renderGuideArticleClient(guide) {
           </div>
         </section>
       ` : ''}
+
+      <!-- Contextual In-Depth Vacuum Reviews Linked to this Guide -->
+      ${(() => {
+        const linking = window.INTERNAL_LINKING;
+        const relatedReviews = linking ? linking.getRelatedReviewsForGuide(guide.slug) : [];
+        if (!relatedReviews || relatedReviews.length === 0) return '';
+        return `
+          <section id="guide-related-lab-reviews" class="bg-gradient-to-br from-slate-50 via-white to-amber-50/40 rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-xs">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-4">
+              <div>
+                <span class="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-brand-700 bg-brand-50 border border-brand-200/60 px-3 py-1 rounded-full mb-1">
+                  <i class="fa-solid fa-microscope text-brand-600"></i> Bench Test Reports
+                </span>
+                <h3 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                  Featured Laboratory Reviews for this Guide
+                </h3>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1">
+                  Read our full hands-on teardown, suction airflow measurements, and filter evaluations for the models featured above.
+                </p>
+              </div>
+              <a href="/reviews" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white border border-slate-200 hover:border-brand-500 text-slate-800 hover:text-brand-600 text-xs font-bold shadow-2xs self-start sm:self-auto whitespace-nowrap transition">
+                All 19 Lab Reviews &rarr;
+              </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${relatedReviews.map(r => `
+                <div class="p-4 bg-white rounded-2xl border border-slate-200 hover:border-brand-400 hover:shadow-md transition flex flex-col justify-between space-y-3 group">
+                  <div class="space-y-3">
+                    <div class="h-32 bg-slate-50 rounded-xl p-2 flex items-center justify-center overflow-hidden border border-slate-100">
+                      <img src="${escapeAttr(r.imagePath)}" alt="${escapeAttr(r.title)}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+                    </div>
+                    <div>
+                      <div class="flex items-center justify-between text-[11px] mb-1">
+                        <span class="font-extrabold text-brand-600 uppercase tracking-wider">${escapeHtml(r.brand)}</span>
+                        <span class="font-black text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200/80"><i class="fa-solid fa-star text-[9px] text-amber-500"></i> ${r.overallScore}</span>
+                      </div>
+                      <h4 class="text-sm font-extrabold text-slate-900 group-hover:text-brand-600 transition leading-snug">
+                        <a href="/reviews/${escapeAttr(r.slug)}">${escapeHtml(r.title)}</a>
+                      </h4>
+                    </div>
+                    <p class="text-xs text-slate-600 line-clamp-2 leading-relaxed">
+                      ${escapeHtml(r.summaryVerdict)}
+                    </p>
+                  </div>
+                  <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <span class="font-bold text-slate-700">${escapeHtml(r.price)}</span>
+                    <a href="/reviews/${escapeAttr(r.slug)}" class="font-extrabold text-brand-600 hover:underline inline-flex items-center gap-1">
+                      Full Lab Report &rarr;
+                    </a>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </section>
+        `;
+      })()}
 
       <!-- Other Buying Guides Carousel/Grid -->
       ${otherGuides.length > 0 ? `

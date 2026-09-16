@@ -858,9 +858,8 @@ app.get('/reviews-sitemap.xml', (req, res) => {
   const today = new Date().toISOString().split('T')[0];
   const hubUrl = `\n  <url>\n    <loc>${CANONICAL_ORIGIN}/reviews</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>0.95</priority>\n  </url>`;
   const reviewUrls = ALL_REVIEWS.map(r => `\n  <url>\n    <loc>${CANONICAL_ORIGIN}/reviews/${r.slug}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.85</priority>\n  </url>`).join('');
-  const prodUrls = cachedProducts.map(p => `\n  <url>\n    <loc>${CANONICAL_ORIGIN}${p.reviewUrl}</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`).join('');
 
-  res.send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${hubUrl}${reviewUrls}${prodUrls}\n</urlset>`);
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${hubUrl}${reviewUrls}\n</urlset>`);
 });
 
 app.get('/pages-sitemap.xml', (req, res) => {

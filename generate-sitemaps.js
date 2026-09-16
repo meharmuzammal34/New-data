@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { ALL_REVIEWS } from './reviews-data.js';
+import { ALL_GUIDES } from './guides-data.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -219,7 +220,15 @@ ${brandsUrls}
 </urlset>`;
 
 // 4. Buying guides sitemap
-const guidesUrls = BUYING_GUIDES.map(g => `  <url>
+const allGuidesMap = new Map();
+(ALL_GUIDES || []).forEach(g => allGuidesMap.set(g.slug, g));
+BUYING_GUIDES.forEach(g => {
+  if (!allGuidesMap.has(g.slug)) {
+    allGuidesMap.set(g.slug, g);
+  }
+});
+
+const guidesUrls = Array.from(allGuidesMap.values()).map(g => `  <url>
     <loc>${CANONICAL_ORIGIN}/guides/${g.slug}</loc>
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
@@ -271,7 +280,7 @@ const comparisonSitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 ${comparisonUrls}
 </urlset>`;
 
-// 6. Reviews sitemap (Dedicated Reviews Hub & Model Test Reports)
+// 6. Reviews sitemap (Dedicated Reviews Hub & Published Review Articles only - no raw product URLs)
 const reviewHubUrls = [
   `  <url>
     <loc>${CANONICAL_ORIGIN}/reviews</loc>
@@ -285,21 +294,11 @@ const reviewHubUrls = [
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>`)
-];
-
-const allReviewsUrls = [
-  ...reviewHubUrls,
-  ...products.map(p => `  <url>
-    <loc>${CANONICAL_ORIGIN}${p.reviewUrl}</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>`)
 ].join('\n');
 
 const reviewsSitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${allReviewsUrls}
+${reviewHubUrls}
 </urlset>`;
 
 // 7. Products sitemap
@@ -343,7 +342,7 @@ const sitemapIndexXml = `<?xml version="1.0" encoding="UTF-8"?>
 // 10. Comprehensive All-In-One Sitemap (sitemap-all.xml)
 const allUrls = [
   pagesUrls,
-  reviewHubUrls.join('\n'),
+  reviewHubUrls,
   categoriesUrls,
   brandsUrls,
   guidesUrls,

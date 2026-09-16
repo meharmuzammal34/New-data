@@ -74,6 +74,7 @@ const state = {
 
 const compareIds = new Set();
 const els = {}; // Cached DOM references
+let isInitialLoad = true;
 
 /* ---------------------------------------------------------------- */
 /* Init                                                             */
@@ -238,12 +239,12 @@ function bindStaticEvents() {
         if (activeIndex >= 0 && items[activeIndex]) {
           e.preventDefault();
           const targetUrl = items[activeIndex].getAttribute('href') || items[activeIndex].getAttribute('data-url');
-          if (targetUrl) window.location.href = targetUrl;
+          if (targetUrl) navigateTo(targetUrl);
         } else {
           const q = els.searchInput.value.trim();
           if (q) {
             e.preventDefault();
-            window.location.href = `/?search=${encodeURIComponent(q)}`;
+            navigateTo(`/?search=${encodeURIComponent(q)}`);
           }
         }
       } else if (e.key === 'Escape') {
@@ -348,12 +349,51 @@ function bindStaticEvents() {
     });
   }
 
+  // Mobile Filters Apply & Reset Buttons
+  const mobileApplyBtn = document.getElementById('mobile-apply-filters-btn');
+  if (mobileApplyBtn) {
+    mobileApplyBtn.addEventListener('click', () => {
+      if (els.filtersBody) els.filtersBody.classList.add('hidden');
+      if (els.mobileFiltersChevron) els.mobileFiltersChevron.classList.remove('rotate-180');
+      const targetEl = document.getElementById('product-grid') || document.getElementById('main-content');
+      if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
+  const mobileResetBtn = document.getElementById('mobile-reset-filters-btn');
+  if (mobileResetBtn) {
+    mobileResetBtn.addEventListener('click', () => {
+      resetFilters();
+      if (els.filtersBody) els.filtersBody.classList.add('hidden');
+      if (els.mobileFiltersChevron) els.mobileFiltersChevron.classList.remove('rotate-180');
+    });
+  }
+
   // Mobile Nav Drawer Toggle
   if (els.mobileNavToggle) {
     els.mobileNavToggle.addEventListener('click', () => {
-      if (els.mobileNavDrawer) els.mobileNavDrawer.classList.toggle('hidden');
-      const expanded = els.mobileNavToggle.getAttribute('aria-expanded') === 'true';
-      els.mobileNavToggle.setAttribute('aria-expanded', (!expanded).toString());
+      if (els.mobileNavDrawer) {
+        const isHidden = els.mobileNavDrawer.classList.toggle('hidden');
+        const icon = els.mobileNavToggle.querySelector('i');
+        if (icon) {
+          icon.className = isHidden ? 'fa-solid fa-bars text-lg' : 'fa-solid fa-xmark text-lg';
+        }
+        els.mobileNavToggle.setAttribute('aria-expanded', (!isHidden).toString());
+      }
+    });
+  }
+
+  // Auto-close Mobile Nav Drawer on link click
+  if (els.mobileNavDrawer) {
+    els.mobileNavDrawer.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        els.mobileNavDrawer.classList.add('hidden');
+        if (els.mobileNavToggle) {
+          els.mobileNavToggle.setAttribute('aria-expanded', 'false');
+          const icon = els.mobileNavToggle.querySelector('i');
+          if (icon) icon.className = 'fa-solid fa-bars text-lg';
+        }
+      });
     });
   }
 
@@ -365,29 +405,35 @@ function bindStaticEvents() {
   });
 
   // Compare Actions
-  if (els.clearCompareBtn) {
-    els.clearCompareBtn.addEventListener('click', () => {
-      compareIds.clear();
-      syncCompareUI();
-      render();
-    });
-  }
-  if (els.compareNowBtn) {
-    els.compareNowBtn.addEventListener('click', () => {
-      if (compareIds.size > 0) {
-        const array = Array.from(compareIds);
-        const p1 = state.allProducts.find(x => x.id === array[0]);
-        const p2 = state.allProducts.find(x => x.id === array[1]);
-        if (p1 && p2) {
-          const slug1 = getProductReviewSlug(p1).replace('-review', '');
-          const slug2 = getProductReviewSlug(p2).replace('-review', '');
-          navigateTo(`/compare/${slug1}-vs-${slug2}`);
-        } else {
-          openCompareModal();
-        }
+  const handleClearCompare = () => {
+    compareIds.clear();
+    syncCompareUI();
+    render();
+  };
+
+  const handleCompareNow = () => {
+    if (compareIds.size > 0) {
+      const array = Array.from(compareIds);
+      const p1 = state.allProducts.find(x => x.id === array[0]);
+      const p2 = state.allProducts.find(x => x.id === array[1]);
+      if (p1 && p2) {
+        const slug1 = getProductReviewSlug(p1).replace('-review', '');
+        const slug2 = getProductReviewSlug(p2).replace('-review', '');
+        navigateTo(`/compare/${slug1}-vs-${slug2}`);
+      } else {
+        openCompareModal();
       }
-    });
-  }
+    }
+  };
+
+  if (els.clearCompareBtn) els.clearCompareBtn.addEventListener('click', handleClearCompare);
+  const clearCompareMobile = document.getElementById('clear-compare-btn-mobile');
+  if (clearCompareMobile) clearCompareMobile.addEventListener('click', handleClearCompare);
+
+  if (els.compareNowBtn) els.compareNowBtn.addEventListener('click', handleCompareNow);
+  const compareNowMobile = document.getElementById('compare-now-btn-mobile');
+  if (compareNowMobile) compareNowMobile.addEventListener('click', handleCompareNow);
+
   if (els.openCompareBtn) els.openCompareBtn.addEventListener('click', openCompareModal);
   if (els.closeCompareModalBtn) els.closeCompareModalBtn.addEventListener('click', () => toggleModal(els.compareModal, false));
   if (els.compareModal) {
@@ -425,6 +471,22 @@ function bindStaticEvents() {
       hideAutocomplete();
     }
   });
+
+  // Delegated internal link navigation (SPA routing)
+  document.addEventListener('click', (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const a = e.target.closest('a');
+    if (!a) return;
+    const href = a.getAttribute('href');
+    if (!href) return;
+    if (a.hasAttribute('download') || a.getAttribute('target') === '_blank') return;
+    if (href.startsWith('#')) return;
+    if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+    if (href.startsWith('/assets') || href.startsWith('/css') || href.startsWith('/js') || href.startsWith('/data') || href.endsWith('.xml') || href.endsWith('.png') || href.endsWith('.ico') || href.endsWith('.svg') || href.endsWith('.webmanifest')) return;
+    
+    e.preventDefault();
+    navigateTo(href);
+  });
 }
 
 /* ---------------------------------------------------------------- */
@@ -433,7 +495,10 @@ function bindStaticEvents() {
 
 function navigateTo(path) {
   if (!path) return;
-  window.location.href = path;
+  const current = window.location.pathname + (window.location.search || '');
+  if (current === path) return;
+  window.history.pushState(null, '', path);
+  handleRouteFromUrl();
 }
 
 function setHeroHeadingTag(isH1) {
@@ -619,8 +684,6 @@ function formatProductMetaDescription(prodName) {
   }
   return str;
 }
-
-let isInitialLoad = true;
 
 function formatSlugToTitle(slug) {
   if (!slug) return 'Vacuum Cleaner';
@@ -926,24 +989,44 @@ function calculateRelevanceScore(source, target) {
 function bindArticleViewEvents(product) {
   if (!els.dedicatedArticleView) return;
 
-  const addCompareBtn = els.dedicatedArticleView.querySelector('.add-compare-btn');
-  if (addCompareBtn) {
-    addCompareBtn.onclick = () => {
-      const prodId = addCompareBtn.getAttribute('data-id') || (product ? product.id : null);
+  // Bind all compare buttons inside the article view
+  els.dedicatedArticleView.querySelectorAll('.add-compare-btn').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      const prodId = btn.getAttribute('data-id') || (product ? product.id : null);
       if (prodId) toggleCompare(prodId);
     };
-  }
+  });
 
   const copyBtn = els.dedicatedArticleView.querySelector('#page-copy-md-btn');
   if (copyBtn) {
     copyBtn.onclick = () => {
-      let prodName = product ? `${product.brand} ${product.model}` : 'Vacuum Review';
+      let prodName = product ? `${product.brand} ${product.model}` : (document.title ? document.title.split('|')[0].trim() : 'Vacuum Review');
       let prodUrl = window.location.href;
       const md = `# ${prodName} Review & Technical Specs\n\nRead full specs at ${prodUrl}`;
       navigator.clipboard.writeText(md).then(() => {
         copyBtn.innerHTML = '<i class="fa-solid fa-check text-emerald-600"></i> Copied!';
+        showToast('Review markdown copied to clipboard!', 'success');
         setTimeout(() => copyBtn.innerHTML = '<i class="fa-solid fa-copy"></i> Copy Review', 2000);
       });
+    };
+  }
+
+  // Handle contact form in article view
+  const contactForm = els.dedicatedArticleView.querySelector('#contact-form, form');
+  if (contactForm && (state.currentRoute === '/contact' || !contactForm.getAttribute('action'))) {
+    contactForm.onsubmit = (e) => {
+      e.preventDefault();
+      contactForm.innerHTML = `
+        <div class="bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-2xl p-6 text-center space-y-2">
+          <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-xl font-bold">
+            <i class="fa-solid fa-check"></i>
+          </div>
+          <h4 class="font-extrabold text-base text-slate-900">Message Received!</h4>
+          <p class="text-xs text-slate-600">Thank you for contacting VacCompare. Our research and editorial team will review your inquiry within 24-48 business hours.</p>
+        </div>
+      `;
+      showToast('Thank you! Message submitted successfully.', 'success');
     };
   }
 }
@@ -1251,7 +1334,18 @@ function handleRouteFromUrl() {
   }
   // Homepage
   else if (path === '/' || path === '/index.html' || path === '') {
-    resetFilters(false);
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const searchParam = urlParams.get('search');
+      if (searchParam) {
+        state.search = searchParam.trim().toLowerCase();
+        if (els.searchInput) els.searchInput.value = searchParam;
+      } else {
+        resetFilters(false);
+      }
+    } catch (e) {
+      resetFilters(false);
+    }
     showHomeViews();
     if (state.allProducts && state.allProducts.length > 0) {
       render();
@@ -1847,6 +1941,22 @@ function renderActiveChips() {
   if (els.activeChips) els.activeChips.innerHTML = html;
   if (els.activeChipsMobile) els.activeChipsMobile.innerHTML = html;
 
+  // Update mobile filter count badge & apply button label
+  const mobileFilterBadge = document.getElementById('mobile-filter-count-badge');
+  if (mobileFilterBadge) {
+    if (chips.length > 0) {
+      mobileFilterBadge.textContent = chips.length;
+      mobileFilterBadge.classList.remove('hidden');
+    } else {
+      mobileFilterBadge.classList.add('hidden');
+    }
+  }
+  const mobileApplyLabel = document.getElementById('mobile-apply-filters-label');
+  if (mobileApplyLabel) {
+    const countText = state.filteredProducts ? ` (${state.filteredProducts.length})` : '';
+    mobileApplyLabel.textContent = `Apply & View Results${countText}`;
+  }
+
   const bindChipClicks = (container) => {
     if (!container) return;
     container.querySelectorAll('button').forEach((btn) => {
@@ -2030,7 +2140,7 @@ function renderCard(p) {
                 <a href="/vacuum/${getProductReviewSlug(p)}">${escapeHtml(cardTitle)}</a>
               </h3>
             </div>
-            <button data-id="${p.id}" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition ${isCompared ? 'bg-brand-600 text-white border-brand-600' : ''}" title="Compare this vacuum">
+            <button data-id="${p.id}" class="add-compare-btn shrink-0 w-9 h-9 min-w-[36px] min-h-[36px] rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition shadow-2xs ${isCompared ? 'bg-brand-600 text-white border-brand-600' : 'bg-white'}" title="Compare this vacuum" aria-label="Compare ${escapeAttr(p.brand)} ${escapeAttr(p.model)}">
               <i class="fa-solid ${isCompared ? 'fa-check' : 'fa-plus'} text-xs"></i>
             </button>
           </div>
@@ -2070,7 +2180,7 @@ function renderCard(p) {
 
       <!-- Action Footer -->
       <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
-        <a href="/vacuum/${getProductReviewSlug(p)}" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+        <a href="/vacuum/${getProductReviewSlug(p)}" class="w-full py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-xs flex items-center justify-center gap-2 min-h-[44px]">
           <span>View Specs & Review</span>
           <i class="fa-solid fa-arrow-right text-[11px]"></i>
         </a>
@@ -2094,15 +2204,50 @@ function renderStars(rating) {
 /* Compare Functionality                                            */
 /* ---------------------------------------------------------------- */
 
+function showToast(message, type = 'info') {
+  if (typeof document === 'undefined') return;
+  let toastContainer = document.getElementById('toast-container');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.id = 'toast-container';
+    toastContainer.className = 'fixed bottom-6 right-4 sm:right-6 z-50 flex flex-col gap-2 pointer-events-none';
+    document.body.appendChild(toastContainer);
+  }
+  const toast = document.createElement('div');
+  const iconClass = type === 'success' 
+    ? 'fa-circle-check text-emerald-400' 
+    : type === 'warning' 
+      ? 'fa-triangle-exclamation text-amber-400' 
+      : 'fa-circle-info text-sky-400';
+  toast.className = 'bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center gap-2.5 transition-all duration-300 transform translate-y-2 opacity-0 pointer-events-auto max-w-sm';
+  toast.innerHTML = `<i class="fa-solid ${iconClass} text-sm shrink-0"></i><span>${escapeHtml(message)}</span>`;
+  toastContainer.appendChild(toast);
+  const raf = (typeof window !== 'undefined' && window.requestAnimationFrame) ? window.requestAnimationFrame.bind(window) : (fn) => setTimeout(fn, 16);
+  raf(() => {
+    toast.classList.remove('translate-y-2', 'opacity-0');
+  });
+  setTimeout(() => {
+    toast.classList.add('opacity-0', 'translate-y-2');
+    setTimeout(() => {
+      if (toast.parentNode) toast.remove();
+    }, 300);
+  }, 3500);
+}
+
 function toggleCompare(id) {
+  const prod = state.allProducts.find(p => p.id === id);
+  const name = prod ? `${prod.brand} ${prod.model}` : 'Vacuum';
+
   if (compareIds.has(id)) {
     compareIds.delete(id);
+    showToast(`${name} removed from comparison.`, 'info');
   } else {
     if (compareIds.size >= MAX_COMPARE) {
-      alert(`You can compare up to ${MAX_COMPARE} vacuum cleaners at a time.`);
+      showToast(`You can compare up to ${MAX_COMPARE} vacuum cleaners at a time.`, 'warning');
       return;
     }
     compareIds.add(id);
+    showToast(`${name} added to comparison!`, 'success');
   }
   syncCompareUI();
   render();
@@ -2112,6 +2257,9 @@ function syncCompareUI() {
   const count = compareIds.size;
   if (els.compareCountBadge) els.compareCountBadge.textContent = count;
   if (els.openCompareBtn) els.openCompareBtn.disabled = count === 0;
+
+  const mobileCount = document.getElementById('compare-tray-count');
+  if (mobileCount) mobileCount.textContent = count;
 
   if (count === 0) {
     if (els.compareTray) els.compareTray.classList.add('translate-y-full');
@@ -2144,10 +2292,14 @@ function renderCompareTray() {
 let currentCompareD3Products = [];
 let currentCompareD3Mode = 'bar';
 
+let resizeTimeout = null;
 window.addEventListener('resize', () => {
-  if (els.compareModal && !els.compareModal.classList.contains('hidden') && currentCompareD3Products.length > 0) {
-    renderCompareD3Chart(currentCompareD3Products, currentCompareD3Mode);
-  }
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(() => {
+    if (els.compareModal && !els.compareModal.classList.contains('hidden') && currentCompareD3Products.length > 0) {
+      renderCompareD3Chart(currentCompareD3Products, currentCompareD3Mode);
+    }
+  }, 150);
 });
 
 function renderCompareD3Chart(products, mode = 'bar') {
@@ -2544,7 +2696,7 @@ function openCompareModal() {
           <table class="w-full text-xs text-left border-collapse">
             <thead>
               <tr class="bg-slate-100 text-slate-900 border-b border-slate-200">
-                <th class="p-3 font-bold border-r border-slate-200 w-40">Specification</th>
+                <th class="p-3 font-bold border-r border-slate-200 w-40 sticky-col bg-slate-100">Specification</th>
                 ${products.map(p => `
                   <th class="p-3 font-extrabold text-slate-900 border-r border-slate-200 text-center min-w-[180px]">
                     <div class="w-16 h-16 mx-auto bg-white rounded-xl p-1 border border-slate-200 mb-2 flex items-center justify-center overflow-hidden">
@@ -2559,7 +2711,7 @@ function openCompareModal() {
             <tbody>
               ${fields.map(f => `
                 <tr class="border-b border-slate-200 hover:bg-slate-50">
-                  <td class="p-3 font-bold text-slate-700 bg-slate-50/50 border-r border-slate-200">${f.label}</td>
+                  <td class="p-3 font-bold text-slate-700 bg-slate-50 border-r border-slate-200 sticky-col">${f.label}</td>
                   ${products.map(p => `<td class="p-3 text-center border-r border-slate-200 font-semibold text-slate-800">${escapeHtml(f.fn(p))}</td>`).join('')}
                 </tr>
               `).join('')}
@@ -4968,7 +5120,7 @@ function renderCompareTableHtml(products, fields) {
     <table class="w-full text-xs text-left border-collapse min-w-[700px]">
       <thead>
         <tr class="bg-slate-900 text-white divide-x divide-slate-800">
-          <th class="p-4 w-44 font-extrabold text-slate-300 uppercase tracking-wider text-[11px]">Technical Metric</th>
+          <th class="p-4 w-44 font-extrabold text-slate-300 uppercase tracking-wider text-[11px] sticky-col bg-slate-900">Technical Metric</th>
           ${products.map((p, idx) => `
             <th class="p-4 text-center font-extrabold">
               <div class="text-[10px] uppercase tracking-wider text-brand-300 font-bold mb-1">Vacuum ${idx + 1}</div>
@@ -4979,7 +5131,7 @@ function renderCompareTableHtml(products, fields) {
       </thead>
       <tbody class="divide-y divide-slate-200 bg-white">
         <tr class="bg-slate-50/70 border-b border-slate-200">
-          <td class="p-4 font-bold text-slate-700 bg-slate-100/60 border-r border-slate-200">Product Overview</td>
+          <td class="p-4 font-bold text-slate-700 bg-slate-100 border-r border-slate-200 sticky-col">Product Overview</td>
           ${products.map(p => {
             if (!p) return `<td class="p-4 text-center border-r border-slate-200 text-slate-400">Empty Slot</td>`;
             const reviewSlug = getProductReviewSlug(p);
@@ -5000,7 +5152,7 @@ function renderCompareTableHtml(products, fields) {
         </tr>
         ${fields.map(f => `
           <tr class="hover:bg-slate-50 transition border-b border-slate-100">
-            <td class="p-3.5 font-bold text-slate-700 bg-slate-50/50 border-r border-slate-200">${f.label}</td>
+            <td class="p-3.5 font-bold text-slate-700 bg-slate-50 border-r border-slate-200 sticky-col">${f.label}</td>
             ${products.map(p => `
               <td class="p-3.5 text-center border-r border-slate-200 font-semibold text-slate-800">
                 ${p ? escapeHtml(f.fn(p)) : '-'}
@@ -5463,12 +5615,13 @@ function renderEeatPage(path) {
           <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Vacuum Review Articles</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <a href="/reviews" class="p-3 bg-brand-50 hover:bg-brand-100 rounded-xl border border-brand-200 font-bold text-brand-800 transition sm:col-span-2">→ Browse All Vacuum Reviews</a>
-            <a href="/reviews/dyson-v15-detect-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Dyson V15 Detect Hands-On Review</a>
-            <a href="/reviews/shark-stratos-cordless-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Shark Stratos Cordless Review</a>
-            <a href="/reviews/roborock-s8-pro-ultra-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Roborock S8 Pro Ultra Review</a>
-            <a href="/reviews/miele-complete-c3-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Miele Complete C3 Marin Review</a>
-            <a href="/reviews/tineco-floor-one-s5-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Tineco Floor One S5 Wet &amp; Dry Review</a>
-            <a href="/reviews/shark-navigator-lift-away-nv352-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Shark Navigator Lift-Away NV352 Review</a>
+            <a href="/reviews/shark-professional-navigator-upright-vacuum-cleaner-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Shark Professional Navigator Upright Review</a>
+            <a href="/vacuum/dyson-v15s-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Dyson V15s Detect Submarine Review</a>
+            <a href="/vacuum/ninja-shark-stratos-cordless-vacuum-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Shark Stratos Cordless Review</a>
+            <a href="/vacuum/roborock-s8-max-ultra-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Roborock S8 Max Ultra Review</a>
+            <a href="/vacuum/miele-complete-c3-125-gala-edition-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Miele Complete C3 Gala Edition Review</a>
+            <a href="/vacuum/tineco-floor-one-s5-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Tineco Floor One S5 Wet &amp; Dry Review</a>
+            <a href="/vacuum/ninja-shark-navigator-lift-away-adv-with-self-cleaning-brushroll-review" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Shark Navigator Lift-Away ADV Review</a>
           </div>
         </div>
       </div>
@@ -5580,43 +5733,75 @@ function renderPagination(totalPages) {
     return;
   }
 
-  let html = `
-    <button id="prev-page-btn" ${state.page === 1 ? 'disabled' : ''} class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-700 disabled:opacity-40 hover:bg-slate-100">
-      &larr; Prev
-    </button>
+  // Mobile Clean Prev/Next Bar
+  let mobileHtml = `
+    <div class="flex sm:hidden items-center justify-between w-full gap-2 px-1">
+      <button id="prev-page-mobile" ${state.page === 1 ? 'disabled' : ''} class="px-4 py-2.5 rounded-xl border border-slate-300 font-bold text-xs bg-white text-slate-700 disabled:opacity-40 min-h-[42px] flex items-center gap-1.5 shadow-2xs">
+        &larr; Prev
+      </button>
+      <span class="text-xs font-bold text-slate-600">
+        Page <strong class="text-slate-900 font-black">${state.page}</strong> of <span class="font-bold text-slate-800">${totalPages}</span>
+      </span>
+      <button id="next-page-mobile" ${state.page === totalPages ? 'disabled' : ''} class="px-4 py-2.5 rounded-xl border border-slate-300 font-bold text-xs bg-white text-slate-700 disabled:opacity-40 min-h-[42px] flex items-center gap-1.5 shadow-2xs">
+        Next &rarr;
+      </button>
+    </div>
+  `;
+
+  // Desktop Numbered Pagination
+  let desktopHtml = `
+    <div class="hidden sm:flex items-center justify-center gap-1.5 flex-wrap">
+      <button id="prev-page-btn" ${state.page === 1 ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 disabled:opacity-40 hover:bg-slate-100 min-h-[40px] transition">
+        &larr; Prev
+      </button>
   `;
 
   for (let i = 1; i <= totalPages; i++) {
     if (i === 1 || i === totalPages || (i >= state.page - 2 && i <= state.page + 2)) {
-      html += `
-        <button data-page="${i}" class="page-num-btn w-8 h-8 rounded-lg text-xs font-extrabold ${i === state.page ? 'bg-brand-600 text-white' : 'border border-slate-300 text-slate-700 hover:bg-slate-100'}">
+      desktopHtml += `
+        <button data-page="${i}" class="page-num-btn min-w-[38px] h-10 rounded-xl text-xs font-extrabold transition ${i === state.page ? 'bg-brand-600 text-white shadow-xs' : 'border border-slate-300 text-slate-700 hover:bg-slate-100 bg-white'}">
           ${i}
         </button>
       `;
     } else if (i === state.page - 3 || i === state.page + 3) {
-      html += `<span class="px-1 text-slate-400 text-xs">…</span>`;
+      desktopHtml += `<span class="px-1 text-slate-400 text-xs font-bold">…</span>`;
     }
   }
 
-  html += `
-    <button id="next-page-btn" ${state.page === totalPages ? 'disabled' : ''} class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-bold text-slate-700 disabled:opacity-40 hover:bg-slate-100">
-      Next &rarr;
-    </button>
+  desktopHtml += `
+      <button id="next-page-btn" ${state.page === totalPages ? 'disabled' : ''} class="px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700 disabled:opacity-40 hover:bg-slate-100 min-h-[40px] transition">
+        Next &rarr;
+      </button>
+    </div>
   `;
 
-  els.pagination.innerHTML = html;
+  els.pagination.innerHTML = mobileHtml + desktopHtml;
+
+  const scrollToGrid = () => {
+    const targetEl = document.getElementById('product-grid') || document.getElementById('main-content');
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   const prevBtn = document.getElementById('prev-page-btn');
   const nextBtn = document.getElementById('next-page-btn');
+  const prevMobile = document.getElementById('prev-page-mobile');
+  const nextMobile = document.getElementById('next-page-mobile');
 
-  if (prevBtn) prevBtn.addEventListener('click', () => { state.page--; render(); window.scrollTo({ top: 400, behavior: 'smooth' }); });
-  if (nextBtn) nextBtn.addEventListener('click', () => { state.page++; render(); window.scrollTo({ top: 400, behavior: 'smooth' }); });
+  const goPrev = () => { if (state.page > 1) { state.page--; render(); scrollToGrid(); } };
+  const goNext = () => { if (state.page < totalPages) { state.page++; render(); scrollToGrid(); } };
+
+  if (prevBtn) prevBtn.addEventListener('click', goPrev);
+  if (prevMobile) prevMobile.addEventListener('click', goPrev);
+  if (nextBtn) nextBtn.addEventListener('click', goNext);
+  if (nextMobile) nextMobile.addEventListener('click', goNext);
 
   els.pagination.querySelectorAll('.page-num-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
       state.page = parseInt(btn.dataset.page, 10);
       render();
-      window.scrollTo({ top: 400, behavior: 'smooth' });
+      scrollToGrid();
     });
   });
 }

@@ -314,7 +314,7 @@ export function renderServerReviewArticlePage(review, origin, allProducts) {
             <div class="font-extrabold text-slate-900 text-sm group-hover:text-brand-600 transition">Best Vacuums for Pet Hair</div>
             <div class="text-xs text-slate-500 mt-1">Tested against stubborn pet fur and dander.</div>
           </a>
-          <a href="/guides/bagged-vs-bagless-vacuums" class="p-4 bg-white hover:bg-brand-50 rounded-2xl border border-slate-200 hover:border-brand-500 transition group">
+          <a href="/guides/bagged-vs-bagless-vacuums-guide" class="p-4 bg-white hover:bg-brand-50 rounded-2xl border border-slate-200 hover:border-brand-500 transition group">
             <div class="font-extrabold text-slate-900 text-sm group-hover:text-brand-600 transition">Bagged vs Bagless Guide</div>
             <div class="text-xs text-slate-500 mt-1">Understand the cost, filtration, and hygiene differences.</div>
           </a>

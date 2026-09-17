@@ -105,7 +105,6 @@ async function init() {
 
   // Initial Route Handling: resolve route immediately before data loading
   handleRouteFromUrl();
-  window.addEventListener('popstate', handleRouteFromUrl);
 
   // Background product loading:
   startProductsLoading();
@@ -472,21 +471,6 @@ function bindStaticEvents() {
     }
   });
 
-  // Delegated internal link navigation (SPA routing)
-  document.addEventListener('click', (e) => {
-    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-    const a = e.target.closest('a');
-    if (!a) return;
-    const href = a.getAttribute('href');
-    if (!href) return;
-    if (a.hasAttribute('download') || a.getAttribute('target') === '_blank') return;
-    if (href.startsWith('#')) return;
-    if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
-    if (href.startsWith('/assets') || href.startsWith('/css') || href.startsWith('/js') || href.startsWith('/data') || href.endsWith('.xml') || href.endsWith('.png') || href.endsWith('.ico') || href.endsWith('.svg') || href.endsWith('.webmanifest')) return;
-    
-    e.preventDefault();
-    navigateTo(href);
-  });
 }
 
 /* ---------------------------------------------------------------- */
@@ -495,10 +479,7 @@ function bindStaticEvents() {
 
 function navigateTo(path) {
   if (!path) return;
-  const current = window.location.pathname + (window.location.search || '');
-  if (current === path) return;
-  window.history.pushState(null, '', path);
-  handleRouteFromUrl();
+  window.location.href = path;
 }
 
 function setHeroHeadingTag(isH1) {
@@ -864,15 +845,37 @@ function onProductsLoaded() {
       updateBreadcrumbs('Tool', 'Compare Vacuums');
     }
   } else if (path === '/reviews' || path === '/reviews/') {
-    renderReviewsHubPage();
-    bindArticleViewEvents(null);
+    const hasSsr = els.dedicatedArticleView &&
+      !els.dedicatedArticleView.querySelector('[data-skeleton]') &&
+      els.dedicatedArticleView.children.length > 0 &&
+      els.dedicatedArticleView.innerHTML.trim().length > 200;
+    if (hasSsr) {
+      bindArticleViewEvents(null);
+    } else {
+      renderReviewsHubPage();
+      bindArticleViewEvents(null);
+    }
   } else if (path === '/guides' || path === '/guides/') {
-    renderGuidesHubClient();
-    bindArticleViewEvents(null);
+    const hasSsr = els.dedicatedArticleView &&
+      !els.dedicatedArticleView.querySelector('[data-skeleton]') &&
+      els.dedicatedArticleView.children.length > 0 &&
+      els.dedicatedArticleView.innerHTML.trim().length > 200;
+    if (hasSsr) {
+      bindArticleViewEvents(null);
+    } else {
+      renderGuidesHubClient();
+      bindArticleViewEvents(null);
+    }
   } else if (path.startsWith('/guides/')) {
     const slug = path.replace('/guides/', '').replace(/\/$/, '');
     const archiveGuide = window.getGuideBySlug ? window.getGuideBySlug(slug) : null;
-    if (archiveGuide) {
+    const hasSsr = els.dedicatedArticleView &&
+      !els.dedicatedArticleView.querySelector('[data-skeleton]') &&
+      els.dedicatedArticleView.children.length > 0 &&
+      els.dedicatedArticleView.innerHTML.trim().length > 200;
+    if (hasSsr) {
+      bindArticleViewEvents(null);
+    } else if (archiveGuide) {
       renderGuideArticleClient(archiveGuide);
       updateBreadcrumbs(archiveGuide.category || 'Buying Guides', archiveGuide.shortTitle || archiveGuide.title);
       document.title = `${archiveGuide.title} | VacCompare`;
@@ -885,7 +888,13 @@ function onProductsLoaded() {
   } else if (path.startsWith('/reviews/')) {
     const slug = path.replace('/reviews/', '').replace(/\/$/, '');
     const archiveReview = window.getArchiveReviewBySlug ? window.getArchiveReviewBySlug(slug) : null;
-    if (archiveReview) {
+    const hasSsr = els.dedicatedArticleView &&
+      !els.dedicatedArticleView.querySelector('[data-skeleton]') &&
+      els.dedicatedArticleView.children.length > 0 &&
+      els.dedicatedArticleView.innerHTML.trim().length > 200;
+    if (hasSsr) {
+      bindArticleViewEvents(archiveReview ? { brand: archiveReview.brand, model: archiveReview.title } : null);
+    } else if (archiveReview) {
       renderReviewArticleClient(archiveReview);
       updateBreadcrumbs(archiveReview.category || 'Reviews', archiveReview.title);
       document.title = `${archiveReview.title} | VacCompare`;
@@ -1036,8 +1045,7 @@ function handleRouteFromUrl() {
   const path = (rawPath.length > 1 && rawPath.endsWith('/')) ? rawPath.slice(0, -1) : rawPath;
 
   if (path === '/vacuum') {
-    window.history.replaceState(null, '', '/');
-    handleRouteFromUrl();
+    window.location.replace('/');
     return;
   }
 

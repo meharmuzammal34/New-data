@@ -142,7 +142,7 @@ function parseFlag(str) {
   return false;
 }
 
-function formatAmazonLink(url, tag = 'wat344r5-20') {
+function formatAmazonLink(url, tag = 'vacuumcleanerlab-20') {
   if (!url || typeof url !== 'string') return '';
   const trimmed = url.trim();
   if (!trimmed) return '';
@@ -199,12 +199,12 @@ function getProductImageUrl(asin) {
 }
 
 function getAmazonLink(p) {
-  if (!p) return 'https://www.amazon.com/?tag=wat344r5-20';
+  if (!p) return 'https://www.amazon.com/?tag=vacuumcleanerlab-20';
   if (p.amazonLink && typeof p.amazonLink === 'string' && p.amazonLink.trim().length > 0) {
     return formatAmazonLink(p.amazonLink);
   }
   const query = encodeURIComponent(`${p.brand || ''} ${p.model || ''}`.trim());
-  return `https://www.amazon.com/s?k=${query}&tag=wat344r5-20`;
+  return `https://www.amazon.com/s?k=${query}&tag=vacuumcleanerlab-20`;
 }
 
 function calculateRelevanceScore(source, target) {
@@ -2884,6 +2884,8 @@ function renderServerEeatPage(reqPath, allProducts) {
         <div>
           <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Buying Guides &amp; Comparisons</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <a href="/guides" class="p-3 bg-brand-50 hover:bg-brand-100 rounded-xl border border-brand-200 font-bold text-brand-800 transition sm:col-span-2">&rarr; Browse All Vacuum Buying Guides Directory</a>
+            <a href="/guides/best-mattress-vacuum-for-dust-mites" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Best Mattress Vacuums for Dust Mites (2026 Detailed Review)</a>
             <a href="/guides/best-vacuum-for-pet-hair" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">10 Best Vacuum Cleaners for Pet Hair (2026 Guide)</a>
             <a href="/guides/best-robot-vacuums-2026" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Top 8 Best Robot Vacuums of 2026</a>
             <a href="/guides/best-hardwood-floor-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Best Vacuums for Hardwood Floors</a>
@@ -3329,8 +3331,8 @@ app.get('*', (req, res) => {
       const matchedGuide = matchedArchiveGuide || matchedLegacyGuide;
 
       if (matchedGuide) {
-        title = `${matchedGuide.title} | Vacuum Cleaner Lab`;
-        description = matchedGuide.description || `Expert buying guide for ${matchedGuide.title}. Tested specs, comparisons, and 2026 recommendations.`;
+        title = matchedGuide.metaTitle || (matchedGuide.title.includes('Vacuum Cleaner Lab') ? matchedGuide.title : `${matchedGuide.title} | Vacuum Cleaner Lab`);
+        description = matchedGuide.metaDescription || matchedGuide.description || `Expert buying guide for ${matchedGuide.title}. Tested specs, comparisons, and 2026 recommendations.`;
         canonical = `${CANONICAL_ORIGIN}/guides/${matchedGuide.slug}`;
 
         schemaJson.push({

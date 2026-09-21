@@ -32,7 +32,7 @@ export function renderServerReviewArticlePage(review, origin, allProducts) {
     return `<div class="p-8 text-center text-slate-600">Review not found. <a href="/reviews" class="text-brand-600 underline">Browse all reviews</a>.</div>`;
   }
 
-  const amazonUrl = review.amazonUrl || 'https://www.amazon.com/s?k=' + encodeURIComponent(review.title) + '&tag=wat344r5-20';
+  const amazonUrl = review.amazonUrl || 'https://www.amazon.com/s?k=' + encodeURIComponent(review.title) + '&tag=vacuumcleanerlab-20';
   const categoryUrl = review.categoryUrl || `/category/${slugify(review.category)}`;
   const brandSlug = slugify(review.brand);
   const criteria = review.criteria || [
@@ -520,7 +520,7 @@ export function renderServerReviewsHubPage(origin, allProducts, allReviews = ALL
           ${reviews.map((r, idx) => {
             const bSlug = slugify(r.brand);
             const cUrl = r.categoryUrl || `/category/${slugify(r.category)}`;
-            const aUrl = r.amazonUrl || 'https://www.amazon.com/s?k=' + encodeURIComponent(r.title) + '&tag=wat344r5-20';
+            const aUrl = r.amazonUrl || 'https://www.amazon.com/s?k=' + encodeURIComponent(r.title) + '&tag=vacuumcleanerlab-20';
             const shortSummary = r.summaryText 
               ? (r.summaryText.length > 250 ? r.summaryText.substring(0, 247) + '...' : r.summaryText)
               : (r.introParas && r.introParas[0] ? r.introParas[0] : '');

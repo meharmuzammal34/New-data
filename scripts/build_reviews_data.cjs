@@ -18,7 +18,7 @@ const sharkProNavigator = {
     { name: 'Health', score: '95%' },
     { name: 'Price', score: '90%' }
   ],
-  amazonUrl: 'https://www.amazon.com/dp/B005KMDV9A?tag=wat344r5-20',
+  amazonUrl: 'https://www.amazon.com/dp/B005KMDV9A?tag=vacuumcleanerlab-20',
   imagePath: '/assets/vendorimagesNV356E_Image1._CB304632530_.jpg',
   summaryText: 'After some careful research I have come upon the Shark Professional Navigator Upright, which stands out as one of the best vacuum cleaner options on the market. This Lift-Away vacuum cleaner prides itself on it’s never lose suction ability, and its anti-allergen complete seal system. The powerful, portable, lightweight and large capacity vacuum cleaner therefore allows you to execute deep carpet cleaning and bare floor cleaning like never before.',
   introParas: [

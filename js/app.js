@@ -19,7 +19,7 @@ if (typeof window !== 'undefined' && window.location) {
   }
 }
 
-function formatAmazonLink(url, tag = 'wat344r5-20') {
+function formatAmazonLink(url, tag = 'vacuumcleanerlab-20') {
   if (!url || typeof url !== 'string') return '';
   const trimmed = url.trim();
   if (!trimmed) return '';
@@ -50,12 +50,12 @@ function formatAmazonLink(url, tag = 'wat344r5-20') {
 }
 
 function getAmazonLink(p) {
-  if (!p) return 'https://www.amazon.com/?tag=wat344r5-20';
+  if (!p) return 'https://www.amazon.com/?tag=vacuumcleanerlab-20';
   if (p.amazonLink && typeof p.amazonLink === 'string' && p.amazonLink.trim().length > 0) {
     return formatAmazonLink(p.amazonLink);
   }
   const query = encodeURIComponent(`${p.brand || ''} ${p.model || ''}`.trim());
-  return `https://www.amazon.com/s?k=${query}&tag=wat344r5-20`;
+  return `https://www.amazon.com/s?k=${query}&tag=vacuumcleanerlab-20`;
 }
 
 const state = {
@@ -1289,8 +1289,8 @@ function handleRouteFromUrl() {
     if (archiveGuide) {
       showArticleView();
       updateBreadcrumbs(archiveGuide.category || 'Buying Guides', archiveGuide.shortTitle || archiveGuide.title);
-      document.title = `${archiveGuide.title} | VacCompare`;
-      const desc = archiveGuide.description || `${archiveGuide.title} - expert buying advice, comparisons, and recommendations.`;
+      document.title = archiveGuide.metaTitle || (archiveGuide.title.includes('Vacuum Cleaner Lab') ? archiveGuide.title : `${archiveGuide.title} | Vacuum Cleaner Lab`);
+      const desc = archiveGuide.metaDescription || archiveGuide.description || `${archiveGuide.title} - expert buying advice, comparisons, and recommendations.`;
       updateMetaDescription(desc.length > 160 ? desc.substring(0, 157) + '...' : desc);
       updateCanonicalTag(`/guides/${archiveGuide.slug}`);
       updateRobotsTag(false);
@@ -3164,7 +3164,7 @@ function renderReviewArticleClient(review) {
   }
   if (!review) return;
 
-  const amazonUrl = review.amazonUrl || (review.asin ? `https://www.amazon.com/dp/${review.asin}?tag=wat344r5-20` : `https://www.amazon.com/s?k=${encodeURIComponent(review.title)}&tag=wat344r5-20`);
+  const amazonUrl = review.amazonUrl || (review.asin ? `https://www.amazon.com/dp/${review.asin}?tag=vacuumcleanerlab-20` : `https://www.amazon.com/s?k=${encodeURIComponent(review.title)}&tag=vacuumcleanerlab-20`);
   const categoryUrl = review.categoryUrl || `/category/${slugifyId(review.category)}`;
   const brandSlug = slugifyId(review.brand);
   const criteria = review.criteria || [
@@ -3577,7 +3577,7 @@ function renderReviewArticleClient(review) {
 function renderSharkNavigatorReviewPage() {
   if (!els.dedicatedArticleView) return;
 
-  const amazonProductUrl = 'https://www.amazon.com/dp/B005KMDV9A?tag=wat344r5-20';
+  const amazonProductUrl = 'https://www.amazon.com/dp/B005KMDV9A?tag=vacuumcleanerlab-20';
 
   const html = `
     <article class="space-y-8 text-slate-800">
@@ -3986,7 +3986,7 @@ function renderReviewsHubPage() {
           ${archiveReviews.map((r, idx) => {
             const bSlug = slugifyId(r.brand);
             const cUrl = r.categoryUrl || `/category/${slugifyId(r.category)}`;
-            const aUrl = r.amazonUrl || (r.asin ? `https://www.amazon.com/dp/${r.asin}?tag=wat344r5-20` : 'https://www.amazon.com/s?k=' + encodeURIComponent(r.title) + '&tag=wat344r5-20');
+            const aUrl = r.amazonUrl || (r.asin ? `https://www.amazon.com/dp/${r.asin}?tag=vacuumcleanerlab-20` : 'https://www.amazon.com/s?k=' + encodeURIComponent(r.title) + '&tag=vacuumcleanerlab-20');
             const shortSummary = r.summaryText 
               ? (r.summaryText.length > 250 ? r.summaryText.substring(0, 247) + '...' : r.summaryText)
               : (r.introParas && r.introParas[0] ? r.introParas[0] : '');
@@ -4424,7 +4424,7 @@ function renderGuideArticleClient(guide) {
                   const modelPrice = r.price || '$$';
                   const modelRating = r.rating || '4.5';
                   const modelImg = r.image || (r.asin ? `https://m.media-amazon.com/images/P/${r.asin}.01._SL500_.jpg` : '/assets/vacuum_placeholder.svg');
-                  const amazonLink = r.amazonUrl || (r.asin ? `https://www.amazon.com/dp/${r.asin}?tag=wat344r5-20` : `https://www.amazon.com/s?k=${encodeURIComponent(modelName)}&tag=wat344r5-20`);
+                  const amazonLink = r.amazonUrl || (r.asin ? `https://www.amazon.com/dp/${r.asin}?tag=vacuumcleanerlab-20` : `https://www.amazon.com/s?k=${encodeURIComponent(modelName)}&tag=vacuumcleanerlab-20`);
                   const proText = Array.isArray(r.pros) ? r.pros[0] : (r.pros || 'Strong suction power');
                   const conText = Array.isArray(r.cons) ? r.cons[0] : (r.cons || 'Requires regular filter upkeep');
 
@@ -4521,7 +4521,7 @@ function renderGuideArticleClient(guide) {
               ? sec.cons
               : ['Requires regular filter washing', 'Dust canister capacity is designed for spot sweeps'];
             const pImage = sec.image || (sec.asin ? `https://m.media-amazon.com/images/P/${sec.asin}.01._SL500_.jpg` : '/assets/vacuum_placeholder.svg');
-            const pAmazon = sec.amazonUrl || (sec.asin ? `https://www.amazon.com/dp/${sec.asin}?tag=wat344r5-20` : `https://www.amazon.com/s?k=${encodeURIComponent(productName)}&tag=wat344r5-20`);
+            const pAmazon = sec.amazonUrl || (sec.asin ? `https://www.amazon.com/dp/${sec.asin}?tag=vacuumcleanerlab-20` : `https://www.amazon.com/s?k=${encodeURIComponent(productName)}&tag=vacuumcleanerlab-20`);
 
             return `
               <div class="product-spotlight-card bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 space-y-6 shadow-xs hover:shadow-md transition">
@@ -5840,6 +5840,8 @@ function renderEeatPage(path) {
         <div>
           <h3 class="font-extrabold text-sm text-slate-900 mb-3 uppercase tracking-wider text-brand-600">Buying Guides &amp; Comparisons</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <a href="/guides" class="p-3 bg-brand-50 hover:bg-brand-100 rounded-xl border border-brand-200 font-bold text-brand-800 transition sm:col-span-2">&rarr; Browse All Vacuum Buying Guides Directory</a>
+            <a href="/guides/best-mattress-vacuum-for-dust-mites" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Best Mattress Vacuums for Dust Mites (2026 Detailed Review)</a>
             <a href="/guides/best-vacuum-for-pet-hair" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">10 Best Vacuum Cleaners for Pet Hair (2026 Guide)</a>
             <a href="/guides/best-robot-vacuums-2026" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Top 8 Best Robot Vacuums of 2026</a>
             <a href="/guides/best-hardwood-floor-vacuums" class="p-3 bg-slate-50 hover:bg-brand-50 rounded-xl border border-slate-200 font-bold text-slate-800 transition">Best Vacuums for Hardwood Floors</a>

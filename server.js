@@ -142,7 +142,7 @@ function parseFlag(str) {
   return false;
 }
 
-function formatAmazonLink(url, tag = 'vacuumcleanerlab-20') {
+function formatAmazonLink(url, tag = 'wat344r5-20') {
   if (!url || typeof url !== 'string') return '';
   const trimmed = url.trim();
   if (!trimmed) return '';
@@ -199,12 +199,12 @@ function getProductImageUrl(asin) {
 }
 
 function getAmazonLink(p) {
-  if (!p) return 'https://www.amazon.com/?tag=vacuumcleanerlab-20';
+  if (!p) return 'https://www.amazon.com/?tag=wat344r5-20';
   if (p.amazonLink && typeof p.amazonLink === 'string' && p.amazonLink.trim().length > 0) {
     return formatAmazonLink(p.amazonLink);
   }
   const query = encodeURIComponent(`${p.brand || ''} ${p.model || ''}`.trim());
-  return `https://www.amazon.com/s?k=${query}&tag=vacuumcleanerlab-20`;
+  return `https://www.amazon.com/s?k=${query}&tag=wat344r5-20`;
 }
 
 function calculateRelevanceScore(source, target) {
@@ -2964,8 +2964,8 @@ function renderServerBanner(bannerTitle, bannerBadge, bannerDesc) {
 
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
-app.use('/public', express.static(path.join(__dirname, 'public')));
-app.use(express.static(__dirname, { index: false }));
+app.use('/public', express.static(path.join(__dirname, 'public'), { redirect: false }));
+app.use(express.static(__dirname, { index: false, redirect: false }));
 
 /* ---------------------------------------------------------------- */
 /* 301 Redirects                                                    */
@@ -3735,6 +3735,10 @@ app.get('*', (req, res) => {
   });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`VacCompare SEO Server running at http://0.0.0.0:${PORT}`);
-});
+export { app };
+
+if (process.env.STATIC_BUILD !== 'true') {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`VacCompare SEO Server running at http://0.0.0.0:${PORT}`);
+  });
+}

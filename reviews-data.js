@@ -26,7 +26,7 @@ export const ALL_REVIEWS = [
         "score": "90%"
       }
     ],
-    "amazonUrl": "https://www.amazon.com/dp/B005KMDV9A?tag=vacuumcleanerlab-20",
+    "amazonUrl": "https://www.amazon.com/dp/B005KMDV9A?tag=wat344r5-20",
     "imagePath": "/assets/vendorimagesNV356E_Image1._CB304632530_.jpg",
     "summaryText": "After some careful research I have come upon the Shark Professional Navigator Upright, which stands out as one of the best vacuum cleaner options on the market. This Lift-Away vacuum cleaner prides itself on it’s never lose suction ability, and its anti-allergen complete seal system. The powerful, portable, lightweight and large capacity vacuum cleaner therefore allows you to execute deep carpet cleaning and bare floor cleaning like never before.",
     "introParas": [
@@ -130,7 +130,7 @@ export const ALL_REVIEWS = [
         "score": "86%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/BISSELL-Lightweight-Cordless-Vacuum-1313/dp/B00LASI4BI?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/BISSELL-Lightweight-Cordless-Vacuum-1313/dp/B00LASI4BI?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20150914193411im_/http://i2.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/09/BISSELL-BOLT-2-in-1-Lightweight-Cordless-Vacuum2.jpg?resize=368%2C368",
     "summaryText": "Cordless vacuum cleaners have grown in popularity, and many people are going for them as compared to corded vacuum cleaners. This is because of their ease of maneuverability. You can take your vacuum anywhere you require to do your cleaning.",
     "introParas": [
@@ -219,7 +219,7 @@ export const ALL_REVIEWS = [
         "score": "86%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/BISSELL-CleanView-Upright-OnePass-9595A/dp/B00AZBIZTW?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/BISSELL-CleanView-Upright-OnePass-9595A/dp/B00AZBIZTW?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20150914171552im_/http://i0.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/09/BISSELL-CleanView-Upright-Vacuum-with-OnePass-review.jpg?resize=368%2C368",
     "summaryText": "Worried about routine home cleaning?",
     "introParas": [
@@ -319,7 +319,7 @@ export const ALL_REVIEWS = [
         "score": "82%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/BISSELL-PowerGlide-Lift-Off-Technology-2763/dp/B00DUG0A7E?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/BISSELL-PowerGlide-Lift-Off-Technology-2763/dp/B00DUG0A7E?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20151004232207im_/http://i1.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/10/BISSELL-PowerGlide-Pet-Bagless-Upright-Vacuum-with-Lift-Off-Technology.jpg?resize=368%2C368",
     "summaryText": "BISSELL does not play around when it comes to manufacturing and designing cleaning appliances. Years of expertise in this industry means that each and every BISSELL product will pack an extraordinary punch. The PowerGlide is no different, and it manages to excel in a market full of average quality vacuum cleaner options.",
     "introParas": [
@@ -415,7 +415,7 @@ export const ALL_REVIEWS = [
         "score": "86%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Dyson-DC35-Digital-Slim-cordless/dp/B004GN8UYA/ref=sr_1_1?ie=UTF8&qid=1436250360&sr=8-1&keywords=Dyson+DC35+Vacuum+Cleaner&tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Dyson-DC35-Digital-Slim-cordless/dp/B004GN8UYA/ref=sr_1_1?ie=UTF8&qid=1436250360&sr=8-1&keywords=Dyson+DC35+Vacuum+Cleaner&tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20150715081257im_/http://vacuumcleanerlab.com/wp-content/uploads/2015/07/Dyson-DC35-Vacuum-Cleaner.jpg",
     "summaryText": "In a world full of poor performing vacuum cleaners, the Dyson DC35 provides all homeowners with an appliance that is packed with all the suction power of Dyson. In fact, the DC35 has been touted as the most powerful cordless vacuum cleaner on the market, with a motor that puts conventional motors to shame.",
     "introParas": [
@@ -510,7 +510,7 @@ export const ALL_REVIEWS = [
         "score": "86%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Dyson-DC41-Animal-Bagless-Cleaner/dp/B005FQMALQ/ref=sr_1_1?ie=UTF8&qid=1436249912&sr=8-1&keywords=Dyson+DC41+Animal+Bagless+Vacuum+Cleaner&tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Dyson-DC41-Animal-Bagless-Cleaner/dp/B005FQMALQ/ref=sr_1_1?ie=UTF8&qid=1436249912&sr=8-1&keywords=Dyson+DC41+Animal+Bagless+Vacuum+Cleaner&tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20150715070639im_/http://vacuumcleanerlab.com/wp-content/uploads/2015/07/Dyson-DC41-Animal-Bagless-Vacuum-Cleaner.jpg",
     "summaryText": "When you think of Dyson, the first thing that probably comes to your mind is ‘amazing design’ and ‘excellent workmanship’. And you wouldn’t be wrong; Dyson has managed to dominate the home appliance market with its amazing vacuum cleaner creations.",
     "introParas": [
@@ -615,7 +615,7 @@ export const ALL_REVIEWS = [
         "score": "78%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Dyson-DC44-Animal-Vacuum-Refurbished/dp/B00DEKVL42?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Dyson-DC44-Animal-Vacuum-Refurbished/dp/B00DEKVL42?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20150914232346im_/http://i2.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/09/Dyson-DC44-Animal-Vacuum-Refurbished-Review.jpg?resize=368%2C368",
     "summaryText": "For advanced home cleaning, choose Dyson DC44 Animal Vacuum that offers a cleaning power ranging from 100 – 200v. This cleaner work on a digital motor that offers twice the performance of any conventional motor.",
     "introParas": [
@@ -711,7 +711,7 @@ export const ALL_REVIEWS = [
         "score": "82%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Dyson-209472-01-V6-Cordless-Vacuum/dp/B00SMLJPIC?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Dyson-209472-01-V6-Cordless-Vacuum/dp/B00SMLJPIC?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20150916203646im_/http://i0.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/09/Dyson-V6-Cordless-Vacuum.jpg?resize=368%2C368",
     "summaryText": "Are you looking for a lightweight and easy to use cordless vacuum cleaner?",
     "introParas": [
@@ -803,7 +803,7 @@ export const ALL_REVIEWS = [
         "score": "90%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Dyson-V6-same-DC58-Handheld/dp/B00GXFIS5A?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Dyson-V6-same-DC58-Handheld/dp/B00GXFIS5A?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20151004221259im_/http://i2.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/10/Dyson-V6-Trigger-same-as-Dyson-DC58-Handheld.jpg?resize=368%2C368",
     "summaryText": "When it comes to Dyson, you can always be assured of exceptional quality. The Dyson V6 Trigger is no different, bringing a punch of power and value via a compact vacuum cleaner. Now you might be wondering what the difference is between the V6 Trigger and the DC58. Well, there is no difference. Dyson has just taken the popular DC58 and changed the name.",
     "introParas": [
@@ -896,7 +896,7 @@ export const ALL_REVIEWS = [
         "score": "88%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Eureka-3670G-Mighty-Canister-Vacuum/dp/B00002N8CX/ref=sr_1_1?ie=UTF8&qid=1436249556&sr=8-1&keywords=Eureka+3670G+Mighty+Mite+Canister+Vacuum&tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Eureka-3670G-Mighty-Canister-Vacuum/dp/B00002N8CX/ref=sr_1_1?ie=UTF8&qid=1436249556&sr=8-1&keywords=Eureka+3670G+Mighty+Mite+Canister+Vacuum&tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20150713233955im_/http://vacuumcleanerlab.com/wp-content/uploads/2015/07/Eureka-3670G-Mighty-Mite-Canister-Vacuum.jpg",
     "summaryText": "Eureka has made a great name for itself when it comes to home appliances, and the 3670G happens to be one of its most popular creations. This sleek canister vacuum has been designed to make your floor cleaning tasks easier and more enjoyable, using a lightweight design and convenient features. While the vacuum has been designed to clean wood floors, bare floors and tile, it can also execute excellent vacuuming on your carpets and rugs.",
     "introParas": [
@@ -985,7 +985,7 @@ export const ALL_REVIEWS = [
         "score": "94%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Eureka-AS2113A-Bagless-Upright-Pacific/dp/B00WGEW9CA?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Eureka-AS2113A-Bagless-Upright-Pacific/dp/B00WGEW9CA?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20150916192634im_/http://i2.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/09/Eureka-AS2113A-AS-ONE-Bagless-Upright-Vacuum.jpg?resize=368%2C368",
     "summaryText": "Finding a great vacuum cleaner that lasts a long while is never easy, you need to check dozens before finalizing one.",
     "introParas": [
@@ -1084,7 +1084,7 @@ export const ALL_REVIEWS = [
         "score": "88%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Hoover-Cordless-Bagless-Upright-BH50140/dp/B00IT5L49E?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Hoover-Cordless-Bagless-Upright-BH50140/dp/B00IT5L49E?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20150916170946im_/http://i0.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/09/Hoover-Air-Cordless-Series-3.0-BH50140-Bagless-Upright-Vacuum-Cleaner.jpg?resize=368%2C368",
     "summaryText": "Cordless vacuum cleaners are a great selection, especially in areas of high traffic around your home. They run silently making them convenient to use. They have batteries that last for a long period of time to help you achieve a thorough cleaning with a single charge.",
     "introParas": [
@@ -1184,7 +1184,7 @@ export const ALL_REVIEWS = [
         "score": "80%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Hoover-Anniversary-WindTunnel-Self-Propelled-U6485900/dp/B0016NP14A?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Hoover-Anniversary-WindTunnel-Self-Propelled-U6485900/dp/B0016NP14A?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20150916194903im_/http://i1.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/09/Hoover-Anniversary-WindTunnel-Self-Propelled-Bagged-Upright-U6485900-Vacuum-Cleaner.jpg?resize=368%2C368",
     "summaryText": "I have been reviewing vacuum cleaner for a long. Experienced a lot of great vacuum cleaner during the time. Also had experience with dozens of the options available on the market.",
     "introParas": [
@@ -1290,7 +1290,7 @@ export const ALL_REVIEWS = [
         "score": "92%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Hoover-Cordless-Vacuum-Cleaner-BH50010/dp/B001PB8EJ2/ref=sr_1_1?ie=UTF8&qid=1436249359&sr=8-1&keywords=Hoover+Linx+Cordless+Stick+Vacuum+Cleaner&tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Hoover-Cordless-Vacuum-Cleaner-BH50010/dp/B001PB8EJ2/ref=sr_1_1?ie=UTF8&qid=1436249359&sr=8-1&keywords=Hoover+Linx+Cordless+Stick+Vacuum+Cleaner&tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20150716114400im_/http://vacuumcleanerlab.com/wp-content/uploads/2015/07/Hoover-Linx-Cordless-Stick-Vacuum-Cleaner.jpg",
     "summaryText": "Hoover is synonymous with vacuum cleaning. For over 100 years this company has introduced one appliance after another, all dedicated to making the cleaning process easier and more enjoyable. The Linx Cordless in particular is a stick vacuum that aims to transform how you clean on a daily basis, with an ergonomic design and a versatile set of features that will leave you in awe.",
     "introParas": [
@@ -1385,7 +1385,7 @@ export const ALL_REVIEWS = [
         "score": "86%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Hoover-Platinum-Collection-Lightweight-UH30010COM/dp/B001PB8EEM?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Hoover-Platinum-Collection-Lightweight-UH30010COM/dp/B001PB8EEM?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20150916194617im_/http://i1.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/09/Hoover-Platinum-Collection-Lightweight-Bagged-Upright-with-Canister.jpg?resize=368%2C368",
     "summaryText": "There are a lot of vacuum cleaners available on the market. However, the combination of the lightweight bagged upright and easy-to-carry canister is a rare option.",
     "introParas": [
@@ -1486,7 +1486,7 @@ export const ALL_REVIEWS = [
         "score": "84%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Kenmore-Canister-Progressive-Blueberry-21614/dp/B005OSDE8I?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Kenmore-Canister-Progressive-Blueberry-21614/dp/B005OSDE8I?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20151004232204im_/http://i0.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/10/Kenmore-Kenmore-Canister-Vacuum-Cleaner-Progressive-Blueberry-21614.jpg?resize=368%2C368",
     "summaryText": "Cleaning can be back breaking work, but if you have the right tools for the job then it can become simple and even fun. Now, there are a multitude of cleaning appliances available on the market today, each designed for different surfaces and cleaning needs.",
     "introParas": [
@@ -1583,7 +1583,7 @@ export const ALL_REVIEWS = [
         "score": "88%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Shark-Navigator-Lift-Away-Vacuum-NV352/dp/B004Q4DRJW?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Shark-Navigator-Lift-Away-Vacuum-NV352/dp/B004Q4DRJW?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20151005182547im_/http://i0.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/10/Shark-Navigator-Lift-Away-Vacuum-NV352.jpg?resize=368%2C368",
     "summaryText": "Finding a good quality vacuum cleaner can make your life so much easier. After all, no one really wants to sweep up all the dirt, dust, and debris in their home with a dust pan and a broom. So what do you actually look for in a vacuum cleaner? Well, the first thing I need to tell you is that not all vacuum cleaners will suit you and your cleaning needs. It is therefore important for you to do your research, so that the vacuum cleaner that you choose works well with your floors and carpets.",
     "introParas": [
@@ -1676,7 +1676,7 @@ export const ALL_REVIEWS = [
         "score": "90%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Shark-TruePet-Ultra-Light-Upright-HV322/dp/B00NGVF4II?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Shark-TruePet-Ultra-Light-Upright-HV322/dp/B00NGVF4II?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20151005182252im_/http://i1.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/10/Shark-Rocket-TruePet-Ultra-Light-Upright-HV3221.jpg?resize=368%2C368",
     "summaryText": "If you have cats and dogs at home, then you know the daily struggle of picking up the pet hair and dander that they leave around. As a pet lover it might not be easy to leave your dog outside, and therefore the best option would be to find an efficient way to keep your house clean. One option that works magnificently for me is using a pet-specific vacuum cleaner, which will efficiently pick up anything your pet leaves behind.",
     "introParas": [
@@ -1759,7 +1759,7 @@ export const ALL_REVIEWS = [
         "score": "84%"
       }
     ],
-    "amazonUrl": "http://www.amazon.com/Shark-Rotator-NV752-Lift-Away-Bordeaux/dp/B00X7R1FZ2?tag=vacuumcleanerlab-20",
+    "amazonUrl": "http://www.amazon.com/Shark-Rotator-NV752-Lift-Away-Bordeaux/dp/B00X7R1FZ2?tag=wat344r5-20",
     "mainImgUrl": "https://web.archive.org/web/20151004232201im_/http://i2.wp.com/vacuumcleanerlab.com/wp-content/uploads/2015/10/Shark-Rotator-NV752-Powered-Lift-Away-TruePet-Vacuum-Bordeaux.jpg?resize=368%2C368",
     "summaryText": "Shark is a brand name that puts a smile on my face. This company has dedicated its time to creating convenient appliances, for people like me who absolutely hate taking part in household chores. Now, even though you might not admit out loud, you probably hate cleaning. While we all want to live in a clean house, the process of it getting cleaned is not really fun.",
     "introParas": [

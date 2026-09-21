@@ -722,8 +722,8 @@ for (const item of files) {
       const highlights = catalogInfo?.highlights || 'All-round top tested performer';
       const productImage = getProductImage(asin, img?.getAttribute('src'));
       const amazonUrl = asin 
-        ? `https://www.amazon.com/dp/${asin}?tag=vacuumcleanerlab-20`
-        : `https://www.amazon.com/s?k=${encodeURIComponent(name)}&tag=vacuumcleanerlab-20`;
+        ? `https://www.amazon.com/dp/${asin}?tag=wat344r5-20`
+        : `https://www.amazon.com/s?k=${encodeURIComponent(name)}&tag=wat344r5-20`;
 
       if (name) {
         tableData.push({
@@ -753,7 +753,7 @@ for (const item of files) {
           price: p.price,
           rating: p.rating,
           image: getProductImage(p.asin),
-          amazonUrl: `https://www.amazon.com/dp/${p.asin}?tag=vacuumcleanerlab-20`,
+          amazonUrl: `https://www.amazon.com/dp/${p.asin}?tag=wat344r5-20`,
           originalArchiveUrl: `https://www.amazon.com/dp/${p.asin}`,
           pros: p.pros,
           cons: p.cons,
@@ -818,7 +818,7 @@ for (const item of files) {
           currentSection.image = getProductImage(currentSection.asin, img.getAttribute('src'));
         }
         if (a && a.textContent.includes('Check Price') && !currentSection.amazonUrl && a.getAttribute('href')) {
-          currentSection.amazonUrl = a.getAttribute('href').replace(/tag=[^&]+/, 'tag=vacuumcleanerlab-20');
+          currentSection.amazonUrl = a.getAttribute('href').replace(/tag=[^&]+/, 'tag=wat344r5-20');
         }
         if (pText) {
           currentSection.paragraphs.push(pText);

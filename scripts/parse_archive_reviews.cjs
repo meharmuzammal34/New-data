@@ -82,7 +82,7 @@ function parseFile(fileName) {
   }
 
   // Amazon button URL
-  let amazonUrl = 'https://www.amazon.com/dp/B001PB8EJ2?tag=vacuumcleanerlab-20';
+  let amazonUrl = 'https://www.amazon.com/dp/B001PB8EJ2?tag=wat344r5-20';
   const amazonBtn = doc.querySelector('a.review-amazon-button, #bd-review-wrapper a, a[href*="amazon.com"]');
   if (amazonBtn) {
     const rawHref = amazonBtn.getAttribute('href') || '';
@@ -90,9 +90,9 @@ function parseFile(fileName) {
     if (m) {
       let target = m[0];
       if (target.includes('tag=')) {
-        target = target.replace(/tag=[^&]+/, 'tag=vacuumcleanerlab-20');
+        target = target.replace(/tag=[^&]+/, 'tag=wat344r5-20');
       } else {
-        target += (target.includes('?') ? '&' : '?') + 'tag=vacuumcleanerlab-20';
+        target += (target.includes('?') ? '&' : '?') + 'tag=wat344r5-20';
       }
       amazonUrl = target;
     }

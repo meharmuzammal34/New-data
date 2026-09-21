@@ -65,8 +65,8 @@ function slugify(str) {
     .replace(/(^-|-$)/g, '');
 }
 
-/** Formats any Amazon link to ensure the affiliate tag=vacuumcleanerlab-20 is set */
-function formatAmazonLink(url, tag = 'vacuumcleanerlab-20') {
+/** Formats any Amazon link to ensure the affiliate tag=wat344r5-20 is set */
+function formatAmazonLink(url, tag = 'wat344r5-20') {
   if (!url || typeof url !== 'string') return '';
   const trimmed = url.trim();
   if (!trimmed) return '';

@@ -3628,19 +3628,36 @@ app.get('*', (req, res) => {
     } else if (reqPath.startsWith('/guides/')) {
       const gSlug = reqPath.replace('/guides/', '').replace(/\/$/, '');
       const matchedArchiveGuide = getGuideBySlug(gSlug);
-      showArticle = true;
-      showMainContent = false;
+      const matchedLegacyGuide = LEGACY_BUYING_GUIDES.find(g => g.slug === gSlug);
       if (matchedArchiveGuide) {
+        showArticle = true;
+        showMainContent = false;
         breadcrumbCategory = matchedArchiveGuide.category || 'Buying Guides';
         breadcrumbCategoryUrl = '/guides';
         breadcrumbCurrent = matchedArchiveGuide.shortTitle || matchedArchiveGuide.title;
         articleHtml = renderServerGuideArticlePage(matchedArchiveGuide, CANONICAL_ORIGIN, cachedProducts);
-      } else {
+      } else if (matchedLegacyGuide) {
+        showArticle = true;
+        showMainContent = false;
         const guideTitle = getGuideTitle(gSlug);
         breadcrumbCategory = 'Buying Guides';
         breadcrumbCategoryUrl = '/guides';
         breadcrumbCurrent = guideTitle;
         articleHtml = renderServerBuyingGuidePage(gSlug, cachedProducts);
+      } else {
+        res.status(404);
+        showArticle = true;
+        showMainContent = false;
+        breadcrumbCategory = 'Error';
+        breadcrumbCurrent = '404 - Buying Guide Not Found';
+        articleHtml = `
+          <div class="text-center py-16 bg-white rounded-2xl border border-slate-200 space-y-4">
+            <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500"></i>
+            <h1 class="text-2xl font-extrabold text-slate-900">404 - Buying Guide Not Found</h1>
+            <p class="text-sm text-slate-600 max-w-md mx-auto">The requested vacuum buying guide could not be located in our published archive.</p>
+            <a href="/guides" class="inline-block px-5 py-2.5 rounded-xl bg-brand-600 text-white font-bold text-xs hover:bg-brand-700 transition">View All Buying Guides</a>
+          </div>
+        `;
       }
     } else if (reqPath === '/compare' || reqPath === '/compare/') {
       showArticle = true;

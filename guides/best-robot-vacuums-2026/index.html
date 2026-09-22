@@ -1,0 +1,3084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Compatibility patch: Ensure window.fetch is writable to prevent "Cannot set property fetch of #<Window> which has only a getter" errors in sandboxed iframes/analytics -->
+<script>
+  (function() {
+    try {
+      if (typeof window !== 'undefined' && typeof window.fetch === 'function') {
+        var _nativeFetch = window.fetch.bind(window);
+        try {
+          Object.defineProperty(window, 'fetch', {
+            value: _nativeFetch,
+            writable: true,
+            configurable: true,
+            enumerable: true
+          });
+        } catch (e1) {
+          try {
+            Object.defineProperty(window, 'fetch', {
+              get: function() { return _nativeFetch; },
+              set: function(fn) { _nativeFetch = fn; },
+              configurable: true,
+              enumerable: true
+            });
+          } catch (e2) {}
+        }
+        try {
+          if (typeof Window !== 'undefined' && Window.prototype) {
+            var desc = Object.getOwnPropertyDescriptor(Window.prototype, 'fetch');
+            if (desc && desc.get && !desc.set) {
+              Object.defineProperty(Window.prototype, 'fetch', {
+                get: function() { return _nativeFetch; },
+                set: function(fn) { _nativeFetch = fn; },
+                configurable: true,
+                enumerable: true
+              });
+            }
+          }
+        } catch (e3) {}
+      }
+    } catch (err) {}
+  })();
+</script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-8SWQ40D32C"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-8SWQ40D32C');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-adsense-account" content="ca-pub-3390062879159776">
+<meta name="google-site-verification" content="i3AwNvDMn11VWv2re2Mv5x2vGqXZbCWcWGIg1yPUzoQ" />
+<meta name="google-site-verification" content="pu4nqQQcFjq_fkS36nLSEQA1FiFs8QIjK-O9YpG6Eno" />
+<meta name="msvalidate.01" content="4D99D1FC1EDDD7ADF3A2230E3C0ABE2D" />
+
+<title>Top 8 Best Robot Vacuums: Hands-On Reviews | Vacuum Cleaner Lab</title>
+<meta name="description" content="Compare automated robot vacuums with self-emptying docks, LiDAR mapping, and mopping features across top brands like Roomba and Roborock.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="theme-color" content="#0f172a">
+
+<link rel="canonical" href="https://vacuumcleanerlab.com/guides/best-robot-vacuums-2026">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title="VacCompare RSS Feed" href="/feed.xml">
+<link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+
+<!-- Open Graph -->
+<meta property="og:site_name" content="VacCompare">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vacuumcleanerlab.com/">
+<meta property="og:title" content="VacCompare – Vacuum Cleaner Comparisons &amp; Buying Guides">
+<meta property="og:description" content="Compare vacuum cleaners, explore specifications, and find the best vacuum for your home with head-to-head comparisons and expert buying guides.">
+<meta property="og:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VacCompare – Vacuum Cleaner Comparisons &amp; Buying Guides">
+<meta name="twitter:description" content="Compare vacuum cleaners, explore specifications, and find the best vacuum for your home with head-to-head comparisons and expert buying guides.">
+<meta name="twitter:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+
+<!-- Fonts & FontAwesome -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['Inter', 'sans-serif'] },
+        colors: {
+          brand: {
+            50: '#eff6ff', 100:'#dbeafe', 200:'#bfdbfe', 300:'#93c5fd',
+            400:'#60a5fa', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8',
+            800:'#1e40af', 900:'#1e3a8a'
+          }
+        }
+      }
+    }
+  }
+</script>
+<link rel="stylesheet" href="/css/style.css">
+
+<!-- Direct-Route Initial Anti-Flash Script & Critical Styles -->
+<script>
+  (function() {
+    try {
+      var p = window.location.pathname || '';
+      if (p === '/vacuum' || p === '/vacuum/') {
+        p = '/';
+      }
+      var isHome = (p === '/' || p === '/index.html' || p === '');
+      if (!isHome) {
+        document.documentElement.classList.add('is-deep-route');
+        if (p.startsWith('/vacuum/') || p.startsWith('/product/') || p.startsWith('/compare') || p.startsWith('/guides') || p.startsWith('/reviews') || ['/about', '/editorial-policy', '/affiliate-disclosure', '/privacy-policy', '/terms', '/contact', '/html-sitemap'].indexOf(p) !== -1) {
+          document.documentElement.classList.add('route-article');
+        } else if (p.startsWith('/category') || p.startsWith('/brand')) {
+          document.documentElement.classList.add('route-grid');
+        } else {
+          document.documentElement.classList.add('route-not-found');
+        }
+      }
+    } catch (e) {}
+  })();
+</script>
+<style>
+  html.is-deep-route #home-hero-section,
+  html.is-deep-route #home-brands-section,
+  html.is-deep-route #home-categories-section,
+  html.is-deep-route #home-featured-section {
+    display: none !important;
+  }
+  html.route-article #main-content,
+  html.route-not-found #main-content {
+    display: none !important;
+  }
+  html.route-article #dedicated-article-view,
+  html.route-not-found #dedicated-article-view {
+    display: block !important;
+  }
+</style>
+
+<!-- Structured Data (JSON-LD) for Homepage -->
+
+
+
+
+<meta property="og:site_name" content="VacCompare">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vacuumcleanerlab.com/">
+<meta property="og:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta property="og:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta property="og:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta name="twitter:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta name="twitter:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+
+
+
+
+
+<meta property="og:site_name" content="VacCompare">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vacuumcleanerlab.com/">
+<meta property="og:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta property="og:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta property="og:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta name="twitter:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta name="twitter:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+
+
+
+
+
+<meta property="og:site_name" content="VacCompare">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vacuumcleanerlab.com/">
+<meta property="og:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta property="og:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta property="og:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta name="twitter:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta name="twitter:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+
+
+
+
+
+<meta property="og:site_name" content="VacCompare">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vacuumcleanerlab.com/">
+<meta property="og:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta property="og:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta property="og:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta name="twitter:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta name="twitter:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+
+
+
+
+
+<meta property="og:site_name" content="VacCompare">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vacuumcleanerlab.com/">
+<meta property="og:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta property="og:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta property="og:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta name="twitter:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta name="twitter:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+
+
+
+
+
+<meta property="og:site_name" content="VacCompare">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vacuumcleanerlab.com/">
+<meta property="og:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta property="og:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta property="og:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta name="twitter:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta name="twitter:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+
+
+
+
+
+<meta property="og:site_name" content="VacCompare">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vacuumcleanerlab.com/">
+<meta property="og:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta property="og:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta property="og:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta name="twitter:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta name="twitter:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+
+
+
+
+
+<meta property="og:site_name" content="VacCompare">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vacuumcleanerlab.com/">
+<meta property="og:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta property="og:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta property="og:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="VacCompare – Vacuum Cleaner Reviews, Comparisons &amp; Buying Guides">
+<meta name="twitter:description" content="Compare vacuum cleaners, read in-depth reviews, explore specifications, and find the best vacuum for your home with expert buying guides.">
+<meta name="twitter:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+
+
+
+
+
+<meta property="og:site_name" content="VacCompare">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://vacuumcleanerlab.com/guides/best-robot-vacuums-2026">
+<meta property="og:title" content="Top 8 Best Robot Vacuums: Hands-On Reviews | Vacuum Cleaner Lab">
+<meta property="og:description" content="Compare automated robot vacuums with self-emptying docks, LiDAR mapping, and mopping features across top brands like Roomba and Roborock.">
+<meta property="og:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Top 8 Best Robot Vacuums: Hands-On Reviews | Vacuum Cleaner Lab">
+<meta name="twitter:description" content="Compare automated robot vacuums with self-emptying docks, LiDAR mapping, and mopping features across top brands like Roomba and Roborock.">
+<meta name="twitter:image" content="https://vacuumcleanerlab.com/assets/logo.svg">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Top 8 Best Robot Vacuums: Hands-On Reviews",
+  "description": "Compare automated robot vacuums with self-emptying docks, LiDAR mapping, and mopping features across top brands like Roomba and Roborock.",
+  "image": "https://vacuumcleanerlab.com/assets/vacuum_hero_banner.jpg",
+  "author": {
+    "@type": "Organization",
+    "name": "Vacuum Cleaner Lab Editorial Team",
+    "url": "https://vacuumcleanerlab.com/about"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Vacuum Cleaner Lab",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://vacuumcleanerlab.com/assets/logo.svg"
+    }
+  },
+  "datePublished": "2026-01-15T00:00:00Z",
+  "dateModified": "2026-09-15T00:00:00Z",
+  "mainEntityOfPage": "https://vacuumcleanerlab.com/guides/best-robot-vacuums-2026"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://vacuumcleanerlab.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Buying Guides",
+      "item": "https://vacuumcleanerlab.com/guides"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Top 8 Best Robot Vacuums: Hands-On Reviews",
+      "item": "https://vacuumcleanerlab.com/guides/best-robot-vacuums-2026"
+    }
+  ]
+}
+</script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+<!-- Accessibility Skip Link -->
+<a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 z-50 bg-brand-600 text-white font-bold px-4 py-2.5 rounded-lg shadow-xl outline-none ring-2 ring-white">
+  Skip to main content
+</a>
+
+<!-- ============ HEADER ============ -->
+<header id="site-header" class="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-xs">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16 gap-2 sm:gap-6">
+      
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2 shrink-0 group" id="logo-link" aria-label="VacCompare Homepage">
+        <img src="/assets/logo.svg" alt="VacCompare Logo - Vacuum Cleaner Reviews &amp; Comparisons" title="VacCompare Homepage" width="180" height="40" class="h-7 sm:h-9 w-auto object-contain">
+      </a>
+
+      <!-- Navigation Links (Desktop) -->
+      <nav class="hidden lg:flex items-center gap-6 text-sm font-semibold text-slate-700" aria-label="Main Navigation">
+        <a href="/categories" class="hover:text-brand-600 transition nav-link">Categories</a>
+        <a href="/brands" class="hover:text-brand-600 transition nav-link">Brands</a>
+        <a href="/reviews" class="hover:text-brand-600 transition nav-link">Reviews</a>
+        <a href="/guides" class="hover:text-brand-600 transition nav-link">Buying Guides</a>
+        <a href="/compare/" class="hover:text-brand-600 transition nav-link">Comparisons</a>
+      </nav>
+
+      <!-- Search Input with Autocomplete -->
+      <div class="flex-1 min-w-0 max-w-md relative">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 sm:left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs sm:text-sm pointer-events-none"></i>
+        <input id="search-input" type="search" placeholder="Search vacuums... e.g. Dyson, Roomba"
+          class="w-full pl-8 sm:pl-9 pr-3 sm:pr-4 py-1.5 sm:py-2 rounded-full border border-slate-300 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 bg-slate-50 focus:bg-white transition"
+          role="combobox" aria-expanded="false" aria-autocomplete="list" aria-controls="search-autocomplete" aria-label="Search vacuum cleaners">
+        
+        <!-- Search Autocomplete Dropdown -->
+        <div id="search-autocomplete" class="hidden absolute top-full left-0 right-0 sm:right-auto sm:w-full min-w-[280px] max-w-[calc(100vw-2rem)] mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 overflow-hidden z-50 max-h-80 overflow-y-auto"></div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <button id="open-compare-btn" class="relative shrink-0 inline-flex items-center gap-1.5 sm:gap-2 rounded-full bg-brand-600 hover:bg-brand-700 text-white text-xs sm:text-sm font-semibold px-2.5 sm:px-4 py-2 transition disabled:opacity-40 disabled:cursor-not-allowed shadow-xs min-h-[40px]" disabled aria-label="Open compare panel">
+          <i class="fa-solid fa-scale-balanced"></i>
+          <span class="hidden sm:inline">Compare</span>
+          <span id="compare-count-badge" class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-white text-brand-700 text-xs font-bold">0</span>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button id="mobile-nav-toggle" class="lg:hidden w-10 h-10 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 focus:outline-none transition" aria-expanded="false" aria-label="Toggle Navigation Menu">
+          <i class="fa-solid fa-bars text-lg" id="mobile-nav-icon"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Menu -->
+  <div id="mobile-nav-drawer" class="hidden lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 text-sm font-semibold text-slate-700 shadow-lg">
+    <div class="text-xs uppercase text-slate-400 tracking-wider font-bold pt-1">Main Navigation</div>
+    <a href="/" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-house text-brand-600 mr-2.5"></i>Home</a>
+    <a href="/reviews" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-star-half-stroke text-brand-600 mr-2.5"></i>Reviews</a>
+    <a href="/categories" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-layer-group text-brand-600 mr-2.5"></i>All Categories</a>
+    <a href="/brands" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-tags text-brand-600 mr-2.5"></i>Popular Brands</a>
+    <a href="/guides" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-book-open text-brand-600 mr-2.5"></i>Buying Guides</a>
+    <a href="/compare/" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-scale-balanced text-brand-600 mr-2.5"></i>Comparisons</a>
+    <a href="/about" class="block py-2.5 px-3 rounded-xl hover:bg-slate-100 transition"><i class="fa-solid fa-shield-halved text-brand-600 mr-2.5"></i>About VacCompare</a>
+
+    <div class="pt-2 border-t border-slate-100 text-xs uppercase text-slate-400 tracking-wider font-bold">Top Categories</div>
+    <div class="grid grid-cols-2 gap-2 text-xs font-semibold">
+      <a href="/category/robot-vacuums" class="py-2 px-3 rounded-lg bg-slate-50 hover:bg-brand-50 text-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-robot text-indigo-500"></i>Robot</a>
+      <a href="/category/cordless-stick" class="py-2 px-3 rounded-lg bg-slate-50 hover:bg-brand-50 text-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-wand-magic-sparkles text-blue-500"></i>Stick</a>
+      <a href="/category/upright-vacuums" class="py-2 px-3 rounded-lg bg-slate-50 hover:bg-brand-50 text-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-plug text-emerald-500"></i>Upright</a>
+      <a href="/category/canister-vacuums" class="py-2 px-3 rounded-lg bg-slate-50 hover:bg-brand-50 text-slate-800 transition flex items-center gap-1.5"><i class="fa-solid fa-box text-amber-500"></i>Canister</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ BREADCRUMBS NAV ============ -->
+<nav id="breadcrumbs-nav" aria-label="Breadcrumb" class="bg-slate-100/80 border-b border-slate-200 py-2.5 px-4 sm:px-6 lg:px-8 text-xs font-medium text-slate-600">
+  <div class="max-w-7xl mx-auto flex items-center gap-2 overflow-x-auto whitespace-nowrap" id="breadcrumbs-container">
+      <a href="/" class="hover:text-brand-600 flex items-center gap-1"><i class="fa-solid fa-house text-slate-400"></i> Home</a>
+      <span class="text-slate-400">/</span>
+      <a href="/guides" class="hover:text-brand-600 font-medium text-slate-600 transition">Buying Guides</a>
+      <span class="text-slate-400">/</span>
+      <span class="text-slate-900 font-extrabold" id="breadcrumb-current">Top 8 Best Robot Vacuums: Hands-On Reviews</span>
+    </div>
+</nav>
+
+<!-- ============ HERO SECTION ============ -->
+<section id="home-hero-section" class="hidden relative overflow-hidden bg-[#07142e] text-white py-10 sm:py-14">
+  <!-- Subtle Ambient Lighting -->
+  <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+    <div class="absolute -top-24 -right-24 w-96 h-96 bg-brand-600/15 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-24 left-1/4 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full space-y-8">
+    
+    <!-- Top Content Block -->
+    <div class="max-w-4xl mx-auto text-center space-y-4">
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a href="/" id="hero-logo-link" class="inline-flex items-center gap-2 p-2 bg-[#0e2759]/90 rounded-2xl border border-slate-700/60 shadow-lg backdrop-blur-md">
+          <img src="/assets/logo-dark.svg" alt="VacCompare Logo" id="hero-logo-img" class="h-8 sm:h-9 w-auto" referrerPolicy="no-referrer">
+        </a>
+        <div id="hero-verified-badge" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-xs font-bold shadow-xs">
+          <i class="fa-solid fa-circle-check text-emerald-400"></i> Verified Vacuum Cleaner Reviews &amp; Specs
+        </div>
+      </div>
+      
+      <!-- Primary H1 Required for SEO (on homepage) -->
+      <p id="hero-heading" class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-[1.15]">
+        Find the Right and Best Vacuum Cleaner with Confidence
+      </p>
+
+      <p class="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
+        Compare over <span id="hero-count" class="font-bold text-white">1,032</span> vacuum cleaners — robot vacuums, cordless sticks, uprights, and canisters — by suction power (kPa), noise level (dB), dust capacity, HEPA filtration, and star ratings. Select up to 4 models to compare side by side.
+      </p>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 w-full max-w-md mx-auto sm:max-w-none">
+        <a href="#main-content" id="hero-filter-btn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm transition shadow-lg flex items-center justify-center gap-2 min-h-[44px]">
+          <i class="fa-solid fa-filter"></i> Filter Vacuum Database
+        </a>
+        <a href="/guides" id="hero-guides-btn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#142850]/90 hover:bg-[#1a3263] text-slate-200 font-bold text-sm border border-slate-700/80 transition flex items-center justify-center gap-2 backdrop-blur-xs min-h-[44px]">
+          <i class="fa-solid fa-book-open text-brand-400"></i> Read Buying Guides
+        </a>
+      </div>
+
+      <!-- Quick Metrics Bar -->
+      <div id="hero-stats" class="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-center gap-6 text-xs font-semibold text-slate-300"></div>
+    </div>
+
+    <!-- Prominent Big Hero Banner Image Showcase -->
+    <div class="relative w-full max-w-6xl mx-auto rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-700/80 shadow-2xl shadow-black/60 bg-slate-900 group" id="hero-banner-container">
+      <img 
+        id="hero-banner-image" 
+        src="/assets/vacuum_hero_banner.jpg" 
+        alt="Vacuum Cleaner Lineup - Robot, Cordless Stick, Upright, and Canister Vacuums" 
+        class="w-full h-64 sm:h-80 md:h-[420px] lg:h-[480px] object-cover object-center transition-transform duration-700 group-hover:scale-105"
+        loading="eager"
+        referrerPolicy="no-referrer"
+      />
+      <!-- Bottom Soft Gradient Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-t from-[#07142e]/90 via-[#07142e]/20 to-transparent pointer-events-none"></div>
+      
+      <!-- Showcase Badge & Details -->
+      <div class="absolute bottom-3 sm:bottom-5 left-4 sm:left-6 right-4 sm:right-6 flex flex-wrap items-center justify-between gap-3 text-white pointer-events-none">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700/70 text-xs font-semibold text-brand-300">
+          <i class="fa-solid fa-layer-group text-brand-400"></i> Modern Vacuum Cleaner Lineup
+        </div>
+        <div class="px-3 py-1.5 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700/70 text-xs font-semibold text-slate-300">
+          1,032+ Models Compared
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ POPULAR BRANDS SECTION ============ -->
+<section id="home-brands-section" class="hidden bg-white border-b border-slate-200 py-6">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider">Popular Vacuum Brands</h2>
+      <a href="/html-sitemap" class="text-xs font-bold text-brand-600 hover:underline">View All Brands &rarr;</a>
+    </div>
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="popular-brands-bar">
+      <!-- Dynamically rendered or pre-baked brand pills -->
+      <a href="/brand/dyson" class="brand-pill px-4 py-2 rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs text-slate-700 transition shrink-0 border border-slate-200">Dyson</a>
+      <a href="/brand/shark" class="brand-pill px-4 py-2 rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs text-slate-700 transition shrink-0 border border-slate-200">Shark</a>
+      <a href="/brand/bissell" class="brand-pill px-4 py-2 rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs text-slate-700 transition shrink-0 border border-slate-200">Bissell</a>
+      <a href="/brand/irobot" class="brand-pill px-4 py-2 rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs text-slate-700 transition shrink-0 border border-slate-200">iRobot Roomba</a>
+      <a href="/brand/roborock" class="brand-pill px-4 py-2 rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs text-slate-700 transition shrink-0 border border-slate-200">Roborock</a>
+      <a href="/brand/miele" class="brand-pill px-4 py-2 rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs text-slate-700 transition shrink-0 border border-slate-200">Miele</a>
+      <a href="/brand/tineco" class="brand-pill px-4 py-2 rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs text-slate-700 transition shrink-0 border border-slate-200">Tineco</a>
+      <a href="/brand/hoover" class="brand-pill px-4 py-2 rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs text-slate-700 transition shrink-0 border border-slate-200">Hoover</a>
+      <a href="/brand/eureka" class="brand-pill px-4 py-2 rounded-xl bg-slate-100 hover:bg-brand-50 hover:text-brand-700 font-bold text-xs text-slate-700 transition shrink-0 border border-slate-200">Eureka</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ POPULAR CATEGORIES & GUIDES SECTION ============ -->
+<section id="home-categories-section" class="hidden bg-slate-100 py-10 border-b border-slate-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    
+    <!-- Popular Categories -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Popular Vacuum Categories</h2>
+          <p class="text-xs text-slate-500">Explore specific designs tailored to your home's layout</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <a href="/category/robot-vacuums" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-md transition text-center group">
+          <div class="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 mx-auto flex items-center justify-center font-bold text-lg mb-2 group-hover:bg-brand-600 group-hover:text-white transition"><i class="fa-solid fa-robot"></i></div>
+          <h3 class="font-bold text-xs text-slate-900 group-hover:text-brand-600">Robot Vacuums</h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">Automated LiDAR</p>
+        </a>
+        <a href="/category/cordless-stick" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-md transition text-center group">
+          <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 mx-auto flex items-center justify-center font-bold text-lg mb-2 group-hover:bg-brand-600 group-hover:text-white transition"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+          <h3 class="font-bold text-xs text-slate-900 group-hover:text-brand-600">Cordless Stick</h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">Lightweight</p>
+        </a>
+        <a href="/category/upright-vacuums" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-md transition text-center group">
+          <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center font-bold text-lg mb-2 group-hover:bg-brand-600 group-hover:text-white transition"><i class="fa-solid fa-plug"></i></div>
+          <h3 class="font-bold text-xs text-slate-900 group-hover:text-brand-600">Upright Vacuums</h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">Deep Carpet</p>
+        </a>
+        <a href="/category/canister-vacuums" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-md transition text-center group">
+          <div class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 mx-auto flex items-center justify-center font-bold text-lg mb-2 group-hover:bg-brand-600 group-hover:text-white transition"><i class="fa-solid fa-box"></i></div>
+          <h3 class="font-bold text-xs text-slate-900 group-hover:text-brand-600">Canister Vacuums</h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">Quiet &amp; Sealed</p>
+        </a>
+        <a href="/category/handheld-vacuums" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-md transition text-center group">
+          <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 mx-auto flex items-center justify-center font-bold text-lg mb-2 group-hover:bg-brand-600 group-hover:text-white transition"><i class="fa-solid fa-hand"></i></div>
+          <h3 class="font-bold text-xs text-slate-900 group-hover:text-brand-600">Handheld</h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">Car &amp; Stairs</p>
+        </a>
+        <a href="/category/wet-dry-vacuums" class="p-4 rounded-xl bg-white border border-slate-200 hover:border-brand-500 hover:shadow-md transition text-center group">
+          <div class="w-10 h-10 rounded-lg bg-cyan-50 text-cyan-600 mx-auto flex items-center justify-center font-bold text-lg mb-2 group-hover:bg-brand-600 group-hover:text-white transition"><i class="fa-solid fa-droplet"></i></div>
+          <h3 class="font-bold text-xs text-slate-900 group-hover:text-brand-600">Wet &amp; Dry</h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">Hardwood Wash</p>
+        </a>
+      </div>
+    </div>
+
+    <!-- Buying Guides Cards -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Expert Buying Guides</h2>
+          <p class="text-xs text-slate-500">Expert recommendations based on real flooring types, stair layouts &amp; budgets (2026 Edition)</p>
+        </div>
+        <a href="/guides" class="text-xs font-bold text-brand-600 hover:underline inline-flex items-center gap-1">
+          View All Guides <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="guides-grid">
+        <a href="/guides/how-to-choose-the-best-vacuum-cleaner-for-stairs-ultimate-guide" class="p-5 rounded-2xl bg-white border border-slate-200 hover:shadow-lg transition flex flex-col justify-between group">
+          <div>
+            <span class="inline-block px-2.5 py-1 rounded-md bg-amber-100 text-amber-800 text-[11px] font-bold mb-2"><i class="fa-solid fa-stairs mr-1"></i> Stairs Care Guide</span>
+            <h3 class="font-bold text-slate-900 text-base group-hover:text-brand-600 transition">How To Choose The Best Vacuum Cleaner For Stairs</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">Weight, pivoting heads, attachments, corded vs cordless analysis for effortless staircase cleaning.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-brand-600">
+            <span>Read Ultimate Guide</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <a href="/guides/best-vacuum-cleaner-cordless-guide-and-reviews" class="p-5 rounded-2xl bg-white border border-slate-200 hover:shadow-lg transition flex flex-col justify-between group">
+          <div>
+            <span class="inline-block px-2.5 py-1 rounded-md bg-blue-100 text-blue-800 text-[11px] font-bold mb-2"><i class="fa-solid fa-battery-three-quarters mr-1"></i> Cordless &amp; Stick</span>
+            <h3 class="font-bold text-slate-900 text-base group-hover:text-brand-600 transition">Best Vacuum Cleaner Cordless &ndash; Guide &amp; Reviews</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">Top 5 cordless vacuums tested for runtime, cyclonic suction, battery replacement, and portability.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-brand-600">
+            <span>Read Cordless Guide</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <a href="/guides/best-vacuum-cleaners-under-100-guide-and-reviews" class="p-5 rounded-2xl bg-white border border-slate-200 hover:shadow-lg transition flex flex-col justify-between group">
+          <div>
+            <span class="inline-block px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-800 text-[11px] font-bold mb-2"><i class="fa-solid fa-tags mr-1"></i> Budget Friendly</span>
+            <h3 class="font-bold text-slate-900 text-base group-hover:text-brand-600 transition">Best Vacuum Cleaners Under $100 &ndash; Ranked</h3>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">Top value upright, canister, and stick vacuums delivering deep suction and durability without exceeding $100.</p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-brand-600">
+            <span>Read Under $100 Guide</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEDICATED BANNER FOR CATEGORY/BRAND PAGES ============ -->
+<div id="dedicated-banner" class="hidden"></div>
+
+<!-- ============ MAIN VACUUM DATABASE FILTER & GRID ============ -->
+<main id="main-content" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="flex flex-col lg:flex-row gap-6">
+
+    <!-- ---------- FILTER SIDEBAR ---------- -->
+    <aside id="filters-panel" class="lg:w-72 shrink-0">
+      <div class="lg:hidden mb-3">
+        <button id="mobile-filters-toggle" class="w-full flex items-center justify-between rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm font-bold text-slate-800 shadow-xs active:bg-slate-50 min-h-[44px] transition">
+          <span class="flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-brand-600"></i>
+            <span>Filters</span>
+            <span id="mobile-filter-count-badge" class="hidden px-2 py-0.5 rounded-full bg-brand-600 text-white text-xs font-bold">0</span>
+          </span>
+          <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200" id="mobile-filters-chevron"></i>
+        </button>
+      </div>
+
+      <div id="filters-body" class="hidden lg:block bg-white rounded-xl border border-slate-200 shadow-sm p-5 space-y-6 lg:sticky lg:top-24">
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-slate-900 text-base"><i class="fa-solid fa-sliders mr-2 text-brand-600"></i>Filters</h2>
+          <button id="reset-filters-btn" class="text-xs font-semibold text-brand-600 hover:text-brand-800 py-1 px-2 rounded hover:bg-brand-50 transition">Reset all</button>
+        </div>
+
+        <!-- Type -->
+        <div class="filter-group">
+          <button class="filter-toggle" data-target="type-options"><span>Vacuum Type</span><i class="fa-solid fa-chevron-up text-xs"></i></button>
+          <div id="type-options" class="mt-3 space-y-1.5 max-h-48 overflow-y-auto pr-1"></div>
+        </div>
+
+        <!-- Brand -->
+        <div class="filter-group border-t border-slate-100 pt-5">
+          <button class="filter-toggle" data-target="brand-options-wrap"><span>Brand</span><i class="fa-solid fa-chevron-up text-xs"></i></button>
+          <div id="brand-options-wrap" class="mt-3">
+            <input id="brand-search-input" type="text" placeholder="Search brand…" class="w-full mb-2 px-3 py-1.5 text-sm rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <div id="brand-options" class="space-y-1.5 max-h-44 overflow-y-auto pr-1"></div>
+          </div>
+        </div>
+
+        <!-- Bagged/Bagless -->
+        <div class="filter-group border-t border-slate-100 pt-5">
+          <button class="filter-toggle" data-target="bag-options"><span>Bag Type</span><i class="fa-solid fa-chevron-up text-xs"></i></button>
+          <div id="bag-options" class="mt-3 space-y-1.5"></div>
+        </div>
+
+        <!-- Corded/Cordless -->
+        <div class="filter-group border-t border-slate-100 pt-5">
+          <button class="filter-toggle" data-target="cord-options"><span>Power Source</span><i class="fa-solid fa-chevron-up text-xs"></i></button>
+          <div id="cord-options" class="mt-3 space-y-1.5"></div>
+        </div>
+
+        <!-- HEPA -->
+        <div class="filter-group border-t border-slate-100 pt-5">
+          <label class="flex items-center gap-2.5 cursor-pointer text-sm text-slate-700">
+            <input id="hepa-checkbox" type="checkbox" class="w-4 h-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+            HEPA filtration only
+          </label>
+        </div>
+
+        <!-- Rating -->
+        <div class="filter-group border-t border-slate-100 pt-5">
+          <button class="filter-toggle" data-target="rating-options"><span>Minimum Rating</span><i class="fa-solid fa-chevron-up text-xs"></i></button>
+          <div id="rating-options" class="mt-3 flex flex-wrap gap-1.5"></div>
+        </div>
+
+        <!-- Mobile Filter Action Buttons (Apply & Reset) -->
+        <div class="lg:hidden pt-4 border-t border-slate-200 flex items-center gap-2.5">
+          <button id="mobile-apply-filters-btn" class="flex-1 py-3 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1.5 min-h-[44px]">
+            <i class="fa-solid fa-check"></i>
+            <span id="mobile-apply-filters-label">Apply &amp; View Results</span>
+          </button>
+          <button id="mobile-reset-filters-btn" class="py-3 px-4 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-50 transition min-h-[44px]">
+            Reset
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ---------- RESULTS ---------- -->
+    <section class="flex-1 min-w-0">
+      <!-- Toolbar -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+        <p id="results-count" class="text-sm font-medium text-slate-600">Loading products…</p>
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+          <div id="active-filter-chips" class="hidden sm:flex flex-wrap gap-1.5"></div>
+          <select id="sort-select" class="w-full sm:w-auto text-sm font-semibold rounded-xl border border-slate-300 py-2.5 pl-3 pr-8 focus:outline-none focus:ring-2 focus:ring-brand-500 bg-white min-h-[42px] cursor-pointer">
+            <option value="relevance">Sort: Relevance</option>
+            <option value="rating-desc">Rating: High to Low</option>
+            <option value="reviews-desc">Most Reviewed</option>
+            <option value="suction-desc">Suction Power: High to Low</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-asc">Name: A to Z</option>
+          </select>
+        </div>
+      </div>
+      <div id="active-filter-chips-mobile" class="flex sm:hidden flex-wrap gap-1.5 mb-4"></div>
+
+      <!-- Grid -->
+      <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" aria-live="polite">
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/cordless-upright-model-levoit-lvac-300-amazons-choice-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0DQKQ3F2C.01._SL500_.jpg" 
+             alt="Cordless Upright Model LEVOIT LVAC-300 (Amazons Choice)" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/cordless-upright-model" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">LEVOIT</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/cordless-upright-model-levoit-lvac-300-amazons-choice-review">LEVOIT LVAC-300 Stick Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-5-cordless-upright-model-levoit-lvac-300-amazons-choice" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/stick" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Stick</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold border border-amber-300 flex items-center gap-1"><i class="fa-brands fa-amazon text-[11px] text-amber-700"></i>Amazon's Choice</span>
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.3</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(52)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">3.6 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">0.75 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/cordless-upright-model-levoit-lvac-300-amazons-choice-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/for-pet-hair-oneisall-lm2-amazons-choice-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0BHYZV3HY.01._SL500_.jpg" 
+             alt="For Pet Hair Oneisall LM2 (Amazons Choice)" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/for-pet-hair" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Oneisall</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/for-pet-hair-oneisall-lm2-amazons-choice-review">Oneisall LM2 Pet Grooming Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-6-for-pet-hair-oneisall-lm2-amazons-choice" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/pet-grooming" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Pet Grooming</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Corded</span>
+            
+            <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold border border-amber-300 flex items-center gap-1"><i class="fa-brands fa-amazon text-[11px] text-amber-700"></i>Amazon's Choice</span>
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.6</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+              <span class="text-slate-400 text-[11px]">(13,033)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">11 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">1.5 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/for-pet-hair-oneisall-lm2-amazons-choice-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/for-carpets-hardwood-floors-dreame-h15-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0F138D56C.01._SL500_.jpg" 
+             alt="For Carpets &amp; Hardwood Floors Dreame H15" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/for-carpets-hardwood-floors" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Dreame</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/for-carpets-hardwood-floors-dreame-h15-review">Dreame H15 Wet Dry Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-7-for-carpets-hardwood-floors-dreame-h15" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/dry-wet" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Dry Wet</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.4</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+              <span class="text-slate-400 text-[11px]">(129)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">22 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">0.8 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/for-carpets-hardwood-floors-dreame-h15-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/robot-vacuum-yeedi-s14-plus-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0DRNYXDDV.01._SL500_.jpg" 
+             alt="Robot Vacuum Yeedi S14 Plus" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/robot-vacuum" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Yeedi</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/robot-vacuum-yeedi-s14-plus-review">Yeedi S14 Plus Robot Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-8-robot-vacuum-yeedi-s14-plus" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/robot" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Robot</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.2</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(3,101)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">18 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">3 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/robot-vacuum-yeedi-s14-plus-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/handheld-car-vacuum-hoto-autocare-amazons-choice-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0F53HMTX5.01._SL500_.jpg" 
+             alt="Handheld Car Vacuum Hoto AutoCare (Amazons Choice)" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/handheld-car-vacuum" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Hoto</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/handheld-car-vacuum-hoto-autocare-amazons-choice-review">Hoto AutoCare Handheld Car Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-9-handheld-car-vacuum-hoto-autocare-amazons-choice" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/handheld" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Handheld</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            
+            <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold border border-amber-300 flex items-center gap-1"><i class="fa-brands fa-amazon text-[11px] text-amber-700"></i>Amazon's Choice</span>
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.2</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(497)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">20 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">0.09 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/handheld-car-vacuum-hoto-autocare-amazons-choice-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/3i-g10-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0F4X5M3JR.01._SL500_.jpg" 
+             alt="3i G10+" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/3i" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">3i</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/3i-g10-review">3i G10+ Robot Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-11-3i-g10" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/robot" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Robot</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">3.8</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(153)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">18 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">1 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/3i-g10-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/airrobo-p30-new-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0DPMN3YPY.01._SL500_.jpg" 
+             alt="Airrobo P30-NEW" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/airrobo" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Airrobo</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/airrobo-p30-new-review">Airrobo P30-NEW Robot Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-13-airrobo-p30-new" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/robot" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Robot</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.6</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+              <span class="text-slate-400 text-[11px]">(43)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">3 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">0.31 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/airrobo-p30-new-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/airrobo-t25-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0DQ7SZRJD.01._SL500_.jpg" 
+             alt="Airrobo T25+" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/airrobo" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Airrobo</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/airrobo-t25-review">Airrobo T25+ Robot Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-14-airrobo-t25" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/robot" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Robot</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.8</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+              <span class="text-slate-400 text-[11px]">(18)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">5.5 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">Standard</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/airrobo-t25-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/airrobo-t20-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0CQCTFVKN.01._SL500_.jpg" 
+             alt="Airrobo T20+" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/airrobo" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Airrobo</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/airrobo-t20-review">Airrobo T20+ Robot Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-15-airrobo-t20" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/robot" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Robot</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.3</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(1,010)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">2.6 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">Standard</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/airrobo-t20-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/aircliff-vc-1201-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0GKN8DNPW.01._SL500_.jpg" 
+             alt="Aircliff VC-1201" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/aircliff" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Aircliff</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/aircliff-vc-1201-review">Aircliff VC-1201 Canister Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-17-aircliff-vc-1201" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/canister" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Canister</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Corded</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.2</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(48)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">17 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">2.5 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/aircliff-vc-1201-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/airthereal-vactide-v2-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0C3LXN76L.01._SL500_.jpg" 
+             alt="AIRTHEREAL VacTide V2" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/airthereal" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">AIRTHEREAL</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/airthereal-vactide-v2-review">AIRTHEREAL VacTide V2 Wet Dry Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-19-airthereal-vactide-v2" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/dry-wet" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Dry Wet</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">3.8</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(104)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">12 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">0.6 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/airthereal-vactide-v2-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/airthereal-m1-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0DHTVT25L.01._SL500_.jpg" 
+             alt="AIRTHEREAL M1" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/airthereal" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">AIRTHEREAL</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/airthereal-m1-review">AIRTHEREAL M1 Mattress Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-20-airthereal-m1" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/mattress" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Mattress</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Corded</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.8</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+              <span class="text-slate-400 text-[11px]">(28)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">14 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">0.25 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/airthereal-m1-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/airthereal-vactide-v1-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0BYSMK6KY.01._SL500_.jpg" 
+             alt="AIRTHEREAL VacTide V1" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/airthereal" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">AIRTHEREAL</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/airthereal-vactide-v1-review">AIRTHEREAL VacTide V1 Wet Dry Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-21-airthereal-vactide-v1" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/dry-wet" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Dry Wet</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">3.8</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(72)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">9 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">0.7 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/airthereal-vactide-v1-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/airzeen-q20-ultra-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0GWCTSB2D.01._SL500_.jpg" 
+             alt="Airzeen Q20 Ultra" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/airzeen" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Airzeen</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/airzeen-q20-ultra-review">Airzeen Q20 Ultra Robot Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-23-airzeen-q20-ultra" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/robot" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Robot</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">5.0</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+              <span class="text-slate-400 text-[11px]">(119)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">6 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">Standard</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/airzeen-q20-ultra-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/airzeen-q10-pro-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0GVSXB1J6.01._SL500_.jpg" 
+             alt="Airzeen Q10 Pro" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/airzeen" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Airzeen</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/airzeen-q10-pro-review">Airzeen Q10 Pro Robot Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-24-airzeen-q10-pro" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/robot" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Robot</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">5.0</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+              <span class="text-slate-400 text-[11px]">(74)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">6 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">Standard</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/airzeen-q10-pro-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/airzeen-j10-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0G32YWF7S.01._SL500_.jpg" 
+             alt="Airzeen J10" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/airzeen" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Airzeen</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/airzeen-j10-review">Airzeen J10 Robot Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-25-airzeen-j10" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/robot" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Robot</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">3.7</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(37)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">4 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">Standard</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/airzeen-j10-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/akitas-c11-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0GMW3QC4N.01._SL500_.jpg" 
+             alt="Akitas C11" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/akitas" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Akitas</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/akitas-c11-review">Akitas C11 Canister Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-27-akitas-c11" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/canister" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Canister</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Corded</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.4</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+              <span class="text-slate-400 text-[11px]">(1,380)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">Standard</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">3.5 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/akitas-c11-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/amazon-basics-pd-knrmy6ayfk-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0BN5F6MJY.01._SL500_.jpg" 
+             alt="Amazon Basics PD-KNRMY6AYFK" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/amazon-basics" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Amazon Basics</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/amazon-basics-pd-knrmy6ayfk-review">Amazon Basics PD-KNRMY6AYFK Upright Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-29-amazon-basics-pd-knrmy6ayfk" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/upright" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Upright</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Corded</span>
+            
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.2</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(1,467)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">12 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">1.7 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/amazon-basics-pd-knrmy6ayfk-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/amazon-basics-vsc02a861na-amazon-s-choice-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0D6QS74FM.01._SL500_.jpg" 
+             alt="Amazon Basics VSC02A861NA (Amazon&#039;s Choice)" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/amazon-basics" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Amazon Basics</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/amazon-basics-vsc02a861na-amazon-s-choice-review">Amazon Basics VSC02A861NA Stick Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-30-amazon-basics-vsc02a861na-amazon-s-choice" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/stick" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Stick</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Corded</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold border border-amber-300 flex items-center gap-1"><i class="fa-brands fa-amazon text-[11px] text-amber-700"></i>Amazon's Choice</span>
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.2</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(14)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">10 kPa</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">0.5 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/amazon-basics-vsc02a861na-amazon-s-choice-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/amazon-basics-v21q01q32226-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0C2YNLL16.01._SL500_.jpg" 
+             alt="Amazon Basics V21Q01Q32226" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/amazon-basics" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Amazon Basics</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/amazon-basics-v21q01q32226-review">Amazon Basics V21Q01Q32226 Stick Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-31-amazon-basics-v21q01q32226" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/stick" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Stick</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Cordless</span>
+            
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">3.2</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star text-slate-200"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(268)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">Standard</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">0.4 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/amazon-basics-v21q01q32226-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/amazon-basics-vo407s-amazon-s-choice-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B09T3W8VSY.01._SL500_.jpg" 
+             alt="Amazon Basics ‎VO407S (Amazon&#039;s Choice)" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/amazon-basics" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Amazon Basics</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/amazon-basics-vo407s-amazon-s-choice-review">Amazon Basics ‎VO407S Wet Dry Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-32-amazon-basics-vo407s-amazon-s-choice" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/dry-wet" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Dry Wet</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Corded</span>
+            
+            <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold border border-amber-300 flex items-center gap-1"><i class="fa-brands fa-amazon text-[11px] text-amber-700"></i>Amazon's Choice</span>
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.4</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+              <span class="text-slate-400 text-[11px]">(1,428)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">Standard</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">Standard</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/amazon-basics-vo407s-amazon-s-choice-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/amazon-basics-vq607sfd-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B09T3XGCCF.01._SL500_.jpg" 
+             alt="Amazon Basics VQ607SFD" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/amazon-basics" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Amazon Basics</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/amazon-basics-vq607sfd-review">Amazon Basics VQ607SFD Wet Dry Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-33-amazon-basics-vq607sfd" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/dry-wet" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Dry Wet</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Corded</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold border border-emerald-200"><i class="fa-solid fa-shield-halved text-[10px] mr-1"></i>HEPA</span>
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.4</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+              <span class="text-slate-400 text-[11px]">(2,961)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">Standard</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">22.7 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/amazon-basics-vq607sfd-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/armor-all-vo408s-0901-amazon-s-choice-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0BR3P12V1.01._SL500_.jpg" 
+             alt="Armor All VO408S 0901 (Amazon&#039;s Choice)" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/armor-all" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Armor All</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/armor-all-vo408s-0901-amazon-s-choice-review">Armor All VO408S 0901 Canister Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-35-armor-all-vo408s-0901-amazon-s-choice" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/canister" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Canister</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Corded</span>
+            
+            <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-900 font-bold border border-amber-300 flex items-center gap-1"><i class="fa-brands fa-amazon text-[11px] text-amber-700"></i>Amazon's Choice</span>
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">1.2</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-regular fa-star text-slate-200"></i><i class="fa-regular fa-star text-slate-200"></i><i class="fa-regular fa-star text-slate-200"></i><i class="fa-regular fa-star text-slate-200"></i></div>
+              <span class="text-slate-400 text-[11px]">(1,052)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">Standard</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">15.14 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/armor-all-vo408s-0901-amazon-s-choice-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  
+    <article class="bg-white rounded-2xl border border-slate-200 hover:border-brand-500 hover:shadow-lg transition flex flex-col justify-between overflow-hidden group">
+      
+      <!-- Product Image Thumbnail -->
+      <a href="/vacuum/armor-all-vo405p-0901-review" class="w-full h-44 bg-slate-50 border-b border-slate-100 flex items-center justify-center p-3 relative overflow-hidden group-hover:bg-slate-100/50 transition">
+        <img src="https://m.media-amazon.com/images/P/B0C2HC713Z.01._SL500_.jpg" 
+             alt="Armor All VO405P 0901" 
+             loading="lazy" 
+             class="max-h-36 max-w-full object-contain group-hover:scale-105 transition-transform duration-300" 
+             onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" 
+             onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+      </a>
+
+      <div class="p-5 space-y-3 flex-1 flex flex-col justify-between">
+        
+        <div class="space-y-3">
+          <!-- Header / Badges -->
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <a href="/brand/armor-all" class="text-[11px] font-extrabold uppercase tracking-wider text-brand-600 block mb-0.5 hover:underline">Armor All</a>
+              <h3 class="font-extrabold text-slate-900 text-base leading-tight group-hover:text-brand-600 transition">
+                <a href="/vacuum/armor-all-vo405p-0901-review">Armor All VO405P 0901 Canister Vacuum</a>
+              </h3>
+            </div>
+            <button data-id="p-36-armor-all-vo405p-0901" class="add-compare-btn shrink-0 w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-brand-600 hover:bg-brand-50 transition" title="Compare this vacuum">
+              <i class="fa-solid fa-plus text-xs"></i>
+            </button>
+          </div>
+
+          <!-- Spec Badges -->
+          <div class="flex flex-wrap gap-1.5 text-[11px] font-medium text-slate-600">
+            <a href="/category/canister" class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 hover:bg-slate-200">Canister</a>
+            <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700">Corded</span>
+            
+            
+          </div>
+        </div>
+
+        <!-- Rating & Specs -->
+        <div class="pt-2 border-t border-slate-100 space-y-2">
+          
+            <div class="flex items-center gap-1.5 text-xs">
+              <span class="font-extrabold text-slate-900">4.5</span>
+              <div class="flex text-amber-400 text-[11px]"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i></div>
+              <span class="text-slate-400 text-[11px]">(1,078)</span>
+            </div>
+          
+
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600 pt-1">
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Suction</span>
+              <span class="font-bold text-slate-800">Standard</span>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-400 block uppercase">Dust Capacity</span>
+              <span class="font-bold text-slate-800">15 L</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+        <a href="/vacuum/armor-all-vo405p-0901-review" class="w-full py-2.5 px-4 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-extrabold text-xs transition shadow-sm flex items-center justify-center gap-2">
+          <span>View Specs & Review</span>
+          <i class="fa-solid fa-arrow-right text-[11px]"></i>
+        </a>
+      </div>
+    </article>
+  </div>
+
+      <!-- Empty state -->
+      <div id="empty-state" class="hidden text-center py-20 bg-white rounded-2xl border border-slate-200">
+        <i class="fa-solid fa-magnifying-glass-minus text-4xl text-slate-300"></i>
+        <p class="mt-4 text-slate-600 font-bold text-base">No vacuums match your filters.</p>
+        <p class="text-xs text-slate-400 mt-1">Try resetting selected filters or adjusting search keywords.</p>
+        <button id="empty-reset-btn" class="mt-4 px-4 py-2 bg-brand-600 text-white rounded-xl font-bold text-xs hover:bg-brand-700 transition">Clear All Filters</button>
+      </div>
+
+      <!-- Pagination -->
+      <div id="pagination" class="mt-8 flex items-center justify-center gap-1.5 flex-wrap"></div>
+    </section>
+  </div>
+</main>
+
+<!-- ============ DEDICATED ARTICLE / PRODUCT / PAGE CONTAINER ============ -->
+<div id="dedicated-article-view" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <article class="space-y-8 text-slate-800">
+      
+      <!-- Top Action -->
+      <a href="/" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition">
+        <i class="fa-solid fa-arrow-left"></i> All Vacuum Cleaners Directory
+      </a>
+
+      <!-- Guide Banner -->
+      <header class="relative overflow-hidden bg-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl space-y-4">
+        <div class="absolute inset-0 z-0 flex justify-end pointer-events-none">
+          <div class="relative w-full md:w-3/4 lg:w-2/3 h-full">
+            <img src="/assets/vacuum_hero_banner.jpg" alt="Vacuum Banner Background" class="w-full h-full object-cover object-right opacity-60 brightness-110" />
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/70 to-transparent"></div>
+          </div>
+          <div class="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900 via-35% to-transparent"></div>
+        </div>
+        <div class="relative z-10 space-y-4">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-bold">
+            <i class="fa-solid fa-book-open text-brand-400"></i> Robot Comparison
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+            Top 8 Best Robot Vacuums: Hands-On Reviews
+          </h1>
+          <p class="text-slate-300 text-sm leading-relaxed max-w-3xl">
+            Robot vacuums feature self-emptying dustbins, 360 LiDAR navigation, AI obstacle avoidance, and auto-washing mop pads. Here are the top recommended models.
+          </p>
+          <div class="pt-4 border-t border-slate-800 flex items-center gap-4 text-xs text-slate-400 font-medium">
+            <span><i class="fa-solid fa-calendar mr-1"></i> Updated July 2026</span>
+            <span><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Verified by VacCompare Research</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Key Criteria Box -->
+      <section class="bg-amber-50 border border-amber-200 rounded-2xl p-6 space-y-3">
+        <h2 class="text-sm font-extrabold text-amber-900 uppercase tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-list-check"></i> Key Specification Benchmarks
+        </h2>
+        
+      <ul class="list-disc list-inside space-y-1.5 text-xs text-slate-700">
+        <li><strong>LiDAR & 3D Obstacle Avoidance:</strong> Navigates around shoes, pet toys, and cables.</li>
+        <li><strong>Self-Emptying Station:</strong> Holds up to 60 days of dust without manual maintenance.</li>
+        <li><strong>Sonic Mopping:</strong> Scrubs dried floor stains while vacuuming fine dust.</li>
+      </ul>
+    
+      </section>
+
+      <!-- Top Recommended Products -->
+      <section class="space-y-6">
+        <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">
+          Top Recommended Models (6)
+        </h2>
+
+        <div class="space-y-4">
+          
+              <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs hover:border-brand-500 transition flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="flex items-center gap-4 flex-1">
+                  <a href="/vacuum/robot-vacuum-yeedi-s14-plus-review" class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-xl p-2 shrink-0 flex items-center justify-center overflow-hidden">
+                    <img src="https://m.media-amazon.com/images/P/B0DRNYXDDV.01._SL500_.jpg" alt="Robot Vacuum Yeedi S14 Plus" class="max-h-full max-w-full object-contain" onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+                  </a>
+                  <div class="space-y-1.5 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-md bg-brand-600 text-white font-extrabold text-xs flex items-center justify-center">#1</span>
+                      <a href="/brand/robot-vacuum" class="text-xs font-extrabold uppercase text-brand-600 tracking-wider hover:underline">Robot Vacuum Vacuum Cleaners</a>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 leading-snug">
+                      <a href="/vacuum/robot-vacuum-yeedi-s14-plus-review" class="hover:text-brand-600 transition">Robot Vacuum Yeedi S14 Plus Review</a>
+                    </h3>
+                    <div class="flex flex-wrap gap-2 text-xs font-medium text-slate-600">
+                      <a href="/category/robot-vacuums" class="bg-slate-100 px-2.5 py-0.5 rounded hover:bg-slate-200 text-slate-800 font-semibold">Robot Vacuums</a>
+                      <span class="bg-slate-100 px-2.5 py-0.5 rounded">Suction: 18 kPa</span>
+                      <span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded font-bold">HEPA Sealed</span>
+                      <span class="text-amber-500 font-bold"><i class="fa-solid fa-star"></i> 4.2 (3,101)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto shrink-0">
+                  <a href="/vacuum/robot-vacuum-yeedi-s14-plus-review" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                    Read Review &rarr;
+                  </a>
+                  
+                    <a href="https://www.amazon.com/dp/B0DRNYXDDV?tag=wat344r5-20" target="_blank" rel="nofollow sponsored" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                      <i class="fa-brands fa-amazon"></i> Check Amazon Price
+                    </a>
+                  
+                </div>
+              </div>
+            
+              <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs hover:border-brand-500 transition flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="flex items-center gap-4 flex-1">
+                  <a href="/vacuum/3i-g10-review" class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-xl p-2 shrink-0 flex items-center justify-center overflow-hidden">
+                    <img src="https://m.media-amazon.com/images/P/B0F4X5M3JR.01._SL500_.jpg" alt="3i G10+" class="max-h-full max-w-full object-contain" onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+                  </a>
+                  <div class="space-y-1.5 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-md bg-brand-600 text-white font-extrabold text-xs flex items-center justify-center">#2</span>
+                      <a href="/brand/3i" class="text-xs font-extrabold uppercase text-brand-600 tracking-wider hover:underline">3i Vacuum Cleaners</a>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 leading-snug">
+                      <a href="/vacuum/3i-g10-review" class="hover:text-brand-600 transition">3i G10+ Review</a>
+                    </h3>
+                    <div class="flex flex-wrap gap-2 text-xs font-medium text-slate-600">
+                      <a href="/category/robot-vacuums" class="bg-slate-100 px-2.5 py-0.5 rounded hover:bg-slate-200 text-slate-800 font-semibold">Robot Vacuums</a>
+                      <span class="bg-slate-100 px-2.5 py-0.5 rounded">Suction: 18 kPa</span>
+                      <span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded font-bold">HEPA Sealed</span>
+                      <span class="text-amber-500 font-bold"><i class="fa-solid fa-star"></i> 3.8 (153)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto shrink-0">
+                  <a href="/vacuum/3i-g10-review" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                    Read Review &rarr;
+                  </a>
+                  
+                    <a href="https://www.amazon.com/dp/B0F4X5M3JR?tag=wat344r5-20" target="_blank" rel="nofollow sponsored" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                      <i class="fa-brands fa-amazon"></i> Check Amazon Price
+                    </a>
+                  
+                </div>
+              </div>
+            
+              <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs hover:border-brand-500 transition flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="flex items-center gap-4 flex-1">
+                  <a href="/vacuum/airrobo-p30-new-review" class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-xl p-2 shrink-0 flex items-center justify-center overflow-hidden">
+                    <img src="https://m.media-amazon.com/images/P/B0DPMN3YPY.01._SL500_.jpg" alt="Airrobo P30-NEW" class="max-h-full max-w-full object-contain" onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+                  </a>
+                  <div class="space-y-1.5 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-md bg-brand-600 text-white font-extrabold text-xs flex items-center justify-center">#3</span>
+                      <a href="/brand/airrobo" class="text-xs font-extrabold uppercase text-brand-600 tracking-wider hover:underline">Airrobo Vacuum Cleaners</a>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 leading-snug">
+                      <a href="/vacuum/airrobo-p30-new-review" class="hover:text-brand-600 transition">Airrobo P30-NEW Review</a>
+                    </h3>
+                    <div class="flex flex-wrap gap-2 text-xs font-medium text-slate-600">
+                      <a href="/category/robot-vacuums" class="bg-slate-100 px-2.5 py-0.5 rounded hover:bg-slate-200 text-slate-800 font-semibold">Robot Vacuums</a>
+                      <span class="bg-slate-100 px-2.5 py-0.5 rounded">Suction: 3 kPa</span>
+                      <span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded font-bold">HEPA Sealed</span>
+                      <span class="text-amber-500 font-bold"><i class="fa-solid fa-star"></i> 4.6 (43)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto shrink-0">
+                  <a href="/vacuum/airrobo-p30-new-review" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                    Read Review &rarr;
+                  </a>
+                  
+                    <a href="https://www.amazon.com/dp/B0DPMN3YPY?tag=wat344r5-20" target="_blank" rel="nofollow sponsored" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                      <i class="fa-brands fa-amazon"></i> Check Amazon Price
+                    </a>
+                  
+                </div>
+              </div>
+            
+              <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs hover:border-brand-500 transition flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="flex items-center gap-4 flex-1">
+                  <a href="/vacuum/airrobo-t25-review" class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-xl p-2 shrink-0 flex items-center justify-center overflow-hidden">
+                    <img src="https://m.media-amazon.com/images/P/B0DQ7SZRJD.01._SL500_.jpg" alt="Airrobo T25+" class="max-h-full max-w-full object-contain" onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+                  </a>
+                  <div class="space-y-1.5 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-md bg-brand-600 text-white font-extrabold text-xs flex items-center justify-center">#4</span>
+                      <a href="/brand/airrobo" class="text-xs font-extrabold uppercase text-brand-600 tracking-wider hover:underline">Airrobo Vacuum Cleaners</a>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 leading-snug">
+                      <a href="/vacuum/airrobo-t25-review" class="hover:text-brand-600 transition">Airrobo T25+ Review</a>
+                    </h3>
+                    <div class="flex flex-wrap gap-2 text-xs font-medium text-slate-600">
+                      <a href="/category/robot-vacuums" class="bg-slate-100 px-2.5 py-0.5 rounded hover:bg-slate-200 text-slate-800 font-semibold">Robot Vacuums</a>
+                      <span class="bg-slate-100 px-2.5 py-0.5 rounded">Suction: 5.5 kPa</span>
+                      <span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded font-bold">HEPA Sealed</span>
+                      <span class="text-amber-500 font-bold"><i class="fa-solid fa-star"></i> 4.8 (18)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto shrink-0">
+                  <a href="/vacuum/airrobo-t25-review" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                    Read Review &rarr;
+                  </a>
+                  
+                    <a href="https://www.amazon.com/dp/B0DQ7SZRJD?tag=wat344r5-20" target="_blank" rel="nofollow sponsored" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                      <i class="fa-brands fa-amazon"></i> Check Amazon Price
+                    </a>
+                  
+                </div>
+              </div>
+            
+              <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs hover:border-brand-500 transition flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="flex items-center gap-4 flex-1">
+                  <a href="/vacuum/airrobo-t20-review" class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-xl p-2 shrink-0 flex items-center justify-center overflow-hidden">
+                    <img src="https://m.media-amazon.com/images/P/B0CQCTFVKN.01._SL500_.jpg" alt="Airrobo T20+" class="max-h-full max-w-full object-contain" onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+                  </a>
+                  <div class="space-y-1.5 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-md bg-brand-600 text-white font-extrabold text-xs flex items-center justify-center">#5</span>
+                      <a href="/brand/airrobo" class="text-xs font-extrabold uppercase text-brand-600 tracking-wider hover:underline">Airrobo Vacuum Cleaners</a>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 leading-snug">
+                      <a href="/vacuum/airrobo-t20-review" class="hover:text-brand-600 transition">Airrobo T20+ Review</a>
+                    </h3>
+                    <div class="flex flex-wrap gap-2 text-xs font-medium text-slate-600">
+                      <a href="/category/robot-vacuums" class="bg-slate-100 px-2.5 py-0.5 rounded hover:bg-slate-200 text-slate-800 font-semibold">Robot Vacuums</a>
+                      <span class="bg-slate-100 px-2.5 py-0.5 rounded">Suction: 2.6 kPa</span>
+                      <span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded font-bold">HEPA Sealed</span>
+                      <span class="text-amber-500 font-bold"><i class="fa-solid fa-star"></i> 4.3 (1,010)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto shrink-0">
+                  <a href="/vacuum/airrobo-t20-review" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                    Read Review &rarr;
+                  </a>
+                  
+                    <a href="https://www.amazon.com/dp/B0CQCTFVKN?tag=wat344r5-20" target="_blank" rel="nofollow sponsored" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                      <i class="fa-brands fa-amazon"></i> Check Amazon Price
+                    </a>
+                  
+                </div>
+              </div>
+            
+              <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs hover:border-brand-500 transition flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                <div class="flex items-center gap-4 flex-1">
+                  <a href="/vacuum/airzeen-q20-ultra-review" class="w-20 h-20 bg-slate-50 border border-slate-100 rounded-xl p-2 shrink-0 flex items-center justify-center overflow-hidden">
+                    <img src="https://m.media-amazon.com/images/P/B0GWCTSB2D.01._SL500_.jpg" alt="Airzeen Q20 Ultra" class="max-h-full max-w-full object-contain" onload="if(this.naturalWidth<=1){this.onerror=null;this.src='/assets/vacuum_placeholder.svg';}" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+                  </a>
+                  <div class="space-y-1.5 flex-1">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-md bg-brand-600 text-white font-extrabold text-xs flex items-center justify-center">#6</span>
+                      <a href="/brand/airzeen" class="text-xs font-extrabold uppercase text-brand-600 tracking-wider hover:underline">Airzeen Vacuum Cleaners</a>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900 leading-snug">
+                      <a href="/vacuum/airzeen-q20-ultra-review" class="hover:text-brand-600 transition">Airzeen Q20 Ultra Review</a>
+                    </h3>
+                    <div class="flex flex-wrap gap-2 text-xs font-medium text-slate-600">
+                      <a href="/category/robot-vacuums" class="bg-slate-100 px-2.5 py-0.5 rounded hover:bg-slate-200 text-slate-800 font-semibold">Robot Vacuums</a>
+                      <span class="bg-slate-100 px-2.5 py-0.5 rounded">Suction: 6 kPa</span>
+                      <span class="bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded font-bold">HEPA Sealed</span>
+                      <span class="text-amber-500 font-bold"><i class="fa-solid fa-star"></i> 5.0 (119)</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center gap-2.5 w-full md:w-auto shrink-0">
+                  <a href="/vacuum/airzeen-q20-ultra-review" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                    Read Review &rarr;
+                  </a>
+                  
+                    <a href="https://www.amazon.com/dp/B0GWCTSB2D?tag=wat344r5-20" target="_blank" rel="nofollow sponsored" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold text-xs transition text-center flex items-center justify-center gap-1.5">
+                      <i class="fa-brands fa-amazon"></i> Check Amazon Price
+                    </a>
+                  
+                </div>
+              </div>
+            
+        </div>
+      </section>
+
+      <!-- Head-to-Head Comparisons -->
+      
+        <section class="space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+              <i class="fa-solid fa-scale-balanced text-brand-600"></i> Side-by-Side Model Comparisons
+            </h2>
+            <a href="/compare/" class="text-xs font-bold text-brand-600 hover:underline flex items-center gap-1">
+              Compare Tool <i class="fa-solid fa-arrow-right text-[10px]"></i>
+            </a>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+                <a href="/compare/robot-vacuum-yeedi-s14-plus-vs-3i-g10" class="p-5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-brand-500 hover:shadow-md transition space-y-2 group block">
+                  <div class="text-[10px] font-extrabold text-brand-600 uppercase">Head-to-Head Comparison</div>
+                  <h3 class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">Yeedi S14 Plus vs G10+ Comparison</h3>
+                  <p class="text-xs text-slate-500">18 kPa vs 18 kPa suction</p>
+                  <div class="text-xs font-bold text-brand-600 pt-1 flex items-center gap-1">Yeedi S14 Plus vs G10+ Comparison &rarr;</div>
+                </a>
+              
+                <a href="/compare/airrobo-p30-new-vs-airrobo-t25" class="p-5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-brand-500 hover:shadow-md transition space-y-2 group block">
+                  <div class="text-[10px] font-extrabold text-brand-600 uppercase">Head-to-Head Comparison</div>
+                  <h3 class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">P30-NEW vs T25+ Comparison</h3>
+                  <p class="text-xs text-slate-500">3 kPa vs 5.5 kPa suction</p>
+                  <div class="text-xs font-bold text-brand-600 pt-1 flex items-center gap-1">P30-NEW vs T25+ Comparison &rarr;</div>
+                </a>
+              
+                <a href="/compare/airrobo-t20-vs-airzeen-q20-ultra" class="p-5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-brand-500 hover:shadow-md transition space-y-2 group block">
+                  <div class="text-[10px] font-extrabold text-brand-600 uppercase">Head-to-Head Comparison</div>
+                  <h3 class="font-bold text-sm text-slate-900 group-hover:text-brand-600 transition">T20+ vs Q20 Ultra Comparison</h3>
+                  <p class="text-xs text-slate-500">2.6 kPa vs 6 kPa suction</p>
+                  <div class="text-xs font-bold text-brand-600 pt-1 flex items-center gap-1">T20+ vs Q20 Ultra Comparison &rarr;</div>
+                </a>
+              
+          </div>
+        </section>
+      
+
+      <!-- Explore Other Guides -->
+      <section class="bg-slate-100 rounded-2xl p-6 border border-slate-200 space-y-3">
+        <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+          <i class="fa-solid fa-book-open text-brand-600"></i> Explore Other Expert Vacuum Guides
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-bold text-brand-600">
+          
+            <a href="/guides/best-vacuum-for-pet-hair" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group">
+              <span class="text-slate-900 group-hover:text-brand-600 transition">10 Best Vacuum Cleaners for Pet Hair (Guide &amp; Ranked)</span>
+              <i class="fa-solid fa-arrow-right text-brand-600"></i>
+            </a>
+          
+            <a href="/guides/best-hardwood-floor-vacuums" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group">
+              <span class="text-slate-900 group-hover:text-brand-600 transition">Best Vacuums for Hardwood Floors: Anti-Scratch Guide</span>
+              <i class="fa-solid fa-arrow-right text-brand-600"></i>
+            </a>
+          
+            <a href="/guides/best-budget-cordless-vacuums" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group">
+              <span class="text-slate-900 group-hover:text-brand-600 transition">Best Budget Cordless Vacuums Under $300 (Ranked &amp; Reviewed)</span>
+              <i class="fa-solid fa-arrow-right text-brand-600"></i>
+            </a>
+          
+            <a href="/guides/bagged-vs-bagless-vacuums-guide" class="p-3 bg-white rounded-xl border border-slate-200 hover:border-brand-500 flex items-center justify-between group">
+              <span class="text-slate-900 group-hover:text-brand-600 transition">Bagged vs. Bagless Vacuums: Complete Buying &amp; Hygiene Guide</span>
+              <i class="fa-solid fa-arrow-right text-brand-600"></i>
+            </a>
+          
+        </div>
+      </section>
+
+      <!-- Category & Tool Directories Footer Links -->
+      <section class="p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-slate-900 text-sm flex items-center gap-2">
+            <i class="fa-solid fa-folder-tree text-brand-600"></i> Related Categories &amp; Comparison Tools
+          </h3>
+          <a href="/compare/" class="text-xs font-bold text-brand-600 hover:underline">
+            Side-by-Side Comparison Tool &rarr;
+          </a>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs font-bold">
+          <a href="/category/cordless-stick" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Cordless Stick Vacuums
+          </a>
+          <a href="/category/robot-vacuums" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Robot Vacuums
+          </a>
+          <a href="/category/upright-vacuums" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Upright Vacuums
+          </a>
+          <a href="/category/canister-vacuums" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Canister Vacuums
+          </a>
+          <a href="/category/wet-dry-vacuums" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-brand-600 hover:bg-brand-50 transition">
+            Wet &amp; Dry Vacuums
+          </a>
+          <a href="/categories" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
+            All Vacuum Categories &rarr;
+          </a>
+          <a href="/brands" class="px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition">
+            All Vacuum Brands &rarr;
+          </a>
+        </div>
+      </section>
+
+    </article>
+  </div>
+<script>
+  (function() {
+    try {
+      var p = window.location.pathname || '';
+      if (p.startsWith('/vacuum/') || p.startsWith('/product/') || p.startsWith('/compare') || p.startsWith('/reviews')) {
+        var el = document.getElementById('dedicated-article-view');
+        if (el && !el.children.length) {
+          var slug = p.replace(/^\/(vacuum|product|compare)\//, '').replace(/\/$/, '');
+          var cleanName = slug ? slug.replace(/-review$/, '').replace(/[-_]+/g, ' ') : 'Product Review';
+          var title = cleanName.split(' ').map(function(w) {
+            if (/^[0-9]+[a-z]*$/i.test(w) || w.length <= 3) return w.toUpperCase();
+            return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase();
+          }).join(' ');
+          var headingText = p.startsWith('/compare') ? title + ' Comparison' : title + ' Review &amp; Specs';
+          el.innerHTML = '<article class="space-y-8 text-slate-800 animate-pulse" data-skeleton="true">' +
+            '<div class="flex items-center justify-between gap-4"><div class="h-9 w-36 bg-slate-200 rounded-xl"></div><div class="h-8 w-28 bg-slate-200 rounded-lg"></div></div>' +
+            '<header class="relative overflow-hidden bg-slate-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl">' +
+              '<div class="relative z-10 flex flex-col lg:flex-row items-center lg:items-start justify-between gap-8">' +
+                '<div class="flex-1 space-y-4 w-full">' +
+                  '<div class="flex items-center gap-3"><div class="h-6 w-36 bg-slate-700 rounded-full"></div><div class="h-6 w-24 bg-slate-700 rounded-full"></div></div>' +
+                  '<h1 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">' + headingText + '</h1>' +
+                  '<div class="space-y-2 max-w-2xl pt-2"><div class="h-4 bg-slate-700 rounded w-full"></div><div class="h-4 bg-slate-700 rounded w-5/6"></div></div>' +
+                  '<div class="pt-4 flex items-center gap-4"><div class="h-12 w-48 bg-slate-700 rounded-xl"></div></div>' +
+                '</div>' +
+                '<div class="w-full sm:w-72 lg:w-80 shrink-0 bg-white/10 rounded-2xl p-5 h-64 flex items-center justify-center">' +
+                  '<div class="w-32 h-32 bg-white/20 rounded-xl flex items-center justify-center text-white/40"><i class="fa-solid fa-spinner fa-spin text-3xl"></i></div>' +
+                '</div>' +
+              '</div>' +
+            '</header>' +
+            '<section class="space-y-4">' +
+              '<div class="h-6 w-64 bg-slate-200 rounded"></div>' +
+              '<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">' +
+                '<div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div><div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div>' +
+                '<div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div><div class="p-4 rounded-xl bg-slate-100 border border-slate-200 h-20"></div>' +
+              '</div>' +
+            '</section>' +
+          '</article>';
+        }
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<!-- ============ TOP COMPARISONS & GUIDES SECTION ============ -->
+<section id="home-featured-section" class="hidden bg-white py-12 border-t border-slate-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+    
+    <!-- Popular Comparisons -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Popular Side-by-Side Comparisons</h2>
+          <p class="text-xs text-slate-500">Head-to-head technical comparisons between market leaders</p>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        
+        <a href="/compare/dyson-v15-vs-shark-stratos" class="p-5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-brand-500 hover:shadow-lg transition space-y-3 group">
+          <div class="flex items-center justify-between text-xs font-extrabold text-brand-600">
+            <span>Cordless Stick Faceoff</span>
+            <i class="fa-solid fa-scale-balanced text-slate-400 group-hover:text-brand-600"></i>
+          </div>
+          <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-brand-600 transition">Dyson V15 Detect vs. Shark Stratos Cordless</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">230 AW laser illumination vs Clean Sense IQ auto-suction technology.</p>
+          <div class="text-[11px] font-bold text-brand-700 flex items-center gap-1">Compare Specs &rarr;</div>
+        </a>
+
+        <a href="/compare/irobot-roomba-j7-vs-roborock-s8" class="p-5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-brand-500 hover:shadow-lg transition space-y-3 group">
+          <div class="flex items-center justify-between text-xs font-extrabold text-indigo-600">
+            <span>Robot Vacuum Showdown</span>
+            <i class="fa-solid fa-scale-balanced text-slate-400 group-hover:text-indigo-600"></i>
+          </div>
+          <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-indigo-600 transition">iRobot Roomba j7+ vs. Roborock S8 Pro Ultra</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">PrecisionVision AI pet waste avoidance vs DuoRoller sonic mopping dock.</p>
+          <div class="text-[11px] font-bold text-indigo-700 flex items-center gap-1">Compare Specs &rarr;</div>
+        </a>
+
+        <a href="/compare/miele-complete-c3-vs-dyson-ball-animal-3" class="p-5 rounded-2xl border border-slate-200 bg-slate-50 hover:bg-white hover:border-brand-500 hover:shadow-lg transition space-y-3 group">
+          <div class="flex items-center justify-between text-xs font-extrabold text-emerald-600">
+            <span>Canister vs Upright</span>
+            <i class="fa-solid fa-scale-balanced text-slate-400 group-hover:text-emerald-600"></i>
+          </div>
+          <h3 class="font-extrabold text-slate-900 text-sm group-hover:text-emerald-600 transition">Miele Complete C3 vs. Dyson Ball Animal 3</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">Sealed AirClean HEPA filtration vs deep carpet agitator bar power.</p>
+          <div class="text-[11px] font-bold text-emerald-700 flex items-center gap-1">Compare Specs &rarr;</div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- FAQ Accordion Section -->
+    <div class="bg-slate-50 rounded-2xl p-6 sm:p-8 border border-slate-200">
+      <h2 class="text-xl font-extrabold text-slate-900 tracking-tight mb-2">Frequently Asked Questions</h2>
+      <p class="text-xs text-slate-500 mb-6">Expert guidance for selecting the perfect vacuum cleaner</p>
+
+      <div class="space-y-4 text-xs sm:text-sm">
+        <details class="bg-white rounded-xl border border-slate-200 p-4 group">
+          <summary class="font-bold text-slate-900 cursor-pointer flex items-center justify-between">
+            <span>How does VacCompare evaluate vacuum cleaners?</span>
+            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition"></i>
+          </summary>
+          <p class="mt-3 text-slate-600 leading-relaxed">VacCompare analyzes manufacturer benchmarks and verified specifications including suction pressure (kPa), motor airflow wattage, acoustic noise emissions (dB), dust container capacity, sealed HEPA filtration percentage, and battery runtime.</p>
+        </details>
+
+        <details class="bg-white rounded-xl border border-slate-200 p-4 group">
+          <summary class="font-bold text-slate-900 cursor-pointer flex items-center justify-between">
+            <span>What suction pressure (kPa) is needed for deep carpets?</span>
+            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition"></i>
+          </summary>
+          <p class="mt-3 text-slate-600 leading-relaxed">For high-pile carpets and heavy pet hair, we recommend a vacuum cleaner with at least 18-22 kPa of suction power paired with a motorized brush roller.</p>
+        </details>
+
+        <details class="bg-white rounded-xl border border-slate-200 p-4 group">
+          <summary class="font-bold text-slate-900 cursor-pointer flex items-center justify-between">
+            <span>Why is sealed HEPA filtration important for allergies?</span>
+            <i class="fa-solid fa-chevron-down text-slate-400 group-open:rotate-180 transition"></i>
+          </summary>
+          <p class="mt-3 text-slate-600 leading-relaxed">True HEPA filtration traps 99.97% of fine particles down to 0.3 microns, including dust mites, pollen, dander, and mold spores. A fully sealed system ensures air does not escape around the filter.</p>
+        </details>
+      </div>
+    </div>
+
+    <!-- Newsletter Section -->
+    <div class="bg-brand-900 text-white rounded-2xl p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+      <div class="space-y-2 text-center md:text-left">
+        <h2 class="text-xl font-extrabold text-white">Get Latest Vacuum Deals &amp; Price Alerts</h2>
+        <p class="text-xs text-brand-200 max-w-md">Join over 15,000 subscribers getting monthly price drops, newly added vacuum specs, and exclusive buying advice.</p>
+      </div>
+      <form id="newsletter-form" class="w-full md:w-auto flex flex-col sm:flex-row gap-2">
+        <input type="email" required placeholder="Enter your email address..." class="px-4 py-2.5 rounded-xl bg-white text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-brand-400 w-full sm:w-72" aria-label="Email Address">
+        <button type="submit" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-400 text-white font-bold text-xs transition shrink-0 shadow-md">
+          Subscribe Free
+        </button>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ COMPARE TRAY ============ -->
+<div id="compare-tray" class="fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-slate-200 shadow-[0_-4px_16px_rgba(0,0,0,0.12)] translate-y-full transition-transform duration-300 safe-bottom">
+  <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 space-y-2 sm:space-y-0">
+    
+    <!-- Mobile Tray Header -->
+    <div class="flex sm:hidden items-center justify-between gap-2 pb-1.5 border-b border-slate-100">
+      <span class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+        <i class="fa-solid fa-scale-balanced text-brand-600"></i>
+        <span>Comparing (<strong id="compare-tray-count" class="text-brand-600">0</strong>/4)</span>
+      </span>
+      <div class="flex items-center gap-2">
+        <button id="clear-compare-btn-mobile" class="text-xs font-semibold text-slate-500 hover:text-red-600 px-2 py-1 transition">Clear</button>
+        <button id="compare-now-btn-mobile" class="rounded-full bg-brand-600 hover:bg-brand-700 text-white text-xs font-extrabold px-3.5 py-1.5 shadow-xs transition flex items-center gap-1">
+          <span>Compare Now</span>
+          <i class="fa-solid fa-arrow-right text-[10px]"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tray Items Row -->
+    <div class="flex items-center gap-3">
+      <span class="text-sm font-semibold text-slate-600 shrink-0 hidden sm:inline-flex items-center gap-1">
+        <i class="fa-solid fa-scale-balanced text-brand-600"></i> Comparing:
+      </span>
+      <div id="compare-tray-items" class="flex items-center gap-2 flex-1 min-w-0 overflow-x-auto touch-scroll scrollbar-none py-0.5"></div>
+      <button id="clear-compare-btn" class="shrink-0 text-xs font-semibold text-slate-400 hover:text-red-500 hidden sm:block px-2 py-1">Clear</button>
+      <button id="compare-now-btn" class="shrink-0 rounded-full bg-brand-600 hover:bg-brand-700 text-white text-sm font-bold px-5 py-2 transition shadow-xs hidden sm:block">Compare Now</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ COMPARE MODAL ============ -->
+<div id="compare-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm">
+  <div class="absolute inset-0 sm:inset-6 lg:inset-10 bg-white rounded-none sm:rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+    <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 shrink-0">
+      <h2 class="text-lg font-bold text-slate-900"><i class="fa-solid fa-scale-balanced text-brand-600 mr-2"></i>Compare Vacuum Cleaners Side-by-Side</h2>
+      <button id="close-compare-modal-btn" class="w-9 h-9 rounded-full hover:bg-slate-100 flex items-center justify-center text-slate-500" aria-label="Close compare modal">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+    <div id="compare-modal-body" class="flex-1 overflow-auto p-0"></div>
+  </div>
+</div>
+
+<!-- ============ PRODUCT DETAIL MODAL (FULL REVIEW PAGE) ============ -->
+<div id="detail-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[92vh] flex flex-col overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50 shrink-0">
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-xs"><i class="fa-solid fa-file-contract"></i></span>
+        <div>
+          <h2 class="text-base font-bold text-slate-900" id="detail-modal-title">Complete Product Review</h2>
+          <p class="text-xs text-slate-500">Verified Technical Review &amp; SEO Publication Page</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button id="copy-markdown-btn" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition flex items-center gap-1.5">
+          <i class="fa-solid fa-copy"></i> Copy Markdown
+        </button>
+        <button id="close-detail-modal-btn" class="w-9 h-9 rounded-full hover:bg-slate-200 flex items-center justify-center text-slate-500 transition" aria-label="Close review modal">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+    </div>
+    <div id="detail-modal-body" class="p-6 overflow-y-auto flex-1 text-slate-800"></div>
+  </div>
+</div>
+
+<!-- ============ EEAT & PAGE MODAL ============ -->
+<div id="page-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-900 text-white shrink-0">
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 rounded-lg bg-brand-600 text-white flex items-center justify-center font-bold text-xs"><i class="fa-solid fa-shield-halved"></i></span>
+        <h2 class="text-base font-bold text-white" id="page-modal-title">Page Content</h2>
+      </div>
+      <button id="close-page-modal-btn" class="w-9 h-9 rounded-full hover:bg-slate-800 flex items-center justify-center text-white transition" aria-label="Close page modal">
+        <i class="fa-solid fa-xmark text-lg"></i>
+      </button>
+    </div>
+    <div id="page-modal-body" class="p-6 overflow-y-auto flex-1 text-slate-800 space-y-4"></div>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-slate-900 text-slate-300 mt-12 border-t border-slate-800">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-sm space-y-10">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      
+      <!-- Col 1: About -->
+      <div class="space-y-3">
+        <a href="/" class="inline-block">
+          <img src="/assets/logo-dark.svg" alt="VacCompare Logo Dark" width="180" height="40" class="h-8 w-auto">
+        </a>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          VacCompare is an independent vacuum research and comparison website. We compile and verify product specifications from manufacturer sources, Amazon listings, and other publicly available product information to help shoppers compare vacuum cleaners with confidence.
+        </p>
+        <div class="flex items-center gap-3 pt-2 text-slate-400">
+          <a href="https://twitter.com/vaccompare" target="_blank" rel="noopener" class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-brand-600 hover:text-white transition" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+          <a href="https://facebook.com/vaccompare" target="_blank" rel="noopener" class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-brand-600 hover:text-white transition" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="/feed.xml" target="_blank" class="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-amber-600 hover:text-white transition" aria-label="RSS Feed"><i class="fa-solid fa-rss"></i></a>
+        </div>
+      </div>
+
+      <!-- Col 2: EEAT & Policies -->
+      <div class="space-y-2">
+        <h3 class="text-xs font-extrabold text-white uppercase tracking-wider mb-3">Editorial &amp; Standards</h3>
+        <ul class="space-y-2 text-xs text-slate-400">
+          <li><a href="/about" class="hover:text-white transition page-link">About VacCompare</a></li>
+          <li><a href="/editorial-policy" class="hover:text-white transition page-link">Editorial Policy</a></li>
+          <li><a href="/affiliate-disclosure" class="hover:text-white transition page-link">Affiliate Disclosure</a></li>
+          <li><a href="/privacy-policy" class="hover:text-white transition page-link">Privacy Policy</a></li>
+          <li><a href="/terms" class="hover:text-white transition page-link">Terms of Service</a></li>
+          <li><a href="/contact" class="hover:text-white transition page-link">Contact Us</a></li>
+          <li><a href="/html-sitemap" class="hover:text-white transition page-link">HTML Sitemap</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3: Categories & Brands -->
+      <div class="space-y-2">
+        <h3 class="text-xs font-extrabold text-white uppercase tracking-wider mb-3">Top Vacuum Categories</h3>
+        <ul class="space-y-2 text-xs text-slate-400">
+          <li><a href="/category/robot-vacuums" class="hover:text-white transition">Robot Vacuums</a></li>
+          <li><a href="/category/cordless-stick" class="hover:text-white transition">Cordless Stick Vacuums</a></li>
+          <li><a href="/category/upright-vacuums" class="hover:text-white transition">Upright Vacuums</a></li>
+          <li><a href="/category/canister-vacuums" class="hover:text-white transition">Canister Vacuums</a></li>
+          <li><a href="/brand/dyson" class="hover:text-white transition">Dyson Vacuums</a></li>
+          <li><a href="/brand/shark" class="hover:text-white transition">Shark Vacuums</a></li>
+          <li><a href="/brand/bissell" class="hover:text-white transition">Bissell Vacuums</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 4: Popular Comparisons -->
+      <div class="space-y-2">
+        <h3 class="text-xs font-extrabold text-white uppercase tracking-wider mb-3">Top Comparisons</h3>
+        <ul class="space-y-2 text-xs text-slate-400">
+          <li><a href="/compare/dyson-v15-vs-shark-stratos" class="hover:text-white transition">Dyson V15 vs Shark Stratos</a></li>
+          <li><a href="/compare/irobot-roomba-j7-vs-roborock-s8" class="hover:text-white transition">Roomba j7+ vs Roborock S8</a></li>
+          <li><a href="/compare/miele-complete-c3-vs-dyson-ball-animal-3" class="hover:text-white transition">Miele C3 vs Dyson Ball Animal 3</a></li>
+          <li><a href="/guides/best-vacuum-for-pet-hair" class="hover:text-white transition">Best Vacuums for Pet Hair</a></li>
+          <li><a href="/guides/best-hardwood-floor-vacuums" class="hover:text-white transition">Best Hardwood Vacuums</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Bottom Disclaimer -->
+    <div class="pt-8 border-t border-slate-800 text-xs text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-center sm:text-left">
+        As an Amazon Associate, VacCompare earns from qualifying purchases made through outbound links. Specifications are sourced from manufacturer documentation, verified product feeds, and technical specifications.
+      </p>
+      <p class="shrink-0">&copy; <span id="footer-year">2026</span> VacCompare. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="/js/csvParser.js"></script>
+<script src="/js/dataLoader.js"></script>
+<script src="/js/reviews-data.js"></script>
+<script src="/js/guides-data.js"></script>
+<script src="/js/internal-linking-data.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

@@ -107,6 +107,18 @@ async function buildStaticSite() {
     }
   }
 
+  // Add Legacy Interactive Buying Guides
+  const legacyGuideSlugs = [
+    'best-vacuum-for-pet-hair',
+    'best-robot-vacuums-2026',
+    'best-hardwood-floor-vacuums',
+    'best-budget-cordless-vacuums',
+    'bagged-vs-bagless-vacuums-guide'
+  ];
+  for (const lSlug of legacyGuideSlugs) {
+    routes.push(`/guides/${lSlug}`);
+  }
+
   // Add all Review Articles
   for (const review of ALL_REVIEWS) {
     if (review.slug) {

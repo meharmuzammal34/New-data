@@ -399,7 +399,7 @@ export function renderServerReviewArticlePage(review, origin, allProducts) {
                 <div class="p-5 bg-slate-50/60 rounded-2xl border border-slate-200/80 hover:border-brand-300 hover:bg-white hover:shadow-md transition flex flex-col justify-between space-y-4 group">
                   <div class="space-y-3">
                     <div class="h-36 bg-white rounded-xl border border-slate-100 p-2 flex items-center justify-center overflow-hidden">
-                      <img src="${escapeAttr(comp.imagePath)}" alt="${escapeAttr(comp.title)}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
+                      <img src="${escapeAttr(comp.image || comp.imagePath || '/assets/vacuum_placeholder.svg')}" alt="${escapeAttr(comp.title)}" class="max-h-full max-w-full object-contain group-hover:scale-105 transition duration-300" onerror="this.onerror=null; this.src='/assets/vacuum_placeholder.svg';" />
                     </div>
                     <div>
                       <div class="flex items-center justify-between text-[11px] mb-1">

@@ -867,6 +867,7 @@ function onProductsLoaded() {
       bindArticleViewEvents(null);
     }
   } else if (path.startsWith('/guides/')) {
+    updateRobotsTag(false);
     const slug = path.replace('/guides/', '').replace(/\/$/, '');
     const archiveGuide = window.getGuideBySlug ? window.getGuideBySlug(slug) : null;
     const hasSsr = els.dedicatedArticleView &&
@@ -875,6 +876,7 @@ function onProductsLoaded() {
       els.dedicatedArticleView.innerHTML.trim().length > 200;
     if (hasSsr) {
       bindArticleViewEvents(null);
+      updateRobotsTag(false);
     } else if (archiveGuide) {
       renderGuideArticleClient(archiveGuide);
       updateBreadcrumbs(archiveGuide.category || 'Buying Guides', archiveGuide.shortTitle || archiveGuide.title);
@@ -884,6 +886,11 @@ function onProductsLoaded() {
       updateCanonicalTag(`/guides/${archiveGuide.slug}`);
       updateRobotsTag(false);
       bindArticleViewEvents(null);
+    } else {
+      render404Page(path);
+      bindArticleViewEvents(null);
+      updateBreadcrumbs('Error', '404 Page Not Found');
+      document.title = '404 Page Not Found | VacCompare';
     }
   } else if (path.startsWith('/reviews/')) {
     const slug = path.replace('/reviews/', '').replace(/\/$/, '');
@@ -1282,6 +1289,7 @@ function handleRouteFromUrl() {
   }
   // Buying Guides: /guides/:slug or direct legacy slug
   else if (path.startsWith('/guides/') || (window.getGuideBySlug && window.getGuideBySlug(path.replace(/^\//, '').replace(/\/$/, '')))) {
+    updateRobotsTag(false);
     const guideSlug = path.startsWith('/guides/') 
       ? path.replace('/guides/', '').replace(/\/$/, '')
       : path.replace(/^\//, '').replace(/\/$/, '');
@@ -1303,30 +1311,18 @@ function handleRouteFromUrl() {
       return;
     }
 
-    const knownGuides = [
-      'best-vacuum-for-pet-hair',
-      'best-robot-vacuums-2026',
-      'best-hardwood-floor-vacuums',
-      'best-budget-cordless-vacuums',
-      'bagged-vs-bagless-vacuums-guide'
-    ];
-    if (knownGuides.includes(guideSlug)) {
+    if (hasSsrContent) {
       showArticleView();
-      if (hasSsrContent) {
-        bindArticleViewEvents(null);
-      } else {
-        renderBuyingGuidePage(guideSlug);
-        const guideTitle = getGuideTitle(guideSlug);
-        updateBreadcrumbs('Buying Guide', guideTitle);
-        document.title = `${guideTitle} | VacCompare`;
-      }
-    } else {
-      showArticleView();
-      render404Page(path);
       bindArticleViewEvents(null);
-      updateBreadcrumbs('Error', '404 Page Not Found');
-      document.title = '404 Page Not Found | VacCompare';
+      updateRobotsTag(false);
+      return;
     }
+
+    showArticleView();
+    render404Page(path);
+    bindArticleViewEvents(null);
+    updateBreadcrumbs('Error', '404 Page Not Found');
+    document.title = '404 Page Not Found | VacCompare';
   }
   // EEAT Pages
   else if (['/about', '/editorial-policy', '/affiliate-disclosure', '/privacy-policy', '/terms', '/contact', '/html-sitemap'].includes(path)) {

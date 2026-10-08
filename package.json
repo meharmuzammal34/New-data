@@ -10,6 +10,10 @@
   },
   "dependencies": {
     "express": "^4.19.2",
-    "jsdom": "^30.0.1"
+    "jsdom": "^30.0.1",
+    "proxy-addr": "2.0.8"
+  },
+  "overrides": {
+    "proxy-addr": "2.0.8"
   }
 }

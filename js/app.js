@@ -1654,11 +1654,12 @@ function findProductBySlug(slug) {
         }
       }
     }
-    if (matchedBrand && matchedModel) score += 20;
-
-    if (score > bestScore) {
-      bestScore = score;
-      bestProd = p;
+    if (matchedBrand && matchedModel) {
+      score += 20;
+      if (score > bestScore) {
+        bestScore = score;
+        bestProd = p;
+      }
     }
   }
   return bestScore >= 45 ? bestProd : null;
@@ -5943,32 +5944,21 @@ function renderEeatPage(path) {
 
 /** 5. Dedicated 404 Page Renderer */
 function render404Page(path) {
-  updateRobotsTag(true);
-  document.title = '404 Page Not Found | VacCompare';
-  updateMetaDescription('The page you requested could not be found. Return to VacCompare to explore our vacuum cleaner comparisons and reviews database.');
-  if (!els.dedicatedArticleView) return;
+  // All 404 to home page system: redirect any not found / invalid route to the home page
+  if (typeof window !== 'undefined' && window.location) {
+    const currentPath = window.location.pathname || '';
+    if (currentPath !== '/' && currentPath !== '/index.html') {
+      window.location.replace('/');
+      return;
+    }
+  }
 
-  const html = `
-    <article class="text-center py-16 space-y-6 max-w-2xl mx-auto bg-white rounded-3xl border border-slate-200 p-8 shadow-xs">
-      <div class="w-16 h-16 rounded-2xl bg-brand-50 text-brand-600 mx-auto flex items-center justify-center font-bold text-3xl">
-        <i class="fa-solid fa-compass"></i>
-      </div>
-      <h1 class="text-3xl font-extrabold text-slate-900">404 - Page Not Found</h1>
-      <p class="text-xs text-slate-500 leading-relaxed">
-        We couldn't locate <code>${escapeHtml(path)}</code>. The page may have been moved, or the product review URL might have changed.
-      </p>
-      <div class="pt-2 flex flex-wrap justify-center gap-3">
-        <a href="/" class="px-6 py-3 rounded-xl bg-brand-600 text-white font-extrabold text-xs hover:bg-brand-700 transition shadow-md">
-          Return to Homepage
-        </a>
-        <a href="/html-sitemap" class="px-6 py-3 rounded-xl bg-slate-100 text-slate-800 font-extrabold text-xs hover:bg-slate-200 transition">
-          Browse Directory Sitemap
-        </a>
-      </div>
-    </article>
-  `;
-
-  els.dedicatedArticleView.innerHTML = html;
+  if (typeof showHomeViews === 'function') {
+    showHomeViews();
+  }
+  if (typeof render === 'function') {
+    render();
+  }
 }
 
 /* ---------------------------------------------------------------- */

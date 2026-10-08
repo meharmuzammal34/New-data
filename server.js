@@ -546,14 +546,15 @@ function findProductBySlugServer(slug, allProducts, slugMap) {
         }
       }
     }
-    if (matchedBrand && matchedModel) score += 35;
-
-    if (score > bestScore) {
-      bestScore = score;
-      bestProd = p;
+    if (matchedBrand && matchedModel) {
+      score += 35;
+      if (score > bestScore) {
+        bestScore = score;
+        bestProd = p;
+      }
     }
   }
-  return (bestScore >= 55 && bestProd) ? bestProd : null;
+  return (bestScore >= 65 && bestProd) ? bestProd : null;
 }
 
 loadProductsServer();
@@ -3539,19 +3540,8 @@ app.get('*', (req, res) => {
         breadcrumbCurrent = `${matched.brand} ${matched.model}`;
         articleHtml = renderServerProductReviewPage(matched, cachedProducts);
       } else {
-        res.status(404);
-        showArticle = true;
-        showMainContent = false;
-        breadcrumbCategory = 'Error';
-        breadcrumbCurrent = '404 - Page Not Found';
-        articleHtml = `
-          <div class="text-center py-16 bg-white rounded-2xl border border-slate-200 space-y-4">
-            <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500"></i>
-            <h1 class="text-2xl font-extrabold text-slate-900">404 - Page Not Found</h1>
-            <p class="text-sm text-slate-600 max-w-md mx-auto">The requested vacuum review or specification page could not be located in our verified database.</p>
-            <a href="/" class="inline-block px-5 py-2.5 rounded-xl bg-brand-600 text-white font-bold text-xs hover:bg-brand-700 transition">Return to Vacuum Database</a>
-          </div>
-        `;
+        // Unknown product/vacuum slug: redirect to homepage
+        return res.redirect(301, '/');
       }
     } else if (reqPath === '/categories' || reqPath === '/categories/' || reqPath === '/category' || reqPath === '/category/') {
       showBanner = true;
@@ -3585,7 +3575,10 @@ app.get('*', (req, res) => {
         slugify(p.brand) === bSlug || 
         p.brand.toLowerCase().replace(/[^a-z0-9]/g, '') === bSlug.replace(/[^a-z0-9]/g, '')
       );
-      const displayProducts = brandProducts.length > 0 ? brandProducts : cachedProducts;
+      if (brandProducts.length === 0) {
+        return res.redirect(301, '/');
+      }
+      const displayProducts = brandProducts;
       const count = brandProducts.length;
 
       showBanner = true;
@@ -3596,15 +3589,18 @@ app.get('*', (req, res) => {
       bannerHtml = renderServerBanner(
         `${brandName} Vacuum Cleaners`,
         'Brand Directory',
-        `Explore ${count || 'all'} ${brandName} vacuum models with verified suction pressure benchmarks, HEPA filtration specs, decibel noise levels, and star ratings.`
+        `Explore ${count} ${brandName} vacuum models with verified suction pressure benchmarks, HEPA filtration specs, decibel noise levels, and star ratings.`
       );
       productGridHtml = displayProducts.map(p => renderServerCard(p)).join('');
     } else if (reqPath.startsWith('/category/')) {
       const cSlug = reqPath.replace('/category/', '').replace(/\/$/, '');
       const targetType = matchCategoryServer(cSlug);
-      const displayType = targetType === 'Dry Wet' ? 'Wet & Dry' : targetType;
       const catProducts = cachedProducts.filter(p => p.type.toLowerCase() === targetType.toLowerCase() || slugify(p.type) === cSlug);
-      const displayProducts = catProducts.length > 0 ? catProducts : cachedProducts;
+      if (catProducts.length === 0) {
+        return res.redirect(301, '/');
+      }
+      const displayType = targetType === 'Dry Wet' ? 'Wet & Dry' : targetType;
+      const displayProducts = catProducts;
       const count = catProducts.length;
 
       showBanner = true;
@@ -3615,7 +3611,7 @@ app.get('*', (req, res) => {
       bannerHtml = renderServerBanner(
         `${displayType} Vacuum Cleaners`,
         'Category Index',
-        `Compare ${count || 'all'} top-rated ${displayType.toLowerCase()} vacuums side by side. Filter by price, suction power (kPa), battery runtime, weight, and HEPA filter status.`
+        `Compare ${count} top-rated ${displayType.toLowerCase()} vacuums side by side. Filter by price, suction power (kPa), battery runtime, weight, and HEPA filter status.`
       );
       productGridHtml = displayProducts.map(p => renderServerCard(p)).join('');
     } else if (reqPath === '/guides' || reqPath === '/guides/') {
@@ -3645,19 +3641,8 @@ app.get('*', (req, res) => {
         breadcrumbCurrent = guideTitle;
         articleHtml = renderServerBuyingGuidePage(gSlug, cachedProducts);
       } else {
-        res.status(404);
-        showArticle = true;
-        showMainContent = false;
-        breadcrumbCategory = 'Error';
-        breadcrumbCurrent = '404 - Buying Guide Not Found';
-        articleHtml = `
-          <div class="text-center py-16 bg-white rounded-2xl border border-slate-200 space-y-4">
-            <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500"></i>
-            <h1 class="text-2xl font-extrabold text-slate-900">404 - Buying Guide Not Found</h1>
-            <p class="text-sm text-slate-600 max-w-md mx-auto">The requested vacuum buying guide could not be located in our published archive.</p>
-            <a href="/guides" class="inline-block px-5 py-2.5 rounded-xl bg-brand-600 text-white font-bold text-xs hover:bg-brand-700 transition">View All Buying Guides</a>
-          </div>
-        `;
+        // Unknown buying guide slug: redirect to homepage
+        return res.redirect(301, '/');
       }
     } else if (reqPath === '/compare' || reqPath === '/compare/') {
       showArticle = true;
@@ -3669,6 +3654,11 @@ app.get('*', (req, res) => {
     } else if (reqPath.startsWith('/compare/')) {
       const compareSlug = reqPath.replace('/compare/', '').replace(/\/$/, '');
       const parts = compareSlug.split('-vs-');
+      const p1 = parts[0] ? findProductBySlugServer(parts[0], cachedProducts, productSlugMap) : null;
+      const p2 = parts[1] ? findProductBySlugServer(parts[1], cachedProducts, productSlugMap) : null;
+      if (parts.length < 2 || (!p1 && !p2)) {
+        return res.redirect(301, '/');
+      }
       const label = parts.map(p => p.replace(/-/g, ' ').toUpperCase()).join(' vs ');
       showArticle = true;
       showMainContent = false;
@@ -3685,19 +3675,8 @@ app.get('*', (req, res) => {
       breadcrumbCurrent = pageTitle;
       articleHtml = renderServerEeatPage(reqPath, cachedProducts);
     } else {
-      res.status(404);
-      showArticle = true;
-      showMainContent = false;
-      breadcrumbCategory = 'Error';
-      breadcrumbCurrent = '404 - Page Not Found';
-      articleHtml = `
-        <div class="text-center py-16 bg-white rounded-2xl border border-slate-200 space-y-4">
-          <i class="fa-solid fa-triangle-exclamation text-4xl text-amber-500"></i>
-          <h1 class="text-2xl font-extrabold text-slate-900">404 - Page Not Found</h1>
-          <p class="text-sm text-slate-600 max-w-md mx-auto">The requested vacuum review or specification page could not be located in our verified database.</p>
-          <a href="/" class="inline-block px-5 py-2.5 rounded-xl bg-brand-600 text-white font-bold text-xs hover:bg-brand-700 transition">Return to Vacuum Database</a>
-        </div>
-      `;
+      // Catch-all 404: redirect to homepage
+      return res.redirect(301, '/');
     }
 
     // Apply HTML Modifications

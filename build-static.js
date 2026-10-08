@@ -172,8 +172,11 @@ async function buildStaticSite() {
     copyDirRecursive(path.join(__dirname, d), path.join(__dirname, 'public', d));
   }
 
-  // Ensure index.html and redirect files are in public/
+  // Ensure index.html, 404.html, and redirect files are in public/
   fs.copyFileSync(path.join(__dirname, 'index.html'), path.join(__dirname, 'public', 'index.html'));
+  if (fs.existsSync(path.join(__dirname, '404.html'))) {
+    fs.copyFileSync(path.join(__dirname, '404.html'), path.join(__dirname, 'public', '404.html'));
+  }
   if (fs.existsSync(path.join(__dirname, '_redirects'))) {
     fs.copyFileSync(path.join(__dirname, '_redirects'), path.join(__dirname, 'public', '_redirects'));
   }

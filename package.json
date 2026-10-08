@@ -11,9 +11,13 @@
   "dependencies": {
     "express": "^4.19.2",
     "jsdom": "^30.0.1",
-    "proxy-addr": "2.0.8"
+    "proxy-addr": "2.0.8",
+    "qs": "6.16.0",
+    "source-map-js": "1.2.2"
   },
   "overrides": {
-    "proxy-addr": "2.0.8"
+    "proxy-addr": "2.0.8",
+    "qs": "6.16.0",
+    "source-map-js": "1.2.2"
   }
 }
